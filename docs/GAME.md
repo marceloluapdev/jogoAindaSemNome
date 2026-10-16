@@ -40,9 +40,11 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 ## Ideias para avaliar depois
 - **Colisões como mecânica** (via magias/ingredientes): dado de defesa que bate num de ataque
   dá bônus — ricochete (+1 bloqueio por batida), contra-ataque (devolve dano), faísca (dano extra).
-- **Posição dos dados na bandeja como escolha**: tirar dados do caminho (ex.: recolher um 6 segurado)
-  para os arremessados baterem em mais dados, ou deixá-lo e bater só nele. Risco: a física é aleatória
-  e o toque no celular é impreciso — testar se a escolha parece estratégica ou só sorte.
+- **Dado guardado: deixar na bandeja ou tirar da frente** (escolha simples, sem arrastar com o dedo):
+  um dado segurado pode ficar na bandeja como obstáculo ou ser recolhido para fora dela (ex.: uma
+  prateleira). Ex.: um 6 guardado na frente — deixar e os arremessados batem só nele, ou tirar para
+  baterem em mais dados. Combina com as magias de colisão. Testar se a física deixa a escolha
+  previsível o bastante para parecer estratégia e não só sorte.
 
 ## Em aberto
 - Nome do jogo
