@@ -20,20 +20,45 @@ body {
 main { width: 100%; max-width: 480px; padding: 24px 16px; text-align: center; }
 h1 { margin: 0; font-size: 1.5rem; }
 .sub { color: var(--muted); margin: 4px 0 24px; font-size: 0.9rem; }
-.dice { display: flex; gap: 10px; justify-content: center; margin-bottom: 24px; }
+/* Bandeja de dados: moldura de madeira + feltro */
+.tray {
+  position: relative;
+  height: 300px;
+  margin-bottom: 20px;
+  border-radius: 18px;
+  border: 12px solid #6b4426;
+  background:
+    radial-gradient(ellipse at 50% 40%, #6e1f3a 0%, #4a1228 60%, #300a1a 100%);
+  box-shadow:
+    inset 0 0 0 2px #3d2412,
+    inset 0 8px 24px rgba(0, 0, 0, 0.7),
+    0 0 0 2px #8f5f37,
+    0 10px 24px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
 .die {
-  width: 56px; height: 56px;
-  padding: 8px;
-  border-radius: 12px;
+  position: absolute; left: 0; top: 0;
+  width: 52px; height: 52px;
+  cursor: pointer; user-select: none;
+  will-change: transform;
+}
+.face {
+  width: 100%; height: 100%;
+  padding: 7px;
+  border-radius: 11px;
   background: linear-gradient(145deg, #fffaf0, #e4d9c4);
-  box-shadow: 0 4px 0 #9c8c70, 0 6px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 0 #9c8c70, 0 6px 12px rgba(0, 0, 0, 0.55);
   border: 3px solid transparent;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   place-items: center;
-  cursor: pointer; user-select: none;
-  transition: transform 0.15s;
+}
+/* brilho na batida — base para efeitos de magia depois */
+.face.hit { animation: hit 0.3s ease-out; }
+@keyframes hit {
+  0% { box-shadow: 0 4px 0 #9c8c70, 0 0 calc(30px * var(--hit, 0.5)) rgba(255, 220, 140, calc(0.9 * var(--hit, 0.5))); }
+  100% { box-shadow: 0 4px 0 #9c8c70, 0 6px 12px rgba(0, 0, 0, 0.55); }
 }
 .pip {
   width: 9px; height: 9px;
@@ -46,8 +71,11 @@ h1 { margin: 0; font-size: 1.5rem; }
   grid-column: 1 / -1; grid-row: 1 / -1;
   font-size: 1.6rem; font-weight: 700; color: #9c8c70;
 }
-.die.held { border-color: var(--held); transform: translateY(-6px); }
-.die.landed { animation: land 0.25s ease-out; }
+.die.held .face {
+  border-color: var(--held);
+  box-shadow: 0 4px 0 #9c8c70, 0 0 14px rgba(242, 193, 78, 0.8);
+}
+.die.landed .face { animation: land 0.25s ease-out; }
 @keyframes land {
   0%   { transform: scale(1.15); }
   60%  { transform: scale(0.95); }

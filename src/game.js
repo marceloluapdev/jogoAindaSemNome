@@ -41,6 +41,8 @@ function evaluate(values) {
   return { ...combo, points: Math.round(sum * combo.mult) };
 }
 
+// ---------- Visual dos dados ----------
+
 // Posições das bolinhas numa grade 3x3 (0 = canto superior esquerdo, 8 = inferior direito)
 const PIPS = {
   1: [4],
@@ -51,34 +53,208 @@ const PIPS = {
   6: [0, 2, 3, 5, 6, 8],
 };
 
+const DIE_SIZE = 52;
+const R = DIE_SIZE / 2; // raio de colisão (aproxima o dado por um círculo)
+
+const tray = $("tray");
 let rolling = false;
 
-function drawFace(el, value) {
-  el.innerHTML = "";
+// Cada dado: elemento na tela + estado físico
+const bodies = [];
+
+function drawFace(face, value) {
+  face.innerHTML = "";
   if (value === null) {
-    el.innerHTML = '<span class="blank">?</span>';
+    face.innerHTML = '<span class="blank">?</span>';
     return;
   }
   for (let p = 0; p < 9; p++) {
     const pip = document.createElement("span");
     pip.className = PIPS[value].includes(p) ? "pip" : "pip off";
-    el.appendChild(pip);
+    face.appendChild(pip);
   }
 }
 
-function render() {
-  const box = $("dice");
-  box.innerHTML = "";
-  dice.forEach((v, i) => {
-    const d = document.createElement("div");
-    d.className = "die" + (held[i] ? " held" : "");
-    drawFace(d, v);
-    d.onclick = () => {
-      if (rolling || v === null || rollsLeft === 0) return;
+function place(b) {
+  b.el.style.transform = `translate(${b.x - R}px, ${b.y - R}px) rotate(${b.a}deg)`;
+}
+
+function createDice() {
+  for (let i = 0; i < NUM_DICE; i++) {
+    const el = document.createElement("div");
+    el.className = "die";
+    const face = document.createElement("div");
+    face.className = "face";
+    el.appendChild(face);
+    el.onclick = () => {
+      if (rolling || dice[i] === null || rollsLeft === 0) return;
       held[i] = !held[i];
       render();
     };
-    box.appendChild(d);
+    tray.appendChild(el);
+    bodies.push({ el, face, x: 0, y: 0, a: 0, vx: 0, vy: 0, va: 0, dist: 0 });
+  }
+  lineUp();
+}
+
+// Dados enfileirados no meio da bandeja (início de cada turno)
+function lineUp() {
+  const W = tray.clientWidth, H = tray.clientHeight;
+  bodies.forEach((b, i) => {
+    b.x = (W / (NUM_DICE + 1)) * (i + 1);
+    b.y = H / 2;
+    b.a = 0;
+    place(b);
+  });
+}
+
+function flash(b, strength) {
+  b.face.classList.remove("hit");
+  void b.face.offsetWidth; // reinicia a animação
+  b.face.style.setProperty("--hit", Math.min(1, strength / 600));
+  b.face.classList.add("hit");
+}
+
+// ---------- Física da rolagem ----------
+
+function throwDice(onDone) {
+  const W = tray.clientWidth, H = tray.clientHeight;
+  const moving = bodies.filter((_, i) => !held[i]);
+
+  // Arremessa da parte de baixo da bandeja, para cima e em direções variadas
+  moving.forEach((b, k) => {
+    b.x = rand(R, W - R) * 0.5 + (W / (moving.length + 1)) * (k + 1) * 0.5;
+    b.y = H - R - rand(0, 10);
+    const angle = rand(-Math.PI * 0.85, -Math.PI * 0.15); // para cima, com inclinação
+    const speed = rand(650, 1100);
+    b.vx = Math.cos(angle) * speed;
+    b.vy = Math.sin(angle) * speed;
+    b.va = rand(500, 1100) * (Math.random() < 0.5 ? -1 : 1);
+    b.dist = 0;
+    b.stopped = false;
+    drawFace(b.face, randomFace());
+  });
+
+  let last = performance.now();
+  const start = last;
+
+  function step(now) {
+    const dt = Math.min((now - last) / 1000, 1 / 30);
+    last = now;
+
+    // Movimento + atrito do feltro
+    moving.forEach(b => {
+      if (b.stopped) return;
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+      b.a += b.va * dt;
+
+      const damp = Math.exp(-1.8 * dt);
+      b.vx *= damp;
+      b.vy *= damp;
+      b.va *= Math.exp(-2.4 * dt);
+
+      // Troca de face conforme rola pela bandeja
+      const speed = Math.hypot(b.vx, b.vy);
+      b.dist += speed * dt;
+      if (b.dist > 38 && speed > 60) {
+        b.dist = 0;
+        drawFace(b.face, randomFace());
+      }
+
+      // Bate nas paredes
+      const e = 0.55;
+      if (b.x < R) { b.x = R; b.vx = Math.abs(b.vx) * e; b.va += rand(-300, 300); if (speed > 150) flash(b, speed); }
+      if (b.x > W - R) { b.x = W - R; b.vx = -Math.abs(b.vx) * e; b.va += rand(-300, 300); if (speed > 150) flash(b, speed); }
+      if (b.y < R) { b.y = R; b.vy = Math.abs(b.vy) * e; b.va += rand(-300, 300); if (speed > 150) flash(b, speed); }
+      if (b.y > H - R) { b.y = H - R; b.vy = -Math.abs(b.vy) * e; b.va += rand(-300, 300); if (speed > 150) flash(b, speed); }
+    });
+
+    // Colisões entre dados (os segurados são obstáculos fixos)
+    for (let i = 0; i < NUM_DICE; i++) {
+      for (let j = i + 1; j < NUM_DICE; j++) {
+        const A = bodies[i], B = bodies[j];
+        const aFixed = held[i] || A.stopped, bFixed = held[j] || B.stopped;
+        if (aFixed && bFixed) continue;
+
+        let dx = B.x - A.x, dy = B.y - A.y;
+        let d = Math.hypot(dx, dy);
+        if (d >= R * 2 || d === 0) continue;
+        const nx = dx / d, ny = dy / d;
+        const overlap = R * 2 - d;
+
+        // Separa os dois
+        if (aFixed) { B.x += nx * overlap; B.y += ny * overlap; }
+        else if (bFixed) { A.x -= nx * overlap; A.y -= ny * overlap; }
+        else {
+          A.x -= nx * overlap / 2; A.y -= ny * overlap / 2;
+          B.x += nx * overlap / 2; B.y += ny * overlap / 2;
+        }
+
+        // Troca de impulso ao longo da linha de contato
+        const rvx = (bFixed ? 0 : B.vx) - (aFixed ? 0 : A.vx);
+        const rvy = (bFixed ? 0 : B.vy) - (aFixed ? 0 : A.vy);
+        const vn = rvx * nx + rvy * ny;
+        if (vn >= 0) continue; // já estão se afastando
+
+        const e = 0.7;
+        const share = aFixed || bFixed ? 1 : 0.5;
+        const jImp = -(1 + e) * vn * share;
+        if (!aFixed) { A.vx -= jImp * nx; A.vy -= jImp * ny; A.va += rand(-400, 400); }
+        if (!bFixed) { B.vx += jImp * nx; B.vy += jImp * ny; B.va += rand(-400, 400); }
+
+        const impact = -vn;
+        if (impact > 120) {
+          if (!aFixed || held[i]) flash(A, impact);
+          if (!bFixed || held[j]) flash(B, impact);
+        }
+      }
+    }
+
+    // Quando quase parado, o dado assenta "reto" e para
+    moving.forEach(b => {
+      if (b.stopped) return;
+      const speed = Math.hypot(b.vx, b.vy);
+      if (speed < 90) {
+        const target = Math.round(b.a / 90) * 90;
+        b.a += (target - b.a) * Math.min(1, 10 * dt);
+        b.va *= 0.8;
+      }
+      if (speed < 14 && Math.abs(b.va) < 25) {
+        b.stopped = true;
+        b.a = Math.round(b.a / 90) * 90;
+        b.vx = b.vy = b.va = 0;
+        const i = bodies.indexOf(b);
+        drawFace(b.face, onDone.result[i]);
+        b.el.classList.remove("landed");
+        void b.el.offsetWidth;
+        b.el.classList.add("landed");
+      }
+      place(b);
+    });
+
+    const allStopped = moving.every(b => b.stopped);
+    if (!allStopped && now - start < 4000) {
+      requestAnimationFrame(step);
+    } else {
+      moving.forEach((b, k) => {
+        if (!b.stopped) {
+          b.stopped = true;
+          drawFace(b.face, onDone.result[bodies.indexOf(b)]);
+        }
+      });
+      setTimeout(onDone, 200);
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+// ---------- Interface ----------
+
+function render() {
+  bodies.forEach((b, i) => {
+    b.el.classList.toggle("held", held[i]);
+    if (!rolling) drawFace(b.face, dice[i]);
   });
 
   const rolled = dice[0] !== null;
@@ -91,66 +267,33 @@ function render() {
     $("score").textContent = "Pontos: 0";
   }
   $("rolls").textContent = `Rolagens: ${rollsLeft}`;
-  $("roll").disabled = rollsLeft === 0;
-  $("score-btn").disabled = !rolled;
+  $("roll").disabled = rolling || rollsLeft === 0;
+  $("score-btn").disabled = rolling || !rolled;
   $("total").textContent = `Total: ${total}`;
 }
 
 const randomFace = () => 1 + Math.floor(Math.random() * 6);
 
+function rand(min, max) {
+  return min + Math.random() * (max - min);
+}
+
 $("roll").onclick = () => {
   if (rolling || rollsLeft === 0) return;
   rolling = true;
-  $("roll").disabled = true;
-  $("score-btn").disabled = true;
+  render();
 
-  // O resultado já é sorteado; a animação só "mostra" ele chegando
+  // O resultado já é sorteado; a física só "mostra" os dados chegando nele
   const result = dice.map((v, i) => (held[i] ? v : randomFace()));
-  const els = [...$("dice").children];
-  let longest = 0;
-
-  els.forEach((el, i) => {
-    if (held[i]) return;
-
-    // Cada dado tem seu próprio jeito de rolar
-    const tick = rand(55, 110);          // velocidade de troca de face (ms)
-    const duration = rand(450, 900);     // quando ele para
-    let dir = Math.random() < 0.5 ? -1 : 1;
-    let angle = 0;
-    longest = Math.max(longest, duration);
-
-    el.style.transition = `transform ${tick}ms linear`;
-    const spin = setInterval(() => {
-      if (Math.random() < 0.2) dir *= -1; // às vezes inverte o giro
-      angle += dir * rand(50, 160);
-      const x = rand(-10, 10);
-      const y = -rand(0, 16);
-      const s = rand(0.85, 1.05);
-      el.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg) scale(${s})`;
-      drawFace(el, randomFace());
-    }, tick);
-
-    setTimeout(() => {
-      clearInterval(spin);
-      el.style.transition = "";
-      el.style.transform = "";
-      drawFace(el, result[i]);
-      el.classList.add("landed");
-    }, duration);
-  });
-
-  // Depois que o último dado parou, atualiza a pontuação
-  setTimeout(() => {
+  const done = () => {
     dice = result;
     rollsLeft--;
     rolling = false;
     render();
-  }, longest + 250);
+  };
+  done.result = result;
+  throwDice(done);
 };
-
-function rand(min, max) {
-  return min + Math.random() * (max - min);
-}
 
 $("score-btn").onclick = () => {
   if (rolling) return;
@@ -158,7 +301,13 @@ $("score-btn").onclick = () => {
   dice = Array(NUM_DICE).fill(null);
   held = Array(NUM_DICE).fill(false);
   rollsLeft = MAX_ROLLS;
+  lineUp();
   render();
 };
 
+window.addEventListener("resize", () => {
+  if (!rolling && dice[0] === null) lineUp();
+});
+
+createDice();
 render();
