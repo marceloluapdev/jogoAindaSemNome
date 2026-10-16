@@ -57,7 +57,9 @@ const PIPS = {
 };
 
 const DIE_SIZE = 52;
-const R = DIE_SIZE / 2; // metade do dado (raio de colisão e de rolagem)
+const R = DIE_SIZE / 2; // metade do dado (raio de rolagem)
+const RC = 30;           // raio de colisão em movimento (um pouco maior: o dado é quadrado)
+const GAP = 4;           // espaço mínimo entre dados parados
 
 // Para cada valor: direção da face no cubo (x direita, y baixo, z para quem olha)
 // e o transform CSS que coloca a face lá. Faces opostas somam 7.
@@ -213,16 +215,57 @@ function createDice() {
   lineUp();
 }
 
-// Dados enfileirados no meio da bandeja (início de cada turno)
+// Dados enfileirados no meio da bandeja (início de cada turno).
+// Se a tela for estreita demais para uma fileira só, usa duas.
 function lineUp() {
   const W = tray.clientWidth, H = tray.clientHeight;
+  const step = DIE_SIZE + 10;
+  const perRow = Math.max(1, Math.min(NUM_DICE, Math.floor(W / step)));
+  const rows = Math.ceil(NUM_DICE / perRow);
   bodies.forEach((b, i) => {
-    b.x = (W / (NUM_DICE + 1)) * (i + 1);
-    b.y = H / 2;
+    const row = Math.floor(i / perRow);
+    const inRow = Math.min(perRow, NUM_DICE - row * perRow);
+    const col = i % perRow;
+    b.x = W / 2 + (col - (inRow - 1) / 2) * step;
+    b.y = H / 2 + (row - (rows - 1) / 2) * step;
     b.M = IDENTITY();
     setUnknown(b, true);
     place(b);
   });
+}
+
+// Dados parados (ou segurados) são quadrados alinhados: se dois estão um por
+// cima do outro, empurra para separar. Segurados não se mexem.
+// "rate" < 1 separa aos poucos (suave). Devolve a maior sobreposição achada.
+function separateResting(W, H, rate = 1) {
+  const size = DIE_SIZE + GAP;
+  let worst = 0;
+  for (let i = 0; i < NUM_DICE; i++) {
+    for (let j = i + 1; j < NUM_DICE; j++) {
+      const A = bodies[i], B = bodies[j];
+      if (A.state === "moving" || B.state === "moving") continue;
+      if (held[i] && held[j]) continue;
+      const dx = B.x - A.x, dy = B.y - A.y;
+      const ox = size - Math.abs(dx), oy = size - Math.abs(dy);
+      if (ox <= 0 || oy <= 0) continue;
+      worst = Math.max(worst, Math.min(ox, oy));
+      // empurra pelo eixo de menor sobreposição
+      let px = 0, py = 0;
+      if (ox < oy) px = (dx >= 0 ? 1 : -1) * ox * rate;
+      else py = (dy >= 0 ? 1 : -1) * oy * rate;
+      if (dx === 0 && dy === 0) px = size * rate;
+      const aShare = held[i] ? 0 : held[j] ? 1 : 0.5;
+      const bShare = 1 - aShare;
+      A.x -= px * aShare; A.y -= py * aShare;
+      B.x += px * bShare; B.y += py * bShare;
+    }
+  }
+  bodies.forEach((b, i) => {
+    if (held[i]) return;
+    b.x = Math.max(R, Math.min(W - R, b.x));
+    b.y = Math.max(R, Math.min(H - R, b.y));
+  });
+  return worst;
 }
 
 // Brilho na batida — base para efeitos de magia depois.
@@ -250,9 +293,11 @@ function throwDice(onDone) {
   const moving = bodies.filter((_, i) => !held[i]);
 
   // Arremessa da parte de baixo da bandeja, para cima e em direções variadas
+  // Cada dado sai de um ponto diferente (espalhados e em duas alturas),
+  // para não começarem encostados
   moving.forEach((b, k) => {
-    b.x = rand(R, W - R) * 0.5 + (W / (moving.length + 1)) * (k + 1) * 0.5;
-    b.y = H - R - rand(0, 10);
+    b.x = (W / (moving.length + 1)) * (k + 1) + rand(-6, 6);
+    b.y = H - R - (k % 2) * (RC * 2 + 4) - rand(0, 6);
     const angle = rand(-Math.PI * 0.85, -Math.PI * 0.15);
     const speed = rand(650, 1100);
     b.vx = Math.cos(angle) * speed;
@@ -332,9 +377,9 @@ function throwDice(onDone) {
 
         const dx = B.x - A.x, dy = B.y - A.y;
         const d = Math.hypot(dx, dy);
-        if (d >= R * 2 || d === 0) continue;
+        if (d >= RC * 2 || d === 0) continue;
         const nx = dx / d, ny = dy / d;
-        const overlap = R * 2 - d;
+        const overlap = RC * 2 - d;
 
         if (aFixed) { B.x += nx * overlap; B.y += ny * overlap; }
         else if (bFixed) { A.x -= nx * overlap; A.y -= ny * overlap; }
@@ -362,10 +407,13 @@ function throwDice(onDone) {
       }
     }
 
+    // Separa aos poucos quem já parou em cima de outro
+    const overlapLeft = separateResting(W, H, 0.35);
+
     moving.forEach(place);
 
     const allStopped = moving.every(b => b.state === "stopped");
-    if (!allStopped && now - start < 5000) {
+    if ((!allStopped || overlapLeft > 0.5) && now - start < 5000) {
       requestAnimationFrame(step);
     } else {
       // Segurança: se algum dado demorou demais, assenta na hora
@@ -375,9 +423,10 @@ function throwDice(onDone) {
           b.M = mul(rotZ(s.yaw), mul(rotAxis(...s.axis, s.tilt), b.M));
           b.state = "stopped";
           onDone.result[bodies.indexOf(b)] = s.value;
-          place(b);
         }
       });
+      for (let k = 0; k < 40 && separateResting(W, H) > 0.5; k++);
+      moving.forEach(place);
       setTimeout(onDone, 200);
     }
   }
