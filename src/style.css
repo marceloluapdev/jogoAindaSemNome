@@ -139,16 +139,22 @@ main {
 .enemy-bar .fill { background: linear-gradient(#e0566b, #a8283f); }
 .player-bar .fill { background: linear-gradient(#6ad08a, #2f8f51); }
 
-/* Inimigo provisório (forma simples) */
+/* Cena provisória: inimigo de frente + você de costas na diagonal */
+.scene {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 150px;
+}
 .enemy-sprite {
   --enemy-color: #7fbf6a;
-  flex: 1;
-  display: flex; align-items: center; justify-content: center;
+  position: absolute; left: 50%; top: 18%;
+  margin-left: -36px;
   transition: opacity 0.6s, transform 0.6s;
 }
 .enemy-sprite .body {
   position: relative;
-  width: 120px; height: 100px;
+  width: 84px; height: 70px;
   border-radius: 50% 50% 42% 42% / 60% 60% 40% 40%;
   background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.35), transparent 40%), var(--enemy-color);
   box-shadow: inset 0 -12px 20px rgba(0,0,0,0.35), 0 14px 18px -8px rgba(0,0,0,0.6);
@@ -156,18 +162,51 @@ main {
 }
 .enemy-sprite .eye {
   position: absolute; top: 34%;
-  width: 14px; height: 18px; border-radius: 50%;
+  width: 10px; height: 13px; border-radius: 50%;
   background: #1a0f24;
 }
 .enemy-sprite .eye:nth-child(1) { left: 30%; }
 .enemy-sprite .eye:nth-child(2) { right: 30%; }
 .enemy-sprite .mouth {
   position: absolute; left: 50%; top: 62%;
-  width: 34px; height: 10px; margin-left: -17px;
+  width: 24px; height: 7px; margin-left: -12px;
   border-radius: 0 0 20px 20px;
   background: #1a0f24;
 }
 .enemy-sprite.dead { opacity: 0; transform: scale(0.6) translateY(20px); }
+
+/* Você (provisório): cabeça e ombros de costas, virado um pouco para a direita */
+.hero {
+  position: absolute; left: 4%; bottom: -12px;
+  width: 120px; height: 120px;
+  pointer-events: none;
+}
+.hero-body {
+  position: absolute; left: 0; bottom: 0;
+  width: 120px; height: 58px;
+  border-radius: 60px 70px 0 0 / 46px 50px 0 0;
+  background: linear-gradient(100deg, #3b2f52, #2a2140 70%, #1f1830);
+  box-shadow: inset 6px 6px 12px rgba(255,255,255,0.06);
+}
+.hero-head {
+  position: absolute; left: 32px; bottom: 44px;
+  width: 54px; height: 60px;
+  border-radius: 48% 52% 46% 46%;
+  background: #4a3424;            /* cabelo (nuca) */
+  overflow: hidden;
+}
+.hero-face {                       /* pedacinho do rosto: bochecha à direita */
+  position: absolute; right: -10px; top: 18px;
+  width: 22px; height: 34px;
+  border-radius: 50%;
+  background: #d9a782;
+}
+.hero-ear {
+  position: absolute; right: 6px; top: 26px;
+  width: 8px; height: 13px;
+  border-radius: 50%;
+  background: #c48f6c;
+}
 @keyframes idle {
   50% { transform: translateY(-6px) scaleY(1.03); }
 }
@@ -181,8 +220,16 @@ main {
 .player-hp { position: relative; display: flex; align-items: center; gap: 8px; }
 .player-hp .label { font-size: 0.8rem; color: var(--muted); }
 .player-hp .bar { margin-top: 0; }
-.defense { font-size: 0.8rem; font-weight: 700; color: #9cc0ff; white-space: nowrap; }
-.defense:empty { display: none; }
+/* Reserva de defesa */
+.reserve { display: flex; gap: 3px; }
+.reserve .slot {
+  width: 12px; height: 12px; border-radius: 3px;
+  box-shadow: inset 0 0 0 2px #5d749a;
+}
+.reserve .slot.full { background: linear-gradient(145deg, #c9d8ee, #7f97bd); box-shadow: none; }
+.buttons[hidden] { display: none; }
+button.defend { background: #7f97bd; color: #0e1626; }
+button.endure { background: #3a2d4c; color: var(--text); }
 .buttons { display: flex; gap: 12px; }
 button {
   flex: 1; padding: 16px; font-size: 1.1rem; font-weight: 700;

@@ -16,10 +16,15 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 ## Combate
 - Em turnos, **primeira pessoa**: inimigo de frente no topo, ações do jogador embaixo
   (layout inspirado em Undertale; a **estética será própria**, ainda a definir — manter um estilo único no jogo todo).
-- Turno do jogador: rola, segura, rola de novo e **Ataca**. Dano = soma dos dados × multiplicador da combinação.
+- Turno do jogador: rola, **seleciona** dados (toque) e rola de novo; os selecionados ficam.
+  Ao **Atacar**, só os selecionados atacam (nenhum selecionado = todos).
+  Dano = soma dos selecionados × multiplicador da combinação deles.
 - O inimigo mostra a **intenção** (quanto vai atacar) e ataca de volta depois do seu ataque.
-- **Defesa**: cada rolagem que você não usou vira 1 **dado de defesa** (azul), rolado quando o inimigo ataca;
-  a soma bloqueia o dano daquele ataque (o excesso não acumula — com poucos dados quase nunca sobra).
+- **Reserva de defesa**: os dados **não selecionados** no ataque vão para a reserva, que acumula entre
+  turnos até o nº de dados que você tem (hoje 4). Rolagem não usada não dá defesa (por enquanto sem efeito).
+- Quando o inimigo vai atacar e há reserva: **Defender** (rola a reserva toda, a soma bloqueia, reserva zera)
+  ou **Aguentar** (leva o dano e guarda a reserva para um ataque maior).
+- Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),
   modificados por alquimia/magias.
@@ -36,6 +41,11 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Estilo **livro-jogo**: escolhas entre as rodadas.
 - As escolhas **mudam o personagem** (atributos, magias, maldições, aliados).
 - Objetivo: histórias **emergentes**, diferentes a cada partida (referência: Dwarf Fortress).
+
+## Layout (futuro)
+- Você aparece **de costas, na diagonal** (um pouco do rosto visível); o inimigo de frente.
+- A bandeja pode **entrar e sair da tela** (ex.: sair para mostrar ataques e cenas).
+- Menus de combate contextuais (ex.: escolher quantos dados de defesa usar).
 
 ## Ideias para avaliar depois
 - **Colisões como mecânica** (via magias/ingredientes): dado de defesa que bate num de ataque

@@ -7,10 +7,12 @@
 - [x] Bandeja de dados estilo RPG com física simples (paredes, colisões, brilho na batida)
 - [x] Dados em 3D que capotam de verdade; resultado = face que fica para cima
 - [x] Combate em turnos em primeira pessoa (inimigo com vida e intenção, jogador com vida, vitória/derrota)
-- [x] Dados de defesa: rolagens não usadas bloqueiam o ataque inimigo
+- [x] Seleção de dados para atacar; não selecionados vão para a reserva de defesa (Defender/Aguentar)
+- [x] Personagem provisório de costas na diagonal; inimigo menor
 
 ## Próximos passos
 - [ ] Definir a estética do jogo e trocar a arte provisória
+- [ ] Layout: bandeja que entra/sai da tela, menus de combate
 - [ ] Balancear vida/ataque dos inimigos
 - [ ] Especiais por combinação (queimadura, raio, escudo...)
 - [ ] Primeiras magias/ingredientes que alteram dados ou multiplicador

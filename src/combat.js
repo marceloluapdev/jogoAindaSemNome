@@ -1,11 +1,14 @@
 // Combate em turnos, visão em primeira pessoa:
 // inimigo de frente no topo, suas ações embaixo.
 //
-// Turno do jogador: rola (MAX_ROLLS vezes), segura dados, e ataca.
-// Dano = soma dos dados × multiplicador da combinação.
-// Turno do inimigo: ele faz o ataque que anunciou (a "intenção").
-// Cada rolagem que você NÃO usou vira 1 dado de defesa: eles são rolados
-// quando o inimigo ataca e a soma bloqueia o dano daquele ataque.
+// Turno do jogador: rola (MAX_ROLLS vezes) e seleciona dados (toque).
+// Selecionados ficam na rerrolagem e são os que ATACAM.
+// Dano = soma dos selecionados × multiplicador da combinação deles
+// (sem nenhum selecionado, ataca com todos).
+// Os dados NÃO selecionados vão para a RESERVA DE DEFESA (até o nº de dados).
+// Turno do inimigo: ele faz o ataque anunciado (a "intenção"). Se houver
+// reserva, você escolhe: Defender (rola a reserva toda, a soma bloqueia)
+// ou Aguentar (leva o dano e guarda a reserva).
 
 const PLAYER_MAX_HP = 40;
 
@@ -33,15 +36,23 @@ let player = { hp: PLAYER_MAX_HP, maxHp: PLAYER_MAX_HP };
 let enemy;
 let level = 0;
 let rollsLeft = MAX_ROLLS;
+let reserve = 0;    // dados guardados para defesa (até NUM_DICE)
 let busy = false;   // animações / turno do inimigo em andamento
 let over = false;   // derrota
 
 const randInt = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 
-// Usado por dice.js: pode segurar dados agora?
+// Usado por dice.js: pode selecionar dados agora? (inclusive após a última rolagem)
 function canHoldDice() {
-  return !busy && !over && rollsLeft > 0;
+  return !busy && !over;
 }
+
+// Dados que vão atacar: os selecionados, ou todos se nenhum foi selecionado
+function attackValues() {
+  const sel = dice.filter((v, i) => held[i]);
+  return sel.length ? sel : [...dice];
+}
+const toReserve = () => (held.some(h => h) ? held.filter(h => !h).length : 0);
 
 // ---------- Tela ----------
 
@@ -58,18 +69,20 @@ function render() {
 
   const rolled = dice[0] !== null;
   if (rolled) {
-    const r = evaluate(dice);
+    const r = evaluate(attackValues());
     $("combo").textContent = `${r.name} ×${r.mult}`;
-    $("damage").textContent = `${r.points} de dano`;
+    const extra = Math.min(toReserve(), NUM_DICE - reserve);
+    $("damage").textContent = `${r.points} de dano` + (extra && !busy ? ` · +${extra} defesa` : "");
   } else {
     $("combo").textContent = "Role os dados";
     $("damage").textContent = "";
   }
   $("rolls").textContent = `(${rollsLeft})`;
-  // Rolagens que sobrarem viram dados de defesa
-  $("defense").textContent = rolled && rollsLeft > 0 && !busy
-    ? `Defesa: ${rollsLeft} ${rollsLeft === 1 ? "dado" : "dados"}`
-    : "";
+
+  // Reserva de defesa: quadradinhos azuis (cheios = guardados)
+  $("reserve").innerHTML = Array.from({ length: NUM_DICE },
+    (_, i) => `<span class="slot${i < reserve ? " full" : ""}"></span>`).join("");
+
   $("roll").disabled = rolling || busy || over || rollsLeft === 0;
   $("attack").disabled = rolling || busy || over || !rolled;
 }
@@ -125,7 +138,13 @@ $("roll").onclick = () => {
 $("attack").onclick = async () => {
   if (busy || rolling || over || dice[0] === null) return;
   busy = true;
-  const r = evaluate(dice);
+  const r = evaluate(attackValues());
+  // Os não selecionados vão para a reserva de defesa
+  const gained = Math.min(toReserve(), NUM_DICE - reserve);
+  if (gained > 0) {
+    reserve += gained;
+    floatText($("player-hp"), `+${gained} defesa`, "block");
+  }
   render();
 
   // Seu ataque
@@ -158,15 +177,21 @@ $("attack").onclick = async () => {
     return;
   }
 
-  // Defesa: rolagens não usadas viram dados de defesa
+  // Defesa: com reserva, você escolhe se defende agora ou guarda
   let block = 0;
-  const defenseDice = rollsLeft;
-  if (defenseDice > 0) {
-    log(`Você se defende com ${defenseDice} ${defenseDice === 1 ? "dado" : "dados"}...`);
-    const values = await new Promise(res => rollDefense(defenseDice, res));
-    block = values.reduce((a, v) => a + v, 0);
-    floatText($("player-hp"), `Bloqueio ${block}`, "block");
-    await wait(500);
+  if (reserve > 0) {
+    log(`${enemy.name} vai atacar (${enemy.intent}). Defender?`);
+    const defend = await askDefense();
+    if (defend) {
+      const n = reserve;
+      reserve = 0;
+      render();
+      log(`Você se defende com ${n} ${n === 1 ? "dado" : "dados"}...`);
+      const values = await new Promise(res => rollDefense(n, res));
+      block = values.reduce((a, v) => a + v, 0);
+      floatText($("player-hp"), `Bloqueio ${block}`, "block");
+      await wait(500);
+    }
   }
   const hit = Math.max(0, enemy.intent - block);
 
@@ -204,6 +229,22 @@ $("attack").onclick = async () => {
   startPlayerTurn();
 };
 
+// Troca os botões por Defender / Aguentar e espera a escolha
+function askDefense() {
+  $("defend").textContent = `Defender (${reserve})`;
+  $("turn-buttons").hidden = true;
+  $("defense-buttons").hidden = false;
+  return new Promise(res => {
+    const choose = v => {
+      $("defense-buttons").hidden = true;
+      $("turn-buttons").hidden = false;
+      res(v);
+    };
+    $("defend").onclick = () => choose(true);
+    $("endure").onclick = () => choose(false);
+  });
+}
+
 function showOverlay(title, text, button, action) {
   $("overlay-title").textContent = title;
   $("overlay-text").textContent = text;
@@ -218,6 +259,7 @@ function showOverlay(title, text, button, action) {
 function restart() {
   over = false;
   level = 0;
+  reserve = 0;
   player.hp = player.maxHp;
   newEnemy();
   log("Um inimigo bloqueia o caminho.");
