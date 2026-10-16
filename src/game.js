@@ -161,7 +161,7 @@ function pipsHTML(value) {
 
 function setUnknown(b, unknown) {
   b.sides.forEach(side => {
-    side.el.innerHTML = unknown ? '<span class="blank">?</span>' : pipsHTML(side.value);
+    side.pips.innerHTML = unknown ? '<span class="blank">?</span>' : pipsHTML(side.value);
   });
 }
 
@@ -171,10 +171,16 @@ function place(b) {
   b.cube.style.transform =
     `translateZ(${-R}px) matrix3d(${M[0][0]},${M[1][0]},${M[2][0]},0,${M[0][1]},${M[1][1]},${M[2][1]},0,` +
     `${M[0][2]},${M[1][2]},${M[2][2]},0,0,0,0,1)`;
-  // Luz vinda de cima: faces viradas para o lado ficam mais escuras
+  // Luz vinda de cima: faces viradas para o lado ficam mais escuras.
+  // Usa a opacidade de uma camada escura (leve para o celular) e só
+  // atualiza quando muda de verdade.
   b.sides.forEach(side => {
     const z = apply(M, side.n)[2];
-    side.el.style.filter = `brightness(${(0.55 + 0.45 * Math.max(0, z)).toFixed(2)})`;
+    const dark = Math.round((1 - Math.max(0, z)) * 0.45 * 20) / 20;
+    if (dark !== side.dark) {
+      side.dark = dark;
+      side.shade.style.opacity = dark;
+    }
   });
 }
 
@@ -182,14 +188,16 @@ function createDice() {
   for (let i = 0; i < NUM_DICE; i++) {
     const el = document.createElement("div");
     el.className = "die";
-    el.innerHTML = '<div class="shadow"></div><div class="bounce"><div class="cube"></div></div>';
+    el.innerHTML =
+      '<div class="shadow"></div><div class="glow"></div><div class="bounce"><div class="cube"></div></div>';
     const cube = el.querySelector(".cube");
     const sides = Object.entries(FACES).map(([value, f]) => {
       const s = document.createElement("div");
       s.className = "side";
       s.style.transform = f.css;
+      s.innerHTML = '<div class="pips"></div><div class="shade"></div>';
       cube.appendChild(s);
-      return { el: s, value: +value, n: f.n };
+      return { el: s, pips: s.firstChild, shade: s.lastChild, value: +value, n: f.n, dark: -1 };
     });
     el.onclick = () => {
       if (rolling || dice[i] === null || rollsLeft === 0) return;
@@ -197,7 +205,7 @@ function createDice() {
       render();
     };
     tray.appendChild(el);
-    const b = { el, cube, sides, bounce: el.querySelector(".bounce"),
+    const b = { el, cube, sides, bounce: el.querySelector(".bounce"), glow: el.querySelector(".glow"),
                 x: 0, y: 0, vx: 0, vy: 0, va: 0, M: IDENTITY(), state: "stopped" };
     setUnknown(b, true);
     bodies.push(b);
@@ -217,17 +225,22 @@ function lineUp() {
   });
 }
 
+// Brilho na batida — base para efeitos de magia depois.
+// Anima só opacidade/escala (rápido no celular).
 function flash(b, strength) {
-  b.el.classList.remove("hit");
-  void b.el.offsetWidth; // reinicia a animação
-  b.el.style.setProperty("--hit", Math.min(1, strength / 600).toFixed(2));
-  b.el.classList.add("hit");
+  const k = Math.min(1, strength / 600);
+  b.glow.animate(
+    [{ opacity: 0.35 + 0.65 * k, transform: `scale(${1 + 0.5 * k})` },
+     { opacity: 0, transform: "scale(1)" }],
+    { duration: 300, easing: "ease-out" }
+  );
 }
 
 function landed(b) {
-  b.bounce.classList.remove("landed");
-  void b.bounce.offsetWidth;
-  b.bounce.classList.add("landed");
+  b.bounce.animate(
+    [{ transform: "scale(1.12)" }, { transform: "scale(0.96)", offset: 0.6 }, { transform: "scale(1)" }],
+    { duration: 250, easing: "ease-out" }
+  );
 }
 
 // ---------- Física da rolagem ----------
