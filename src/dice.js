@@ -1,4 +1,5 @@
-// Protótipo: 4 dados, 2 rolagens, pontuação = soma × multiplicador da combinação.
+// Dados: combinações, cubos 3D e física da bandeja.
+// O combate (turnos, inimigos, vida) fica em combat.js.
 // Ganhar dados e rolagens extras será recompensa (magias, ingredientes, história).
 
 const MAX_DICE = 6;   // limite de dados na bandeja (mais que isso fica poluído no celular)
@@ -22,8 +23,6 @@ const COMBOS = [
 
 let dice = Array(NUM_DICE).fill(null);
 let held = Array(NUM_DICE).fill(false);
-let rollsLeft = MAX_ROLLS;
-let total = 0;
 
 const $ = id => document.getElementById(id);
 
@@ -207,7 +206,7 @@ function createDice() {
       return { el: s, pips: s.firstChild, shade: s.lastChild, value: +value, n: f.n, dark: -1 };
     });
     el.onclick = () => {
-      if (rolling || dice[i] === null || rollsLeft === 0) return;
+      if (rolling || dice[i] === null || !canHoldDice()) return;
       held[i] = !held[i];
       render();
     };
@@ -438,60 +437,30 @@ function throwDice(onDone) {
   requestAnimationFrame(step);
 }
 
-// ---------- Interface ----------
-
-function render() {
-  bodies.forEach((b, i) => b.el.classList.toggle("held", held[i]));
-
-  const rolled = dice[0] !== null;
-  if (rolled) {
-    const r = evaluate(dice);
-    $("combo").textContent = `${r.name} (×${r.mult})`;
-    $("score").textContent = `Pontos: ${r.points}`;
-  } else {
-    $("combo").textContent = "—";
-    $("score").textContent = "Pontos: 0";
-  }
-  $("rolls").textContent = `Rolagens: ${rollsLeft}`;
-  $("roll").disabled = rolling || rollsLeft === 0;
-  $("score-btn").disabled = rolling || !rolled;
-  $("total").textContent = `Total: ${total}`;
-}
-
 function rand(min, max) {
   return min + Math.random() * (max - min);
 }
 
-$("roll").onclick = () => {
-  if (rolling || rollsLeft === 0) return;
+// Joga os dados não segurados; chama onDone() quando todos pararem.
+function rollDice(onDone) {
   rolling = true;
-  render();
-
-  // O resultado de cada dado é a face que ficar virada para cima
   const result = [...dice];
   const done = () => {
     dice = result;
-    rollsLeft--;
     rolling = false;
-    render();
+    onDone();
   };
   done.result = result;
   throwDice(done);
-};
+}
 
-$("score-btn").onclick = () => {
-  if (rolling) return;
-  total += evaluate(dice).points;
+// Recolhe os dados para a próxima jogada
+function resetDice() {
   dice = Array(NUM_DICE).fill(null);
   held = Array(NUM_DICE).fill(false);
-  rollsLeft = MAX_ROLLS;
   lineUp();
-  render();
-};
+}
 
 window.addEventListener("resize", () => {
   if (!rolling && dice[0] === null) lineUp();
 });
-
-createDice();
-render();

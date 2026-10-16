@@ -4,28 +4,55 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>Jogo Ainda Sem Nome</title>
-  <link rel="stylesheet" href="src/style.css?v=8">
+  <link rel="stylesheet" href="src/style.css?v=9">
 </head>
 <body>
   <main>
-    <h1>Jogo Ainda Sem Nome</h1>
-    <p class="sub">Protótipo — role os dados e toque num deles para segurá-lo</p>
+    <!-- Inimigo (topo) -->
+    <section id="enemy-area" class="enemy-area">
+      <div class="enemy-head">
+        <span id="enemy-name" class="enemy-name"></span>
+        <span id="enemy-intent" class="intent"></span>
+      </div>
+      <div class="bar enemy-bar"><div id="enemy-hp-fill" class="fill"></div><span id="enemy-hp-text"></span></div>
+      <!-- Inimigo provisório: forma simples até a estética do jogo ser definida -->
+      <div id="enemy-sprite" class="enemy-sprite">
+        <div class="body"><span class="eye"></span><span class="eye"></span><span class="mouth"></span></div>
+      </div>
+    </section>
 
+    <!-- Dados (meio) -->
     <div id="tray" class="tray"></div>
 
-    <div class="info">
-      <div id="combo">—</div>
-      <div id="score">Pontos: 0</div>
-      <div id="rolls">Rolagens: 2</div>
-    </div>
-
-    <div class="buttons">
-      <button id="roll">Rolar</button>
-      <button id="score-btn" disabled>Pontuar</button>
-    </div>
-
-    <p id="total" class="total">Total: 0</p>
+    <!-- Jogador (embaixo) -->
+    <section class="player-area">
+      <p id="log" class="log"></p>
+      <div class="combo-line">
+        <span id="combo"></span>
+        <span id="damage" class="damage"></span>
+      </div>
+      <div id="player-hp" class="player-hp">
+        <span class="label">Vida</span>
+        <div class="bar player-bar"><div id="player-hp-fill" class="fill"></div><span id="player-hp-text"></span></div>
+      </div>
+      <div class="buttons">
+        <button id="roll">Rolar <small id="rolls"></small></button>
+        <button id="attack" class="attack">Atacar</button>
+      </div>
+    </section>
   </main>
-  <script src="src/game.js?v=8"></script>
+
+  <div id="hurt" class="hurt"></div>
+
+  <div id="overlay" class="overlay" hidden>
+    <div class="overlay-box">
+      <h2 id="overlay-title"></h2>
+      <p id="overlay-text"></p>
+      <button id="overlay-btn"></button>
+    </div>
+  </div>
+
+  <script src="src/dice.js?v=9"></script>
+  <script src="src/combat.js?v=9"></script>
 </body>
 </html>

@@ -13,6 +13,15 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
    (o equivalente aos coringas do Balatro).
 4. **Entre as jogadas: livro-jogo** — trechos de história com escolhas.
 
+## Combate
+- Em turnos, **primeira pessoa**: inimigo de frente no topo, ações do jogador embaixo
+  (layout inspirado em Undertale; a **estética será própria**, ainda a definir — manter um estilo único no jogo todo).
+- Turno do jogador: rola, segura, rola de novo e **Ataca**. Dano = soma dos dados × multiplicador da combinação.
+- O inimigo mostra a **intenção** (quanto vai atacar) e ataca de volta depois do seu ataque.
+- Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
+- Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),
+  modificados por alquimia/magias.
+
 ## Dados e rolagens
 - Começo: **4 dados** e **2 rolagens** por jogada.
 - Dados e rolagens extras são recompensas (magias, ingredientes, escolhas da história).
@@ -28,6 +37,7 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 
 ## Em aberto
 - Nome do jogo
+- Estética visual do jogo (arte de inimigos, interface, bandeja)
 - Tipos de dados (d6, d8, dados especiais?)
 - Limite de rolagens: 3 ou 4?
 - Sistema de ingredientes/magias
