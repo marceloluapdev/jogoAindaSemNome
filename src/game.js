@@ -41,15 +41,40 @@ function evaluate(values) {
   return { ...combo, points: Math.round(sum * combo.mult) };
 }
 
-function render(animate = false) {
+// Posições das bolinhas numa grade 3x3 (0 = canto superior esquerdo, 8 = inferior direito)
+const PIPS = {
+  1: [4],
+  2: [0, 8],
+  3: [0, 4, 8],
+  4: [0, 2, 6, 8],
+  5: [0, 2, 4, 6, 8],
+  6: [0, 2, 3, 5, 6, 8],
+};
+
+let rolling = false;
+
+function drawFace(el, value) {
+  el.innerHTML = "";
+  if (value === null) {
+    el.innerHTML = '<span class="blank">?</span>';
+    return;
+  }
+  for (let p = 0; p < 9; p++) {
+    const pip = document.createElement("span");
+    pip.className = PIPS[value].includes(p) ? "pip" : "pip off";
+    el.appendChild(pip);
+  }
+}
+
+function render() {
   const box = $("dice");
   box.innerHTML = "";
   dice.forEach((v, i) => {
     const d = document.createElement("div");
-    d.className = "die" + (held[i] ? " held" : "") + (animate && !held[i] ? " rolling" : "");
-    d.textContent = v ?? "?";
+    d.className = "die" + (held[i] ? " held" : "");
+    drawFace(d, v);
     d.onclick = () => {
-      if (v === null || rollsLeft === 0) return;
+      if (rolling || v === null || rollsLeft === 0) return;
       held[i] = !held[i];
       render();
     };
@@ -71,14 +96,39 @@ function render(animate = false) {
   $("total").textContent = `Total: ${total}`;
 }
 
+const randomFace = () => 1 + Math.floor(Math.random() * 6);
+
 $("roll").onclick = () => {
-  if (rollsLeft === 0) return;
-  dice = dice.map((v, i) => (held[i] ? v : 1 + Math.floor(Math.random() * 6)));
-  rollsLeft--;
-  render(true);
+  if (rolling || rollsLeft === 0) return;
+  rolling = true;
+  $("roll").disabled = true;
+  $("score-btn").disabled = true;
+
+  // Os dados não segurados giram e trocam de face várias vezes antes de parar
+  const els = [...$("dice").children];
+  els.forEach((el, i) => {
+    if (!held[i]) el.classList.add("rolling");
+  });
+  const spin = setInterval(() => {
+    els.forEach((el, i) => {
+      if (!held[i]) drawFace(el, randomFace());
+    });
+  }, 70);
+
+  setTimeout(() => {
+    clearInterval(spin);
+    dice = dice.map((v, i) => (held[i] ? v : randomFace()));
+    rollsLeft--;
+    rolling = false;
+    render();
+    [...$("dice").children].forEach((el, i) => {
+      if (!held[i]) el.classList.add("landed");
+    });
+  }, 650);
 };
 
 $("score-btn").onclick = () => {
+  if (rolling) return;
   total += evaluate(dice).points;
   dice = Array(NUM_DICE).fill(null);
   held = Array(NUM_DICE).fill(false);
