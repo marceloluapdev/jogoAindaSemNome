@@ -8,3 +8,5 @@ Leia só quando precisar:
 - `docs/TODO.md` — próximos passos e o que já foi feito
 
 Convenções: código em `src/`, entrada em `index.html`. Textos do jogo em português.
+
+Ao mudar CSS/JS, aumente o `?v=N` deles no `index.html` (evita cache no celular).
