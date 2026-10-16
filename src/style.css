@@ -9,7 +9,8 @@
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  min-height: 100vh;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
   font-family: system-ui, sans-serif;
@@ -20,15 +21,17 @@ body {
 /* Layout de combate: inimigo em cima, dados no meio, jogador embaixo */
 main {
   width: 100%; max-width: 480px;
-  min-height: 100vh; min-height: 100dvh;
-  padding: 12px 16px 16px;
-  display: flex; flex-direction: column; gap: 12px;
+  /* ocupa exatamente a altura visível (sem a barra do navegador) */
+  height: 100vh; height: 100dvh;
+  padding: 8px 16px max(12px, env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 8px;
   text-align: center;
 }
 /* Bandeja de dados: moldura de madeira + feltro */
 .tray {
   position: relative;
-  height: 240px;
+  /* encolhe em telas baixas, cresce até 260px nas altas */
+  height: clamp(150px, 33dvh, 260px);
   flex-shrink: 0;
   border-radius: 18px;
   border: 12px solid #6b4426;
@@ -115,7 +118,7 @@ main {
 .enemy-area {
   position: relative;
   flex: 1;
-  min-height: 190px;
+  min-height: 0;
   display: flex; flex-direction: column; align-items: center;
 }
 .enemy-head { width: 100%; display: flex; justify-content: space-between; align-items: baseline; }
@@ -144,7 +147,7 @@ main {
   position: relative;
   flex: 1;
   width: 100%;
-  min-height: 150px;
+  min-height: 0;
 }
 .enemy-sprite {
   --enemy-color: #7fbf6a;
@@ -180,6 +183,8 @@ main {
   position: absolute; left: 4%; bottom: -12px;
   width: 120px; height: 120px;
   pointer-events: none;
+  transform-origin: left bottom;
+  transform: scale(var(--scene-scale, 1));
 }
 .hero-body {
   position: absolute; left: 0; bottom: 0;
@@ -212,7 +217,7 @@ main {
 }
 
 /* ---------- Jogador ---------- */
-.player-area { display: flex; flex-direction: column; gap: 8px; }
+.player-area { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
 .log { margin: 0; min-height: 1.2em; color: var(--muted); font-size: 0.85rem; }
 .combo-line { display: flex; justify-content: space-between; align-items: baseline; }
 #combo { font-size: 1.1rem; color: var(--accent); font-weight: 700; }
@@ -232,7 +237,7 @@ button.defend { background: #7f97bd; color: #0e1626; }
 button.endure { background: #3a2d4c; color: var(--text); }
 .buttons { display: flex; gap: 12px; }
 button {
-  flex: 1; padding: 16px; font-size: 1.1rem; font-weight: 700;
+  flex: 1; padding: clamp(10px, 2dvh, 16px); font-size: 1.05rem; font-weight: 700;
   border: none; border-radius: 12px;
   background: var(--accent); color: #1a1424;
 }
@@ -279,3 +284,14 @@ button:disabled { opacity: 0.35; }
 .overlay-box h2 { margin: 0 0 8px; }
 .overlay-box p { color: var(--muted); margin: 0 0 20px; }
 .overlay-box button { width: 100%; }
+
+/* Telas baixas: cena menor */
+@media (max-height: 700px) {
+  .scene { --scene-scale: 0.8; }
+  .enemy-sprite .body { width: 70px; height: 58px; }
+  .enemy-sprite { margin-left: -30px; top: 10%; }
+}
+@media (max-height: 600px) {
+  .scene { --scene-scale: 0.62; }
+  .log { display: none; }
+}
