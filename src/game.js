@@ -1,14 +1,19 @@
-// Protótipo: 5 dados, até 3 rolagens, pontuação = soma × multiplicador da combinação.
+// Protótipo: 4 dados, 2 rolagens, pontuação = soma × multiplicador da combinação.
+// Ganhar dados e rolagens extras será recompensa (magias, ingredientes, história).
 
-const NUM_DICE = 5;
-const MAX_ROLLS = 3;
+const MAX_DICE = 6;   // limite de dados na bandeja (mais que isso fica poluído no celular)
+const NUM_DICE = 4;   // dados no começo do jogo (até MAX_DICE)
+const MAX_ROLLS = 2;  // rolagens por jogada
+
+// Algumas combinações só são possíveis com mais dados — ganhar dados desbloqueia jogadas.
 
 const COMBOS = [
+  { name: "Sexteto",           mult: 15, test: c => c[0] === 6 },
   { name: "Quinteto",          mult: 10, test: c => c[0] === 5 },
   { name: "Quadra",            mult: 6,  test: c => c[0] === 4 },
   { name: "Sequência grande",  mult: 5,  test: (c, s) => isStraight(s, 5) },
   { name: "Casa cheia",        mult: 4,  test: c => c[0] === 3 && c[1] === 2 },
-  { name: "Sequência pequena", mult: 3,  test: (c, s) => isStraight(s, 4) },
+  { name: "Sequência",         mult: 3,  test: (c, s) => isStraight(s, 4) },
   { name: "Trinca",            mult: 3,  test: c => c[0] === 3 },
   { name: "Dois pares",        mult: 2,  test: c => c[0] === 2 && c[1] === 2 },
   { name: "Par",               mult: 1.5, test: c => c[0] === 2 },
