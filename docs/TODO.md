@@ -7,6 +7,7 @@
 - [x] Bandeja de dados estilo RPG com física simples (paredes, colisões, brilho na batida)
 - [x] Dados em 3D que capotam de verdade; resultado = face que fica para cima
 - [x] Combate em turnos em primeira pessoa (inimigo com vida e intenção, jogador com vida, vitória/derrota)
+- [x] Dados de defesa: rolagens não usadas bloqueiam o ataque inimigo
 
 ## Próximos passos
 - [ ] Definir a estética do jogo e trocar a arte provisória

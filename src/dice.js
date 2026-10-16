@@ -190,49 +190,64 @@ function place(b) {
   });
 }
 
-function createDice() {
-  for (let i = 0; i < NUM_DICE; i++) {
-    const el = document.createElement("div");
-    el.className = "die";
-    el.innerHTML =
-      '<div class="shadow"></div><div class="glow"></div><div class="bounce"><div class="cube"></div></div>';
-    const cube = el.querySelector(".cube");
-    const sides = Object.entries(FACES).map(([value, f]) => {
-      const s = document.createElement("div");
-      s.className = "side";
-      s.style.transform = f.css;
-      s.innerHTML = '<div class="pips"></div><div class="shade"></div>';
-      cube.appendChild(s);
-      return { el: s, pips: s.firstChild, shade: s.lastChild, value: +value, n: f.n, dark: -1 };
-    });
+// Dados de ataque (kind "attack", índice em dice[]/held[]) e de defesa
+// (kind "defense", aparecem só quando o inimigo ataca).
+const attackDice = () => bodies.filter(b => b.kind === "attack");
+const activeDice = () => bodies.filter(b => b.active);
+const isHeld = b => b.kind === "attack" && held[b.idx];
+
+function makeDie(kind, idx) {
+  const el = document.createElement("div");
+  el.className = `die ${kind}`;
+  el.innerHTML =
+    '<div class="shadow"></div><div class="glow"></div><div class="bounce"><div class="cube"></div></div>';
+  const cube = el.querySelector(".cube");
+  const sides = Object.entries(FACES).map(([value, f]) => {
+    const s = document.createElement("div");
+    s.className = "side";
+    s.style.transform = f.css;
+    s.innerHTML = '<div class="pips"></div><div class="shade"></div>';
+    cube.appendChild(s);
+    return { el: s, pips: s.firstChild, shade: s.lastChild, value: +value, n: f.n, dark: -1 };
+  });
+  if (kind === "attack") {
     el.onclick = () => {
-      if (rolling || dice[i] === null || !canHoldDice()) return;
-      held[i] = !held[i];
+      if (rolling || dice[idx] === null || !canHoldDice()) return;
+      held[idx] = !held[idx];
       render();
     };
-    tray.appendChild(el);
-    const b = { el, cube, sides, bounce: el.querySelector(".bounce"), glow: el.querySelector(".glow"),
-                x: 0, y: 0, vx: 0, vy: 0, va: 0, M: IDENTITY(), state: "stopped" };
-    setUnknown(b, true);
-    bodies.push(b);
   }
+  tray.appendChild(el);
+  const b = { el, cube, sides, kind, idx, active: kind === "attack",
+              bounce: el.querySelector(".bounce"), glow: el.querySelector(".glow"),
+              x: 0, y: 0, vx: 0, vy: 0, va: 0, M: IDENTITY(), state: "stopped", value: null };
+  el.hidden = !b.active;
+  setUnknown(b, true);
+  bodies.push(b);
+  return b;
+}
+
+function createDice() {
+  for (let i = 0; i < NUM_DICE; i++) makeDie("attack", i);
+  for (let i = 0; i < MAX_DICE; i++) makeDie("defense", i);
   lineUp();
 }
 
-// Dados enfileirados no meio da bandeja (início de cada turno).
+// Dados de ataque enfileirados no meio da bandeja (início de cada turno).
 // Se a tela for estreita demais para uma fileira só, usa duas.
 function lineUp() {
   const W = tray.clientWidth, H = tray.clientHeight;
   const step = DIE_SIZE + 10;
   const perRow = Math.max(1, Math.min(NUM_DICE, Math.floor(W / step)));
   const rows = Math.ceil(NUM_DICE / perRow);
-  bodies.forEach((b, i) => {
+  attackDice().forEach((b, i) => {
     const row = Math.floor(i / perRow);
     const inRow = Math.min(perRow, NUM_DICE - row * perRow);
     const col = i % perRow;
     b.x = W / 2 + (col - (inRow - 1) / 2) * step;
     b.y = H / 2 + (row - (rows - 1) / 2) * step;
     b.M = IDENTITY();
+    b.state = "stopped";
     setUnknown(b, true);
     place(b);
   });
@@ -243,12 +258,13 @@ function lineUp() {
 // "rate" < 1 separa aos poucos (suave). Devolve a maior sobreposição achada.
 function separateResting(W, H, rate = 1) {
   const size = DIE_SIZE + GAP;
+  const list = activeDice();
   let worst = 0;
-  for (let i = 0; i < NUM_DICE; i++) {
-    for (let j = i + 1; j < NUM_DICE; j++) {
-      const A = bodies[i], B = bodies[j];
+  for (let i = 0; i < list.length; i++) {
+    for (let j = i + 1; j < list.length; j++) {
+      const A = list[i], B = list[j];
       if (A.state === "moving" || B.state === "moving") continue;
-      if (held[i] && held[j]) continue;
+      if (isHeld(A) && isHeld(B)) continue;
       const dx = B.x - A.x, dy = B.y - A.y;
       const ox = size - Math.abs(dx), oy = size - Math.abs(dy);
       if (ox <= 0 || oy <= 0) continue;
@@ -258,14 +274,14 @@ function separateResting(W, H, rate = 1) {
       if (ox < oy) px = (dx >= 0 ? 1 : -1) * ox * rate;
       else py = (dy >= 0 ? 1 : -1) * oy * rate;
       if (dx === 0 && dy === 0) px = size * rate;
-      const aShare = held[i] ? 0 : held[j] ? 1 : 0.5;
+      const aShare = isHeld(A) ? 0 : isHeld(B) ? 1 : 0.5;
       const bShare = 1 - aShare;
       A.x -= px * aShare; A.y -= py * aShare;
       B.x += px * bShare; B.y += py * bShare;
     }
   }
-  bodies.forEach((b, i) => {
-    if (held[i]) return;
+  list.forEach(b => {
+    if (isHeld(b)) return;
     b.x = Math.max(R, Math.min(W - R, b.x));
     b.y = Math.max(R, Math.min(H - R, b.y));
   });
@@ -292,11 +308,13 @@ function landed(b) {
 
 // ---------- Física da rolagem ----------
 
-function throwDice(onDone) {
+// Arremessa os dados de "moving"; os outros dados ativos viram obstáculos.
+// Quando todos param, cada dado tem b.value = face de cima, e chama onDone().
+function throwDice(moving, onDone) {
   const W = tray.clientWidth, H = tray.clientHeight;
-  const moving = bodies.filter((_, i) => !held[i]);
+  const active = activeDice();
 
-  // Arremessa da parte de baixo da bandeja, para cima e em direções variadas
+  // Arremessa da parte de baixo da bandeja, para cima e em direções variadas.
   // Cada dado sai de um ponto diferente (espalhados e em duas alturas),
   // para não começarem encostados
   moving.forEach((b, k) => {
@@ -309,6 +327,7 @@ function throwDice(onDone) {
     b.va = rand(-6, 6); // giro no próprio eixo (rad/s)
     b.M = randomOrientation();
     b.state = "moving";
+    b.value = null;
     setUnknown(b, false);
   });
 
@@ -353,7 +372,7 @@ function throwDice(onDone) {
         if (s.t >= 1 && speed < 14) {
           b.state = "stopped";
           b.vx = b.vy = b.va = 0;
-          onDone.result[bodies.indexOf(b)] = s.value;
+          b.value = s.value;
           landed(b);
         }
       }
@@ -372,11 +391,11 @@ function throwDice(onDone) {
     });
 
     // Colisões entre dados (os segurados e os já parados são obstáculos fixos)
-    for (let i = 0; i < NUM_DICE; i++) {
-      for (let j = i + 1; j < NUM_DICE; j++) {
-        const A = bodies[i], B = bodies[j];
-        const aFixed = held[i] || A.state === "stopped";
-        const bFixed = held[j] || B.state === "stopped";
+    for (let i = 0; i < active.length; i++) {
+      for (let j = i + 1; j < active.length; j++) {
+        const A = active[i], B = active[j];
+        const aFixed = isHeld(A) || A.state === "stopped";
+        const bFixed = isHeld(B) || B.state === "stopped";
         if (aFixed && bFixed) continue;
 
         const dx = B.x - A.x, dy = B.y - A.y;
@@ -405,8 +424,8 @@ function throwDice(onDone) {
 
         const impact = -vn;
         if (impact > 120) {
-          if (!aFixed || held[i]) flash(A, impact);
-          if (!bFixed || held[j]) flash(B, impact);
+          flash(A, impact);
+          flash(B, impact);
         }
       }
     }
@@ -414,7 +433,7 @@ function throwDice(onDone) {
     // Separa aos poucos quem já parou em cima de outro
     const overlapLeft = separateResting(W, H, 0.35);
 
-    moving.forEach(place);
+    active.forEach(place);
 
     const allStopped = moving.every(b => b.state === "stopped");
     if ((!allStopped || overlapLeft > 0.5) && now - start < 5000) {
@@ -426,11 +445,11 @@ function throwDice(onDone) {
           const s = settleTarget(b.M);
           b.M = mul(rotZ(s.yaw), mul(rotAxis(...s.axis, s.tilt), b.M));
           b.state = "stopped";
-          onDone.result[bodies.indexOf(b)] = s.value;
+          b.value = s.value;
         }
       });
       for (let k = 0; k < 40 && separateResting(W, H) > 0.5; k++);
-      moving.forEach(place);
+      active.forEach(place);
       setTimeout(onDone, 200);
     }
   }
@@ -441,23 +460,42 @@ function rand(min, max) {
   return min + Math.random() * (max - min);
 }
 
-// Joga os dados não segurados; chama onDone() quando todos pararem.
+// Joga os dados de ataque não segurados; chama onDone() quando todos pararem.
 function rollDice(onDone) {
   rolling = true;
-  const result = [...dice];
-  const done = () => {
-    dice = result;
+  const moving = attackDice().filter(b => !held[b.idx]);
+  throwDice(moving, () => {
+    moving.forEach(b => (dice[b.idx] = b.value));
     rolling = false;
     onDone();
-  };
-  done.result = result;
-  throwDice(done);
+  });
 }
 
-// Recolhe os dados para a próxima jogada
+// Joga n dados de defesa; chama onDone(valores) quando pararem.
+function rollDefense(n, onDone) {
+  const list = bodies.filter(b => b.kind === "defense").slice(0, n);
+  if (!list.length) return onDone([]);
+  rolling = true;
+  list.forEach(b => {
+    b.active = true;
+    b.el.hidden = false;
+  });
+  throwDice(list, () => {
+    rolling = false;
+    onDone(list.map(b => b.value));
+  });
+}
+
+// Recolhe os dados para a próxima jogada (esconde os de defesa)
 function resetDice() {
   dice = Array(NUM_DICE).fill(null);
   held = Array(NUM_DICE).fill(false);
+  bodies.forEach(b => {
+    if (b.kind === "defense") {
+      b.active = false;
+      b.el.hidden = true;
+    }
+  });
   lineUp();
 }
 

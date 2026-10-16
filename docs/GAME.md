@@ -18,6 +18,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   (layout inspirado em Undertale; a **estética será própria**, ainda a definir — manter um estilo único no jogo todo).
 - Turno do jogador: rola, segura, rola de novo e **Ataca**. Dano = soma dos dados × multiplicador da combinação.
 - O inimigo mostra a **intenção** (quanto vai atacar) e ataca de volta depois do seu ataque.
+- **Defesa**: cada rolagem que você não usou vira 1 **dado de defesa** (azul), rolado quando o inimigo ataca;
+  a soma bloqueia o dano daquele ataque (o excesso não acumula — com poucos dados quase nunca sobra).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),
   modificados por alquimia/magias.

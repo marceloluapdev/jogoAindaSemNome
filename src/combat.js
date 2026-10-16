@@ -4,6 +4,8 @@
 // Turno do jogador: rola (MAX_ROLLS vezes), segura dados, e ataca.
 // Dano = soma dos dados × multiplicador da combinação.
 // Turno do inimigo: ele faz o ataque que anunciou (a "intenção").
+// Cada rolagem que você NÃO usou vira 1 dado de defesa: eles são rolados
+// quando o inimigo ataca e a soma bloqueia o dano daquele ataque.
 
 const PLAYER_MAX_HP = 40;
 
@@ -44,7 +46,7 @@ function canHoldDice() {
 // ---------- Tela ----------
 
 function render() {
-  bodies.forEach((b, i) => b.el.classList.toggle("held", held[i]));
+  bodies.forEach(b => b.el.classList.toggle("held", isHeld(b)));
 
   $("enemy-name").textContent = enemy.name;
   $("enemy-hp-text").textContent = `${Math.max(0, enemy.hp)} / ${enemy.maxHp}`;
@@ -64,6 +66,10 @@ function render() {
     $("damage").textContent = "";
   }
   $("rolls").textContent = `(${rollsLeft})`;
+  // Rolagens que sobrarem viram dados de defesa
+  $("defense").textContent = rolled && rollsLeft > 0 && !busy
+    ? `Defesa: ${rollsLeft} ${rollsLeft === 1 ? "dado" : "dados"}`
+    : "";
   $("roll").disabled = rolling || busy || over || rollsLeft === 0;
   $("attack").disabled = rolling || busy || over || !rolled;
 }
@@ -152,6 +158,18 @@ $("attack").onclick = async () => {
     return;
   }
 
+  // Defesa: rolagens não usadas viram dados de defesa
+  let block = 0;
+  const defenseDice = rollsLeft;
+  if (defenseDice > 0) {
+    log(`Você se defende com ${defenseDice} ${defenseDice === 1 ? "dado" : "dados"}...`);
+    const values = await new Promise(res => rollDefense(defenseDice, res));
+    block = values.reduce((a, v) => a + v, 0);
+    floatText($("player-hp"), `Bloqueio ${block}`, "block");
+    await wait(500);
+  }
+  const hit = Math.max(0, enemy.intent - block);
+
   // Ataque do inimigo
   log(`${enemy.name} ataca!`);
   sprite.animate(
@@ -159,15 +177,19 @@ $("attack").onclick = async () => {
     { duration: 450, easing: "ease-in-out" }
   );
   await wait(220);
-  player.hp -= enemy.intent;
-  document.querySelector("main").animate(
-    [{ transform: "translate(0,0)" }, { transform: "translate(-8px,4px)" },
-     { transform: "translate(7px,-3px)" }, { transform: "translate(-4px,2px)" }, { transform: "translate(0,0)" }],
-    { duration: 350 }
-  );
-  $("hurt").animate([{ opacity: 0.45 }, { opacity: 0 }], { duration: 500 });
-  floatText($("player-hp"), `-${enemy.intent}`, "dmg");
-  log(`${enemy.name} causou ${enemy.intent} de dano em você.`);
+  player.hp -= hit;
+  if (hit > 0) {
+    document.querySelector("main").animate(
+      [{ transform: "translate(0,0)" }, { transform: "translate(-8px,4px)" },
+       { transform: "translate(7px,-3px)" }, { transform: "translate(-4px,2px)" }, { transform: "translate(0,0)" }],
+      { duration: 350 }
+    );
+    $("hurt").animate([{ opacity: 0.45 }, { opacity: 0 }], { duration: 500 });
+    floatText($("player-hp"), `-${hit}`, "dmg");
+  }
+  if (block > 0 && hit === 0) log(`Você bloqueou todo o ataque de ${enemy.name}!`);
+  else if (block > 0) log(`Você bloqueou ${Math.min(block, enemy.intent)} e levou ${hit} de dano.`);
+  else log(`${enemy.name} causou ${hit} de dano em você.`);
   render();
   await wait(700);
 
