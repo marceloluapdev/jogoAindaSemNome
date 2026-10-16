@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Jogo Ainda Sem Nome</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <main>
+    <h1>Jogo Ainda Sem Nome</h1>
+    <p class="sub">Protótipo — toque num dado para segurá-lo</p>
+
+    <div id="dice" class="dice"></div>
+
+    <div class="info">
+      <div id="combo">—</div>
+      <div id="score">Pontos: 0</div>
+      <div id="rolls">Rolagens: 3</div>
+    </div>
+
+    <div class="buttons">
+      <button id="roll">Rolar</button>
+      <button id="score-btn" disabled>Pontuar</button>
+    </div>
+
+    <p id="total" class="total">Total: 0</p>
+  </main>
+  <script src="src/game.js"></script>
+</body>
+</html>
