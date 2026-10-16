@@ -104,28 +104,53 @@ $("roll").onclick = () => {
   $("roll").disabled = true;
   $("score-btn").disabled = true;
 
-  // Os dados não segurados giram e trocam de face várias vezes antes de parar
+  // O resultado já é sorteado; a animação só "mostra" ele chegando
+  const result = dice.map((v, i) => (held[i] ? v : randomFace()));
   const els = [...$("dice").children];
-  els.forEach((el, i) => {
-    if (!held[i]) el.classList.add("rolling");
-  });
-  const spin = setInterval(() => {
-    els.forEach((el, i) => {
-      if (!held[i]) drawFace(el, randomFace());
-    });
-  }, 70);
+  let longest = 0;
 
+  els.forEach((el, i) => {
+    if (held[i]) return;
+
+    // Cada dado tem seu próprio jeito de rolar
+    const tick = rand(55, 110);          // velocidade de troca de face (ms)
+    const duration = rand(450, 900);     // quando ele para
+    let dir = Math.random() < 0.5 ? -1 : 1;
+    let angle = 0;
+    longest = Math.max(longest, duration);
+
+    el.style.transition = `transform ${tick}ms linear`;
+    const spin = setInterval(() => {
+      if (Math.random() < 0.2) dir *= -1; // às vezes inverte o giro
+      angle += dir * rand(50, 160);
+      const x = rand(-10, 10);
+      const y = -rand(0, 16);
+      const s = rand(0.85, 1.05);
+      el.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg) scale(${s})`;
+      drawFace(el, randomFace());
+    }, tick);
+
+    setTimeout(() => {
+      clearInterval(spin);
+      el.style.transition = "";
+      el.style.transform = "";
+      drawFace(el, result[i]);
+      el.classList.add("landed");
+    }, duration);
+  });
+
+  // Depois que o último dado parou, atualiza a pontuação
   setTimeout(() => {
-    clearInterval(spin);
-    dice = dice.map((v, i) => (held[i] ? v : randomFace()));
+    dice = result;
     rollsLeft--;
     rolling = false;
     render();
-    [...$("dice").children].forEach((el, i) => {
-      if (!held[i]) el.classList.add("landed");
-    });
-  }, 650);
+  }, longest + 250);
 };
+
+function rand(min, max) {
+  return min + Math.random() * (max - min);
+}
 
 $("score-btn").onclick = () => {
   if (rolling) return;
