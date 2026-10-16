@@ -11,3 +11,6 @@ Convenções: código em `src/` (`dice.js` = dados/física/combinações, `comba
 entrada em `index.html`. Textos do jogo em português.
 
 Ao mudar CSS/JS, aumente o `?v=N` deles no `index.html` (evita cache no celular).
+
+Testes: `python3 tests/run_tests.py` (Playwright). Rode antes de enviar mudanças de mecânica
+e adicione um caso `caso_...` para cada regra nova ou bug corrigido.

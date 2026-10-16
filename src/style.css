@@ -71,6 +71,8 @@ main {
   transform-style: preserve-3d;
 }
 .cube { will-change: transform; }
+/* toque só no quadrado do dado (as faces 3D não capturam o toque) */
+.die > * { pointer-events: none; }
 .side {
   position: absolute; inset: 0;
   border-radius: 9px;
@@ -106,6 +108,8 @@ main {
 /* dado segurado: contorno dourado */
 .die.held .side { box-shadow: inset 0 0 0 3px var(--held); }
 .die.held .glow { opacity: 0.6; }
+/* dado gasto (rolado de novo) que não vai atacar nem defender */
+.die.spent .side { background: linear-gradient(145deg, #b9b1a2, #8e8676); }
 /* dados de defesa: aço azulado */
 .die.defense .side {
   background: linear-gradient(145deg, #c9d8ee, #7f97bd);

@@ -7,7 +7,8 @@
 - [x] Bandeja de dados estilo RPG com física simples (paredes, colisões, brilho na batida)
 - [x] Dados em 3D que capotam de verdade; resultado = face que fica para cima
 - [x] Combate em turnos em primeira pessoa (inimigo com vida e intenção, jogador com vida, vitória/derrota)
-- [x] Seleção de dados para atacar; não selecionados vão para a reserva de defesa (Defender/Aguentar)
+- [x] Seleção de dados para atacar; não selecionados e não rerrolados vão para a reserva de defesa (Defender/Aguentar)
+- [x] Testes automáticos de casos de uso (`tests/run_tests.py`)
 - [x] Personagem provisório de costas na diagonal; inimigo menor
 
 ## Próximos passos

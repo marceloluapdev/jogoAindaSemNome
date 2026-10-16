@@ -23,6 +23,8 @@ const COMBOS = [
 
 let dice = Array(NUM_DICE).fill(null);
 let held = Array(NUM_DICE).fill(false);
+// Dados que já foram rolados de novo neste turno ("gastos": não vão para a defesa)
+let spent = Array(NUM_DICE).fill(false);
 
 const $ = id => document.getElementById(id);
 
@@ -460,11 +462,44 @@ function rand(min, max) {
   return min + Math.random() * (max - min);
 }
 
+// ---------- Modo de teste ----------
+// Os testes automáticos (tests/) ligam window.TEST_MODE e enfileiram os
+// valores que querem em window.TEST_ROLLS. Aí a rolagem é instantânea,
+// sem física, e cada dado recebe o próximo valor da fila.
+const TEST = () => typeof window !== "undefined" && window.TEST_MODE;
+
+// Orientação do cubo que deixa "value" virado para cima
+function orientFor(value) {
+  const t = Math.PI / 2;
+  return {
+    1: IDENTITY(),
+    6: rotAxis(0, 1, 0, Math.PI),
+    2: rotAxis(0, 1, 0, -t),
+    5: rotAxis(0, 1, 0, t),
+    3: rotAxis(1, 0, 0, t),
+    4: rotAxis(1, 0, 0, -t),
+  }[value];
+}
+
+function testThrow(list, onDone) {
+  list.forEach(b => {
+    const q = window.TEST_ROLLS || [];
+    b.value = q.length ? q.shift() : 1 + Math.floor(Math.random() * 6);
+    b.M = orientFor(b.value);
+    b.state = "stopped";
+    setUnknown(b, false);
+    place(b);
+  });
+  setTimeout(onDone, 0);
+}
+
 // Joga os dados de ataque não segurados; chama onDone() quando todos pararem.
 function rollDice(onDone) {
   rolling = true;
   const moving = attackDice().filter(b => !held[b.idx]);
-  throwDice(moving, () => {
+  // Rolar de novo um dado que já tinha valor = gastar esse dado
+  moving.forEach(b => { if (dice[b.idx] !== null) spent[b.idx] = true; });
+  (TEST() ? testThrow : throwDice)(moving, () => {
     moving.forEach(b => (dice[b.idx] = b.value));
     rolling = false;
     onDone();
@@ -480,7 +515,7 @@ function rollDefense(n, onDone) {
     b.active = true;
     b.el.hidden = false;
   });
-  throwDice(list, () => {
+  (TEST() ? testThrow : throwDice)(list, () => {
     rolling = false;
     onDone(list.map(b => b.value));
   });
@@ -490,6 +525,7 @@ function rollDefense(n, onDone) {
 function resetDice() {
   dice = Array(NUM_DICE).fill(null);
   held = Array(NUM_DICE).fill(false);
+  spent = Array(NUM_DICE).fill(false);
   bodies.forEach(b => {
     if (b.kind === "defense") {
       b.active = false;

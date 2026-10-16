@@ -20,8 +20,11 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   Ao **Atacar**, só os selecionados atacam (nenhum selecionado = todos).
   Dano = soma dos selecionados × multiplicador da combinação deles.
 - O inimigo mostra a **intenção** (quanto vai atacar) e ataca de volta depois do seu ataque.
-- **Reserva de defesa**: os dados **não selecionados** no ataque vão para a reserva, que acumula entre
-  turnos até o nº de dados que você tem (hoje 4). Rolagem não usada não dá defesa (por enquanto sem efeito).
+- **Reserva de defesa**: os dados **não selecionados e que não foram rolados de novo** vão para a reserva,
+  que acumula entre turnos até o nº de dados que você tem (hoje 4). Rerrolar um dado o **gasta**
+  (aparece apagado). Assim, não rolar de novo tem valor: os dados parados viram defesa.
+  Truque: selecionar um dado para protegê-lo da rerrolagem e desselecioná-lo antes de atacar — ele vai para a defesa.
+  (Regra provisória; pode mudar depois.)
 - Quando o inimigo vai atacar e há reserva: **Defender** (rola a reserva toda, a soma bloqueia, reserva zera)
   ou **Aguentar** (leva o dano e guarda a reserva para um ataque maior).
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).

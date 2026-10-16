@@ -5,7 +5,8 @@
 // Selecionados ficam na rerrolagem e são os que ATACAM.
 // Dano = soma dos selecionados × multiplicador da combinação deles
 // (sem nenhum selecionado, ataca com todos).
-// Os dados NÃO selecionados vão para a RESERVA DE DEFESA (até o nº de dados).
+// Os dados NÃO selecionados e que NÃO foram rolados de novo vão para a
+// RESERVA DE DEFESA (até o nº de dados). Rerrolar um dado "gasta" esse dado.
 // Turno do inimigo: ele faz o ataque anunciado (a "intenção"). Se houver
 // reserva, você escolhe: Defender (rola a reserva toda, a soma bloqueia)
 // ou Aguentar (leva o dano e guarda a reserva).
@@ -52,12 +53,18 @@ function attackValues() {
   const sel = dice.filter((v, i) => held[i]);
   return sel.length ? sel : [...dice];
 }
-const toReserve = () => (held.some(h => h) ? held.filter(h => !h).length : 0);
+// Vão para a reserva: não selecionados que não foram rolados de novo
+const toReserve = () =>
+  held.some(h => h) ? held.filter((h, i) => !h && !spent[i]).length : 0;
 
 // ---------- Tela ----------
 
 function render() {
-  bodies.forEach(b => b.el.classList.toggle("held", isHeld(b)));
+  bodies.forEach(b => {
+    b.el.classList.toggle("held", isHeld(b));
+    // gasto (rolado de novo) e fora do ataque: aparece apagado
+    b.el.classList.toggle("spent", b.kind === "attack" && spent[b.idx] && !held[b.idx] && held.some(h => h));
+  });
 
   $("enemy-name").textContent = enemy.name;
   $("enemy-hp-text").textContent = `${Math.max(0, enemy.hp)} / ${enemy.maxHp}`;
@@ -105,7 +112,8 @@ function floatText(anchor, text, cls) {
   ).onfinish = () => el.remove();
 }
 
-const wait = ms => new Promise(r => setTimeout(r, ms));
+// Pausas das animações (zeradas no modo de teste, para os testes rodarem rápido)
+const wait = ms => new Promise(r => setTimeout(r, window.TEST_MODE ? 0 : ms));
 
 // ---------- Fluxo do combate ----------
 
