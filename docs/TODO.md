@@ -15,7 +15,7 @@
 - [ ] Especiais por combinação (queimadura, raio, escudo...)
 - [ ] Primeiras magias/ingredientes que alteram dados ou multiplicador
 - [ ] Ganhar dados/rolagens extras como recompensa (até 6 dados)
-- [ ] Usar as colisões como mecânica/efeito visual (ex.: magias que reagem quando dados se batem)
+- [ ] Usar as colisões como mecânica (ver "Ideias para avaliar depois" no GAME.md)
 - [ ] Primeira cena de livro-jogo entre rodadas, com 2–3 escolhas
 - [ ] Atributos do personagem afetados pelas escolhas
 - [ ] Escolher um nome para o jogo

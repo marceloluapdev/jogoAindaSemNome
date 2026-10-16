@@ -37,6 +37,13 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - As escolhas **mudam o personagem** (atributos, magias, maldições, aliados).
 - Objetivo: histórias **emergentes**, diferentes a cada partida (referência: Dwarf Fortress).
 
+## Ideias para avaliar depois
+- **Colisões como mecânica** (via magias/ingredientes): dado de defesa que bate num de ataque
+  dá bônus — ricochete (+1 bloqueio por batida), contra-ataque (devolve dano), faísca (dano extra).
+- **Posição dos dados na bandeja como escolha**: tirar dados do caminho (ex.: recolher um 6 segurado)
+  para os arremessados baterem em mais dados, ou deixá-lo e bater só nele. Risco: a física é aleatória
+  e o toque no celular é impreciso — testar se a escolha parece estratégica ou só sorte.
+
 ## Em aberto
 - Nome do jogo
 - Estética visual do jogo (arte de inimigos, interface, bandeja)
