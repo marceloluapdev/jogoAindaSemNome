@@ -4,6 +4,7 @@
 - [x] Estrutura inicial (CLAUDE.md, docs, index.html)
 - [x] Protótipo: rolar 5 dados, segurar, 2 rerolagens, pontuação por combinação
 - [x] Bandeja de dados estilo RPG com física simples (paredes, colisões, brilho na batida)
+- [x] Dados em 3D que capotam de verdade; resultado = face que fica para cima
 
 ## Próximos passos
 - [ ] Ativar GitHub Pages e testar no celular
