@@ -14,5 +14,7 @@ Visual: pixel art, paleta fixa em `:root` no `src/style.css` — use só essas c
 
 Ao mudar CSS/JS, aumente o `?v=N` deles no `index.html` (evita cache no celular).
 
-Testes: `python3 tests/run_tests.py` (Playwright). Rode antes de enviar mudanças de mecânica
-e adicione um caso `caso_...` para cada regra nova ou bug corrigido.
+Testes: `python3 tests/run_tests.py` (Playwright). Adicione um caso `caso_...` para cada regra nova ou bug corrigido.
+- Mudança de **regra/mecânica**: rode **todos** antes de enviar.
+- Mudança **só visual** (cor, tamanho, efeito, texto): rode só `python3 tests/run_tests.py rapido`
+  (pula a física lenta) — ou nenhum, se não tocar em JS de jogo. Leia só a última linha do resultado.

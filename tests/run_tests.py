@@ -9,6 +9,7 @@ Como rodar:
     python -m playwright install chromium
     python3 tests/run_tests.py            # todos
     python3 tests/run_tests.py reserva    # só os que têm "reserva" no nome
+    python3 tests/run_tests.py rapido     # todos menos os lentos (física de verdade)
 
 Para cada regra nova do jogo, adicione um caso aqui (função começando com
 "caso_"). A docstring da função vira a descrição mostrada no resultado.
@@ -394,7 +395,12 @@ def caso_tela_cabe_no_celular(j):
 
 def main():
     filtro = sys.argv[1] if len(sys.argv) > 1 else ""
-    casos = [(n, f) for n, f in globals().items() if n.startswith("caso_") and filtro in n]
+    LENTOS = ("fisica",)
+    if filtro == "rapido":
+        casos = [(n, f) for n, f in globals().items()
+                 if n.startswith("caso_") and not any(l in n for l in LENTOS)]
+    else:
+        casos = [(n, f) for n, f in globals().items() if n.startswith("caso_") and filtro in n]
     falhas = 0
     with sync_playwright() as p:
         browser = p.chromium.launch()
