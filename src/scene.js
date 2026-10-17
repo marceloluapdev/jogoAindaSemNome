@@ -214,6 +214,110 @@ ULT_DIRS.forEach(d => loadImage(ultFrame(d)));
 HERO_POSES.ultimate = ultFrame("north-east");
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// ---------- Efeitos da maldição (pixel art pontilhado num canvas próprio) ----------
+// Desenhados num ImageData de SW×SH, ampliado como o resto do palco.
+// level: 0..1 (o quanto a magia já carregou). Some com fade no final.
+
+const FX_GREEN = [[0x8f, 0xd1, 0x6a], [0x4f, 0xa3, 0x5a], [0xd4, 0xf5, 0x9a], [0x6f, 0x8f, 0xc7]];
+const fx = { canvas: null, ctx: null, img: null, level: 0, fade: 1, running: false, heroY: 0 };
+
+function fxStart() {
+  const c = document.createElement("canvas");
+  c.width = SW; c.height = SH;
+  c.className = "px fx";
+  stage.insertBefore(c, enemyWrap);               // atrás do inimigo e de você
+  fx.canvas = c; fx.ctx = c.getContext("2d");
+  fx.img = fx.ctx.createImageData(SW, SH);
+  fx.level = 0; fx.fade = 1; fx.running = true;
+  requestAnimationFrame(fxLoop);
+}
+
+function fxStop() {
+  fx.running = false;
+  if (fx.canvas) fx.canvas.remove();
+  fx.canvas = null;
+}
+
+// Ponto com "transparência pontilhada": a intensidade vira densidade de pixels
+const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+function fxDot(d, x, y, intensity, color, alpha = 200) {
+  x |= 0; y |= 0;
+  if (x < 0 || y < 0 || x >= SW || y >= SH) return;
+  if (intensity * 16 <= BAYER[(y & 3) * 4 + (x & 3)]) return;
+  const k = (y * SW + x) * 4;
+  d[k] = color[0]; d[k + 1] = color[1]; d[k + 2] = color[2];
+  d[k + 3] = Math.max(d[k + 3], alpha);
+}
+
+function fxLoop(now) {
+  if (!fx.running) return;
+  const t = now / 1000, L = fx.level * fx.fade;
+  const d = fx.img.data;
+  d.fill(0);
+
+  // 1) aurora boreal sobre o inimigo: cortinas verdes ondulando, do teto até ele
+  const ex = parseFloat(enemyWrap.style.left) || 48, ey = parseFloat(enemyWrap.style.top) || 40;
+  const ew = enemyCanvas.width || 48, eh = enemyCanvas.height || 48;
+  const x0 = ex - 22, x1 = ex + ew + 22, yBottom = ey + eh * 0.6;
+  for (let x = x0; x < x1; x++) {
+    const edge = Math.min(1, (x - x0) / 14, (x1 - x) / 14);            // some nas bordas
+    const wave = 0.5 + 0.5 * Math.sin(x * 0.23 + t * 2.1) * Math.sin(x * 0.07 - t * 1.3);
+    const top = 6 + 10 * (0.5 + 0.5 * Math.sin(x * 0.11 + t * 1.7));    // borda de cima ondulada
+    for (let y = top; y < yBottom; y++) {
+      const v = (y - top) / (yBottom - top);                             // 0 em cima, 1 embaixo
+      const fall = v < 0.25 ? v / 0.25 : 1 - (v - 0.25) / 0.75;
+      const I = L * edge * wave * fall * 0.9;
+      if (I <= 0.02) continue;
+      const col = v < 0.3 ? FX_GREEN[2] : (x + (t * 8 | 0)) % 7 === 0 ? FX_GREEN[3] : FX_GREEN[0];
+      fxDot(d, x, y, I, col, 170);
+    }
+  }
+
+  // 2) aura atrás de você: brilho que cresce com a carga
+  const hx = HERO_POS.x + 32, hy = HERO_POS.y + 20 + fx.heroY;
+  const R = 10 + 26 * L + Math.sin(t * 6) * 2;      // grande o bastante para aparecer em volta dele
+  for (let y = -R; y <= R; y++) for (let x = -R; x <= R; x++) {
+    const dist = Math.hypot(x, y) / R;
+    if (dist > 1) continue;
+    const I = L * (1 - dist) * 1.3;
+    fxDot(d, hx + x, hy + y, I, dist < 0.35 ? FX_GREEN[2] : FX_GREEN[0], 190);
+  }
+
+  // 3) círculo mágico em volta de você: anel translúcido com traços girando
+  const rr = 30 + 4 * L;
+  for (let a = 0; a < Math.PI * 2; a += 0.012) {
+    const dash = Math.sin(a * 8 - t * 5) > -0.3;
+    const I = L * (dash ? 1 : 0.4);
+    const cy = hy + 6;
+    fxDot(d, hx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.7, I, FX_GREEN[2], 230);
+    fxDot(d, hx + Math.cos(a) * (rr - 2), cy + Math.sin(a) * (rr - 2) * 0.7, I * 0.7, FX_GREEN[1], 200);
+    fxDot(d, hx + Math.cos(a) * (rr - 5), cy + Math.sin(a) * (rr - 5) * 0.7, I * 0.35, FX_GREEN[0], 160);
+  }
+
+  // 4) faíscas verdes subindo em volta de você
+  for (let k = 0; k < 18; k++) {
+    const phase = (t * 0.6 + k * 0.137) % 1;
+    const sx = hx + Math.sin(k * 12.9) * (14 + 12 * L);
+    const sy = hy + 26 - phase * 60;
+    fxDot(d, sx, sy, L * (1 - phase) * 1.2, FX_GREEN[2], 255);
+  }
+
+  fx.ctx.putImageData(fx.img, 0, 0);
+  requestAnimationFrame(fxLoop);
+}
+
+// Anima um valor de fx ao longo do tempo
+function fxTween(key, to, ms) {
+  const from = fx[key], start = performance.now();
+  return new Promise(res => {
+    (function step(now) {
+      const k = Math.min(1, (now - start) / ms);
+      fx[key] = from + (to - from) * k;
+      k < 1 ? requestAnimationFrame(step) : res();
+    })(start);
+  });
+}
+
 async function heroUltimate(values, onImpact) {
   if (window.TEST_MODE) { values.forEach((v, i) => onImpact(v, i)); return; }
   // garante que todos os quadros do giro já estão baixados e decodificados
@@ -223,28 +327,32 @@ async function heroUltimate(values, onImpact) {
     if (img && img.decode) { try { await img.decode(); } catch (e) {} }
   }));
 
-  // sobe flutuando enquanto a cena escurece
+  // 1) sobe flutuando enquanto a cena escurece; os efeitos começam a carregar
   heroPose("ultimate");
   const float = heroImg.animate(
     [{ transform: "translateY(0)" }, { transform: "translateY(-8px)" }],
-    { duration: 500, easing: "ease-out", fill: "forwards" }
+    { duration: 700, easing: "ease-out", fill: "forwards" }
   );
   const dark = document.createElement("div");
   dark.className = "darken";
   stage.insertBefore(dark, enemyWrap);
-  dark.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: "forwards" });
-  await sleep(350);
+  dark.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, fill: "forwards" });
+  fxStart();
+  fxTween("heroY", -8, 700);
+  const charging = fxTween("level", 1, 3200);     // carrega durante todo o giro
+  await sleep(500);
 
-  // gira: até ficar de frente para nós (segura um instante) e volta a encarar o inimigo
+  // 2) gira devagar: para de frente para nós e volta a encarar o inimigo
   for (let i = 1; i < ULT_DIRS.length; i++) {
     heroImg.src = ultFrame(ULT_DIRS[i]);
-    await sleep(ULT_DIRS[i] === "south" ? 650 : 110);
+    await sleep(ULT_DIRS[i] === "south" ? 1000 : 170);
   }
-  await sleep(150);
+  await charging;
+  await sleep(250);
 
+  // 3) os dados caem, ainda dentro da aurora
   const ex = parseFloat(enemyWrap.style.left), ey = parseFloat(enemyWrap.style.top);
   const ew = enemyCanvas.width, eh = enemyCanvas.height;
-
   for (let i = 0; i < values.length; i++) {
     const die = document.createElement("div");
     die.className = "fall-die";
@@ -256,7 +364,7 @@ async function heroUltimate(values, onImpact) {
     await die.animate(
       [{ transform: `translate(${x}px, -14px) rotate(0deg)` },
        { transform: `translate(${x}px, ${y}px) rotate(${spin}deg)` }],
-      { duration: 260, easing: "ease-in", fill: "forwards" }
+      { duration: 300, easing: "ease-in", fill: "forwards" }
     ).finished;
     onImpact(values[i], i);
     die.animate(
@@ -264,10 +372,13 @@ async function heroUltimate(values, onImpact) {
        { transform: `translate(${x}px, ${y - 4}px) scale(1.3)`, opacity: 0 }],
       { duration: 350, easing: "ease-out", fill: "forwards" }
     ).onfinish = () => die.remove();
-    await new Promise(r => setTimeout(r, 140));
+    await sleep(170);
   }
 
-  await new Promise(r => setTimeout(r, 300));
+  // 4) a aurora e a aura se dissipam
+  await sleep(300);
+  await Promise.all([fxTween("fade", 0, 600), fxTween("heroY", 0, 600)]);
+  fxStop();
   dark.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400 }).onfinish = () => dark.remove();
   float.cancel();
   heroPose("idle");
