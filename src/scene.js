@@ -265,14 +265,15 @@ function fxLoop(now) {
   // 1) aurora boreal sobre o inimigo: cortinas verdes ondulando, do teto até ele
   const ex = parseFloat(enemyWrap.style.left) || 48, ey = parseFloat(enemyWrap.style.top) || 40;
   const ew = enemyCanvas.width || 48, eh = enemyCanvas.height || 48;
-  const x0 = ex - 22, x1 = ex + ew + 22, yBottom = ey + eh * 0.6;
+  const x0 = ex - 30, x1 = ex + ew + 30, yBottom = Math.min(SH, ey + eh + 10);   // até o chão
   for (let x = x0; x < x1; x++) {
     const edge = Math.min(1, (x - x0) / 14, (x1 - x) / 14);            // some nas bordas
     const wave = 0.5 + 0.5 * Math.sin(x * 0.23 + t * 2.1) * Math.sin(x * 0.07 - t * 1.3);
-    const top = 6 + 10 * (0.5 + 0.5 * Math.sin(x * 0.11 + t * 1.7));    // borda de cima ondulada
+    const top = 1 + 7 * (0.5 + 0.5 * Math.sin(x * 0.11 + t * 1.7));     // borda de cima ondulada, bem no alto
     for (let y = top; y < yBottom; y++) {
       const v = (y - top) / (yBottom - top);                             // 0 em cima, 1 embaixo
-      const fall = v < 0.25 ? v / 0.25 : 1 - (v - 0.25) / 0.75;
+      // acende rápido no alto e continua forte até embaixo (só um pouco mais fraco no chão)
+      const fall = v < 0.15 ? v / 0.15 : 1 - ((v - 0.15) / 0.85) * 0.45;
       const I = Math.min(1, L * edge * wave * fall * 1.6);
       if (I <= 0.02) continue;
       fxDot(d, x, y, I, null, 235);
