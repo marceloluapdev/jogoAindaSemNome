@@ -84,6 +84,22 @@ const ICONS = {
   ],
 };
 
+// Dado rachado mostrando 1 (Sem sorte: só leva o golpe)
+ICONS.semsorte = [
+  ".kkkkkkkkk.",
+  "kBBBBkBBBBk",
+  "kBBBBkBBBBk",
+  "kBBBkBBBBBk",
+  "kBBBkBBBBBk",
+  "kBBBBkkBBBk",
+  "kBBBBkkBkBk",
+  "kBBBBBBkBBk",
+  "kBBBBBkBBBk",
+  "kmmmmkmmmmk",
+  ".kkkkkkkkk.",
+];
+ICON_COLORS.m = "#5a4a38";
+
 // Raio verde (Carga da Maldição)
 ICONS.carga = [
   "......kkk..",

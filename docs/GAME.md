@@ -35,6 +35,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Quando o inimigo vai atacar e há reserva: **Defender** (rola a reserva toda, a soma bloqueia, reserva zera)
   ou **Concentrar** ("respirar fundo": leva o dano e guarda a reserva para um ataque maior).
 - Botões com ícone em pixel art + nome pequeno: dado (Rolar), espada (Atacar), escudo (Defender), energia verde (Concentrar).
+- Com a carga cheia, Concentrar vira **"Sem sorte"** (ícone de dado rachado no 1): só leva o golpe e guarda a reserva.
+  Defender gasta só a reserva; Aposta Final gasta só a carga (um recurso não consome o outro).
 - Se a reserva vai transbordar, a prévia **avisa** quantos dados se perdem (em vermelho) e os quadradinhos
   que vão encher piscam. Princípio: o jogador sempre vê a consequência antes de confirmar.
 - **Nada se perde**: o que não cabe na reserva vira **Carga da Maldição**. Só se reserva E carga estiverem cheias,

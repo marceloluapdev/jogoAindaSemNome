@@ -323,9 +323,12 @@ async function enemyTurn() {
 // Troca os botões por Defender / Concentrar e espera a escolha
 function askDefense() {
   $("defend-count").textContent = `(${reserve})`;
-  // Concentrar: mostra se ainda dá carga (com carga cheia, só guarda a reserva)
-  $("endure-info").textContent = charge < CHARGE_MAX ? "· +1 carga" : "· carga cheia";
-  $("endure").classList.toggle("muted", charge >= CHARGE_MAX);
+  // Não defender: com carga sobrando é "Concentrar" (+1 carga);
+  // com a carga cheia vira "Sem sorte" (só leva o golpe e guarda a reserva)
+  const full = charge >= CHARGE_MAX;
+  $("endure-name").textContent = full ? "Sem sorte" : "Concentrar";
+  $("endure-info").textContent = full ? "" : "· +1 carga";
+  $("endure").querySelector(".ico").innerHTML = iconSVG(full ? "semsorte" : "foco");
   $("turn-buttons").hidden = true;
   $("defense-buttons").hidden = false;
   return new Promise(res => {

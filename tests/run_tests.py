@@ -196,7 +196,7 @@ def caso_concentrar_da_carga(j):
 
 
 def caso_concentrar_mostra_carga(j):
-    """O botão Concentrar mostra '+1 carga' ou 'carga cheia' (aí só guarda a reserva)."""
+    """Não defender: 'Concentrar +1 carga'; com a carga cheia o botão vira 'Sem sorte' (só guarda a reserva)."""
     j.inimigo(vida=999, intencao=1)
     j.rolar(6, 1, 2, 3)
     j.selecionar(0)
@@ -207,7 +207,7 @@ def caso_concentrar_mostra_carga(j):
     j.rolar(6, 1, 2, 3)
     j.selecionar(0, 1, 2)
     j.atacar()
-    assert "carga cheia" in j.page.inner_text("#endure"), j.page.inner_text("#endure")
+    assert "Sem sorte" in j.page.inner_text("#endure"), j.page.inner_text("#endure")
     j.aguentar()
     igual(j.js("charge"), 5, "carga continua cheia")
 
