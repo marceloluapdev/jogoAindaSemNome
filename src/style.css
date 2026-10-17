@@ -272,6 +272,7 @@ button .ico { display: block; width: 33px; height: 33px; }
 button .ico svg { display: block; width: 100%; height: 100%; }
 button small { font-size: 0.8rem; font-weight: 700; line-height: 1; }
 button small span { font-weight: 400; opacity: 0.75; }
+#endure-info { display: block; font-size: 0.65rem; margin-top: 1px; }
 button.attack { --btn: var(--red); --btn-d: var(--red-d); --btn-text: var(--bone); }
 button.defend { --btn: var(--steel-l); --btn-d: var(--steel); }
 button.ultimate { --btn: #8fd16a; --btn-d: var(--green-d); --btn-text: var(--ink); animation: pulse 0.8s steps(2) infinite; }

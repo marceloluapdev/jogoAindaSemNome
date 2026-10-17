@@ -84,21 +84,23 @@ const ICONS = {
   ],
 };
 
-// Dado rachado mostrando 1 (Sem sorte: só leva o golpe)
+// Dado partido ao meio mostrando 1 (Sem sorte): as metades se abrem em cima
+// e continuam juntas embaixo, em "V"; o pip vermelho do 1 fica dividido.
 ICONS.semsorte = [
-  ".kkkkkkkkk.",
-  "kBBBBkBBBBk",
-  "kBBBBkBBBBk",
-  "kBBBkBBBBBk",
-  "kBBBkBBBBBk",
-  "kBBBBkkBBBk",
-  "kBBBBkkBkBk",
-  "kBBBBBBkBBk",
-  "kBBBBBkBBBk",
-  "kmmmmkmmmmk",
-  ".kkkkkkkkk.",
+  ".kkkk.....kkkk.",
+  "kBBBBk...kBBBBk",
+  "kBBBBBk.kBBBBBk",
+  "kBBBBrrkrrBBBBk",
+  "kBBBBrrkrrBBBBk",
+  "kBBBBBBkBBBBBBk",
+  "kBBBBBBkBBBBBBk",
+  "kBBBBBBkBBBBBBk",
+  "kBBBBBBkBBBBBBk",
+  "kmmmmmmkmmmmmmk",
+  ".kkkkkkkkkkkkk.",
 ];
 ICON_COLORS.m = "#5a4a38";
+ICON_COLORS.r = "#d0455a";
 
 // Raio verde (Carga da Maldição)
 ICONS.carga = [

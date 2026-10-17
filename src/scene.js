@@ -301,14 +301,6 @@ function fxLoop(now) {
     fxDot(d, hx + Math.cos(a) * (rr - 5), cy + Math.sin(a) * (rr - 5) * 0.7, I * 0.35, FX_GREEN[0], 160);
   }
 
-  // 4) faíscas verdes subindo em volta de você
-  for (let k = 0; k < 18; k++) {
-    const phase = (t * 0.6 + k * 0.137) % 1;
-    const sx = hx + Math.sin(k * 12.9) * (14 + 12 * L);
-    const sy = hy + 26 - phase * 60;
-    fxDot(d, sx, sy, L * (1 - phase) * 1.2, FX_GREEN[2], 255);
-  }
-
   fx.ctx.putImageData(fx.img, 0, 0);
   requestAnimationFrame(fxLoop);
 }

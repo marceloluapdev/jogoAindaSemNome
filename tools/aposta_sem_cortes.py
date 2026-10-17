@@ -70,8 +70,9 @@ def remendar(caminho):
         px[p] = (0, 0, 0, 0)
 
     # 3) restos que se soltaram da peça principal (contornos/pips do dado apagado)
+    #    e pontinhos soltos (< 12 px): partículas da aura que parecem pixels aleatórios
     for pts in componentes(px, w, h)[1:]:
-        if len(pts) < 60 and set(pts) <= principal:
+        if (len(pts) < 60 and set(pts) <= principal) or len(pts) < 12:
             for p in pts:
                 px[p] = (0, 0, 0, 0)
     im.save(caminho)

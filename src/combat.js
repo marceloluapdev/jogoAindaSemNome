@@ -327,7 +327,7 @@ function askDefense() {
   // com a carga cheia vira "Sem sorte" (só leva o golpe e guarda a reserva)
   const full = charge >= CHARGE_MAX;
   $("endure-name").textContent = full ? "Sem sorte" : "Concentrar";
-  $("endure-info").textContent = full ? "" : "· +1 carga";
+  $("endure-info").textContent = full ? "(sem ação)" : "+1 carga";
   $("endure").querySelector(".ico").innerHTML = iconSVG(full ? "semsorte" : "foco");
   $("turn-buttons").hidden = true;
   $("defense-buttons").hidden = false;
