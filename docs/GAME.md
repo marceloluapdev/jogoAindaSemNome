@@ -33,8 +33,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   Truque: selecionar um dado para protegê-lo da rerrolagem e desselecioná-lo antes de atacar — ele vai para a defesa.
   (Regra provisória; pode mudar depois.)
 - Quando o inimigo vai atacar e há reserva: **Defender** (rola a reserva toda, a soma bloqueia, reserva zera)
-  ou **Poupar** (leva o dano e guarda a reserva para um ataque maior).
-- Botões com ícone em pixel art + nome pequeno: dado (Rolar), espada (Atacar), escudo (Defender), bolsa (Poupar).
+  ou **Concentrar** ("respirar fundo": leva o dano e guarda a reserva para um ataque maior).
+- Botões com ícone em pixel art + nome pequeno: dado (Rolar), espada (Atacar), escudo (Defender), energia verde (Concentrar).
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),

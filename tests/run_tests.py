@@ -185,7 +185,7 @@ def caso_defender_bloqueia_e_zera_reserva(j):
     j.rolar(6, 1, 2, 3)
     j.selecionar(0)
     j.atacar()
-    assert j.esperando_defesa(), "deveria perguntar Defender/Poupar"
+    assert j.esperando_defesa(), "deveria perguntar Defender/Concentrar"
     vida = j.estado()["vida"]
     j.defender(2, 3, 1)              # bloqueia 6 de 10
     e = j.estado()
@@ -207,7 +207,7 @@ def caso_defesa_maior_que_ataque(j):
 
 
 def caso_aguentar_guarda_reserva(j):
-    """Poupar: leva o dano inteiro e mantém a reserva."""
+    """Concentrar: leva o dano inteiro e mantém a reserva."""
     j.inimigo(vida=999, intencao=7)
     j.rolar(6, 1, 2, 3)
     j.selecionar(0)

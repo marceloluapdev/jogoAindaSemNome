@@ -54,7 +54,21 @@ const ICONS = {
     "...kSaSk...",
     "....kkk....",
   ],
-  // Bolsinha de couro (poupar os dados)
+  // Energia se concentrando num ponto (concentrar: guardar a defesa)
+  foco: [
+    "....kkk....",
+    "..kkgggkk..",
+    ".kgg...ggk.",
+    ".kg.kkk.gk.",
+    "kg.kgggk.gk",
+    "kg.kgagk.gk",
+    "kg.kgggk.gk",
+    ".kg.kkk.gk.",
+    ".kgg...ggk.",
+    "..kkgggkk..",
+    "....kkk....",
+  ],
+  // Bolsinha de couro (reserva para uso futuro)
   bolsa: [
     "....kkk....",
     "...kaaak...",
