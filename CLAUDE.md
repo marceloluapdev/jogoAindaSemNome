@@ -7,6 +7,10 @@ Leia só quando precisar:
 - `docs/GAME.md` — conceito, mecânicas e regras do jogo
 - `docs/TODO.md` — próximos passos e o que já foi feito
 
+Muita coisa já está decidida só no GAME.md (tutorial integrado à história, livro-jogo, layout futuro,
+personagens, ideias guardadas). Antes de propor ou discutir qualquer coisa de design, história ou
+próximos passos, leia o GAME.md e o TODO.md — não presuma que algo ainda não foi pensado.
+
 Convenções: código em `src/` (`dice.js` = dados/física/combinações, `scene.js` = cena em pixel art,
 `combat.js` = combate e turnos), entrada em `index.html`. Arte em `assets/` (PNGs do PixelLab;
 originais guardados com sufixo `_original`), scripts de edição de arte em `tools/`. Textos do jogo em português.
