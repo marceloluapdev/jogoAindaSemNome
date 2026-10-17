@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Amostra — Pixel Art</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Paleta "grimório": tudo no jogo usa só estas cores */
+    :root {
+      --ink: #120d1a; --night: #1e1630; --dusk: #2e2347; --violet: #463565;
+      --lilac: #9a7cc0; --amber: #f2b84b; --amber-d: #c97f2a;
+      --bone: #f3e7c9; --bone-d: #c9b48f; --red: #d0455a; --red-d: #8c2236;
+      --green: #4fa35a; --green-l: #8fd16a; --steel: #6f8fc7;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; height: 100%;
+      background: var(--ink); color: var(--bone);
+      font-family: "Pixelify Sans", monospace;
+      -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+    }
+    main {
+      height: 100vh; height: 100dvh;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 8px 12px max(10px, env(safe-area-inset-bottom));
+      gap: 8px;
+    }
+    canvas {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      display: block;
+    }
+    .ui { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 6px; }
+    .row { display: flex; justify-content: space-between; align-items: center; font-size: 18px; }
+    .combo { color: var(--amber); font-weight: 700; }
+    .note { color: var(--lilac); font-size: 14px; text-align: center; margin: 0; }
+    .buttons { display: flex; gap: 10px; }
+    /* Botão com borda "em degraus" de pixel */
+    .px-btn {
+      flex: 1;
+      font: 700 20px "Pixelify Sans", monospace;
+      padding: 10px 0;
+      color: var(--ink);
+      background: var(--amber);
+      border: none;
+      box-shadow:
+        0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink),
+        -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink),
+        inset 0 -4px 0 0 var(--amber-d);
+      margin: 4px;
+    }
+    .px-btn:active { transform: translateY(2px); box-shadow: 0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink), -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink); }
+    .px-btn.red { background: var(--red); color: var(--bone); box-shadow:
+        0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink),
+        -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink),
+        inset 0 -4px 0 0 var(--red-d); }
+  </style>
+</head>
+<body>
+<main>
+  <canvas id="screen"></canvas>
+  <div class="ui">
+    <div class="row"><span class="combo" id="combo">Toque em Rolar</span><span id="dmg"></span></div>
+    <div class="buttons">
+      <button class="px-btn" id="roll">Rolar</button>
+      <button class="px-btn red" id="hit">Atacar</button>
+    </div>
+    <p class="note">Amostra de estética — o jogo de verdade não foi alterado.</p>
+  </div>
+</main>
+
+<script>
+// ---------------------------------------------------------------------------
+// Tudo é desenhado numa tela pequena (144×206 "pixels") e ampliado sem borrar.
+// Os sprites são grades de texto: cada letra é uma cor da paleta.
+// ---------------------------------------------------------------------------
+
+const W = 144, H = 206;
+const cv = document.getElementById("screen");
+const ctx = cv.getContext("2d");
+cv.width = W; cv.height = H;
+
+const PAL = {
+  k: "#120d1a", n: "#1e1630", u: "#2e2347", v: "#463565", p: "#6b4f8f", l: "#9a7cc0",
+  a: "#f2b84b", A: "#c97f2a", w: "#7a4a1c", W: "#a86a33", x: "#d99a55",
+  b: "#f3e7c9", B: "#c9b48f", m: "#5a4a38",
+  r: "#d0455a", R: "#8c2236",
+  d: "#2f6b3f", g: "#4fa35a", G: "#8fd16a", y: "#d4f59a",
+  s: "#b97a57", S: "#e6b088", h: "#3a2418", H: "#5e3a24",
+  c: "#2a1f45", C: "#3d2e63", f: "#4a1228", F: "#5e1a34", e: "#c48f6c",
+  t: "#6f8fc7", T: "#c3d6f2",
+};
+
+function sprite(rows) {
+  const w = Math.max(...rows.map(r => r.length));
+  return { w, h: rows.length, rows: rows.map(r => r.padEnd(w, ".")) };
+}
+
+function draw(spr, x, y, flip = false) {
+  for (let j = 0; j < spr.h; j++) {
+    const row = spr.rows[j];
+    for (let i = 0; i < spr.w; i++) {
+      const ch = row[flip ? spr.w - 1 - i : i];
+      if (ch === "." || !PAL[ch]) continue;
+      ctx.fillStyle = PAL[ch];
+      ctx.fillRect(x + i, y + j, 1, 1);
+    }
+  }
+}
+
+const rect = (c, x, y, w, h) => { ctx.fillStyle = PAL[c] || c; ctx.fillRect(x, y, w, h); };
+
+// ---------- Sprites ----------
+
+// Lodo (2 quadros para "respirar")
+const SLIME = [
+  sprite([
+    "........kkkkkk........",
+    "......kkGGGGGGkk......",
+    ".....kGGyyGGGGGGk.....",
+    "....kGGyyGGGGGGGGk....",
+    "...kGGGGGGGGGGGGGGk...",
+    "..kgGGGGGGGGGGGGGGgk..",
+    "..kgGGGkkGGGGGkkGGgk..",
+    ".kggGGGkbkGGGkbkGGggk.",
+    ".kggGGGkkkGGGkkkGGggk.",
+    ".kgggGGGGGGGGGGGGgggk.",
+    "kggggGGGGkkkkGGGGggggk",
+    "kgggggGGGkRRkGGGgggggk",
+    "kdggggggggkkggggggggdk",
+    "kddgggggggggggggggggddk",
+    ".kddddggggggggggddddk.",
+    "..kkkkkkkkkkkkkkkkkk..",
+  ]),
+  sprite([
+    "......................",
+    "........kkkkkk........",
+    "......kkGGGGGGkk......",
+    ".....kGGyyGGGGGGk.....",
+    "...kkGGyyGGGGGGGGkk...",
+    "..kgGGGGGGGGGGGGGGgk..",
+    "..kgGGGkkGGGGGkkGGgk..",
+    ".kggGGGkbkGGGkbkGGggk.",
+    ".kggGGGkkkGGGkkkGGggk.",
+    "kgggGGGGGGGGGGGGGGgggk",
+    "kggggGGGGkkkkGGGGggggk",
+    "kgggggGGGkRRkGGGgggggk",
+    "kdggggggggkkggggggggdk",
+    "kdddggggggggggggggdddk",
+    ".kddddddggggggddddddk.",
+    "..kkkkkkkkkkkkkkkkkk..",
+  ]),
+];
+
+// Você, de costas e um pouco na diagonal (aparece orelha e um pedaço do rosto)
+const HERO = sprite([
+  "...........kkkkkkk.............",
+  ".........kkHHHHHHHkk...........",
+  "........kHHHhHHHHHHHk..........",
+  ".......kHHhHHHHHhHHHHk.........",
+  ".......kHHHHHHHHHHHHHHk........",
+  "......kHHHHhHHHHHHHHHHSk.......",
+  "......kHHHHHHHHHHHHHHHSSk......",
+  "......kHHhHHHHHHHHHHHeSSk......",
+  "......kHHHHHHHHHHHHHHeSSk......",
+  "......kHHHHHHHHHHHHHHHsSk......",
+  ".......kHHHHHHHHHHHHHHssk......",
+  "........kHHHHHHHHHHHHkkk.......",
+  ".........kkhHHHHHHhkk..........",
+  "..........kssssssssk...........",
+  "......kkkaaaaaaaaaaaakkk.......",
+  "....kkcCCaaAAAAAAAAaaCCckk.....",
+  "...kcCCCCCCCCCCCCCCCCCCCCck....",
+  "..kcCCCCCCCCCCCCCCCCCCCCCCCk...",
+  ".kcCCCCCcCCCCCCCCCCCCCCCCCCck..",
+  ".kcCCCCCcCCCCCCCCCCCCCCCCCCCck.",
+  "kcCCCCCCcCCCCCCCCCCCCCCCCCCCCk.",
+  "kcCCCCCCcCCCCCCCCCCCCCCCCCCCCck",
+  "kcCCCCCCcCCCCCCCCCCCCCCCCCCCCck",
+]);
+
+// Tocha (2 quadros de chama)
+const TORCH = [
+  sprite([".a.", "aAa", "rar", ".r.", "kwk", ".w.", ".w.", ".w."]),
+  sprite(["..a", ".aA", "rAr", ".r.", "kwk", ".w.", ".w.", ".w."]),
+];
+
+// ---------- Cenário ----------
+
+function drawWall() {
+  rect("n", 0, 0, W, 106);
+  // tijolos
+  for (let y = 0; y < 106; y += 8) {
+    const off = (y / 8) % 2 ? 8 : 0;
+    for (let x = -off; x < W; x += 16) {
+      rect("u", x + 1, y + 1, 14, 6);
+      rect("v", x + 1, y + 1, 14, 1);
+    }
+  }
+  // chão
+  rect("u", 0, 86, W, 20);
+  for (let x = 0; x < W; x += 12) rect("n", x, 86, 1, 20);
+  rect("v", 0, 86, W, 1);
+}
+
+function drawGlow(cx, cy, r, color) {
+  // brilho em "pontilhado" (dithering), típico de pixel art
+  for (let y = -r; y <= r; y++)
+    for (let x = -r; x <= r; x++) {
+      const d = Math.hypot(x, y) / r;
+      if (d > 1) continue;
+      const level = d < 0.5 ? 2 : 1;
+      if (level === 1 && (x + y) % 2) continue;
+      if (level === 2 && (x % 2 === 0 && y % 2 === 0)) continue;
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.18;
+      ctx.fillRect(cx + x, cy + y, 1, 1);
+    }
+  ctx.globalAlpha = 1;
+}
+
+// Barra de vida em pixel
+function bar(x, y, w, frac, fill, dark) {
+  rect("k", x - 1, y - 1, w + 2, 6);
+  rect("n", x, y, w, 4);
+  const fw = Math.round(w * frac);
+  rect(fill, x, y, fw, 4);
+  rect(dark, x, y + 3, fw, 1);
+}
+
+// ---------- Bandeja e dados ----------
+
+const TRAY = { x: 4, y: 110, w: 136, h: 92 };
+
+function drawTray() {
+  const { x, y, w, h } = TRAY;
+  rect("k", x - 1, y - 1, w + 2, h + 2);
+  rect("w", x, y, w, h);
+  // tábuas da moldura
+  for (let i = x + 3; i < x + w; i += 9) rect("W", i, y + 1, 5, 1);
+  for (let i = x + 6; i < x + w; i += 11) rect("W", i, y + h - 2, 6, 1);
+  rect("x", x, y, w, 1);
+  // feltro
+  const fx = x + 6, fy = y + 6, fw = w - 12, fh = h - 12;
+  rect("k", fx - 1, fy - 1, fw + 2, fh + 2);
+  rect("f", fx, fy, fw, fh);
+  for (let j = 0; j < fh; j++)
+    for (let i = (j % 2); i < fw; i += 4) {
+      ctx.fillStyle = PAL.F;
+      ctx.fillRect(fx + i, fy + j, 1, 1);
+    }
+  rect("R", fx, fy, fw, 2); // sombra na borda de cima
+}
+
+const PIP_POS = {
+  1: [[1, 1]], 2: [[0, 0], [2, 2]], 3: [[0, 0], [1, 1], [2, 2]],
+  4: [[0, 0], [2, 0], [0, 2], [2, 2]], 5: [[0, 0], [2, 0], [1, 1], [0, 2], [2, 2]],
+  6: [[0, 0], [2, 0], [0, 1], [2, 1], [0, 2], [2, 2]],
+};
+
+// Dado de 15px. "tilt" mostra o dado capotando (face achatada + lateral).
+function drawDie(px, py, value, held, tilt = 0) {
+  const S = 15;
+  const top = tilt === 0 ? S : tilt === 1 ? 10 : 6;   // altura da face de cima
+  const side = S - top;
+  const x = Math.round(px), y = Math.round(py);
+  // sombra
+  rect("k", x + 1, y + S, S - 1, 2);
+  ctx.globalAlpha = 0.5; rect("k", x + 2, y + S + 2, S - 3, 1); ctx.globalAlpha = 1;
+  // contorno
+  rect(held ? "a" : "k", x - 1, y - 1, S + 2, S + 2);
+  // face de cima
+  rect("b", x, y, S, top);
+  rect("B", x, y + top - 1, S, 1);
+  // lateral (quando capotando)
+  if (side) {
+    rect("B", x, y + top, S, side);
+    rect("m", x, y + S - 1, S, 1);
+  }
+  // pips só na face de cima
+  if (value) {
+    const sy = top / S;
+    for (const [i, j] of PIP_POS[value]) {
+      const cx = x + 3 + i * 4, cy = y + Math.round((3 + j * 4) * sy);
+      rect("k", cx, cy, 2, tilt ? 1 : 2);
+    }
+  }
+}
+
+// ---------- Estado da amostra ----------
+
+let dice = [
+  { x: 26, y: 150, v: null }, { x: 52, y: 156, v: null },
+  { x: 78, y: 148, v: null }, { x: 104, y: 154, v: null },
+];
+dice.forEach(d => { d.vx = 0; d.vy = 0; d.held = false; d.tilt = 0; d.moving = false; });
+let enemyHp = 1;
+let shake = 0;
+let flashT = 0;
+
+function evaluate(vals) {
+  const c = {}; vals.forEach(v => c[v] = (c[v] || 0) + 1);
+  const n = Object.values(c).sort((a, b) => b - a);
+  const sum = vals.reduce((a, b) => a + b, 0);
+  const u = [...new Set(vals)].sort((a, b) => a - b);
+  let run = 1, best = 1;
+  for (let i = 1; i < u.length; i++) { run = u[i] === u[i - 1] + 1 ? run + 1 : 1; best = Math.max(best, run); }
+  const k = n[0] === 4 ? ["Quadra", 6] : best >= 4 ? ["Sequência", 3] : n[0] === 3 ? ["Trinca", 3]
+    : n[0] === 2 && n[1] === 2 ? ["Dois pares", 2] : n[0] === 2 ? ["Par", 1.5] : ["Nada", 1];
+  return { name: k[0], mult: k[1], dmg: Math.round(sum * k[1]) };
+}
+
+document.getElementById("roll").onclick = () => {
+  dice.forEach(d => {
+    if (d.held) return;
+    d.x = 14 + Math.random() * 100; d.y = 180;
+    const a = -Math.PI * (0.2 + Math.random() * 0.6);
+    const sp = 140 + Math.random() * 90;
+    d.vx = Math.cos(a) * sp; d.vy = Math.sin(a) * sp;
+    d.moving = true; d.dist = 0;
+    d.v = 1 + Math.floor(Math.random() * 6);
+  });
+};
+
+document.getElementById("hit").onclick = () => {
+  if (dice.some(d => !d.v)) return;
+  const r = evaluate(dice.map(d => d.v));
+  enemyHp = Math.max(0, enemyHp - r.dmg / 120);
+  shake = 10; flashT = 6;
+  if (enemyHp === 0) setTimeout(() => (enemyHp = 1), 1200);
+};
+
+cv.addEventListener("click", e => {
+  const s = cv.getBoundingClientRect().width / W;
+  const mx = (e.clientX - cv.getBoundingClientRect().left) / s;
+  const my = (e.clientY - cv.getBoundingClientRect().top) / s;
+  dice.forEach(d => {
+    if (d.v && !d.moving && mx > d.x - 2 && mx < d.x + 17 && my > d.y - 2 && my < d.y + 17) d.held = !d.held;
+  });
+});
+
+// ---------- Física simples (em pixels da tela pequena) ----------
+
+function physics(dt) {
+  const fx = TRAY.x + 6, fy = TRAY.y + 6, fw = TRAY.w - 12, fh = TRAY.h - 12;
+  dice.forEach(d => {
+    if (!d.moving) return;
+    d.x += d.vx * dt; d.y += d.vy * dt;
+    const damp = Math.exp(-2.2 * dt); d.vx *= damp; d.vy *= damp;
+    if (d.x < fx) { d.x = fx; d.vx = Math.abs(d.vx) * 0.6; }
+    if (d.x > fx + fw - 15) { d.x = fx + fw - 15; d.vx = -Math.abs(d.vx) * 0.6; }
+    if (d.y < fy) { d.y = fy; d.vy = Math.abs(d.vy) * 0.6; }
+    if (d.y > fy + fh - 16) { d.y = fy + fh - 16; d.vy = -Math.abs(d.vy) * 0.6; }
+    const sp = Math.hypot(d.vx, d.vy);
+    d.dist += sp * dt;
+    // capota: alterna quadros "achatados" e troca a face
+    d.tilt = sp > 12 ? Math.floor(d.dist / 5) % 3 : 0;
+    if (sp > 12 && d.tilt === 0 && Math.floor(d.dist / 5) !== d.lastFlip) {
+      d.lastFlip = Math.floor(d.dist / 5);
+    }
+    if (sp < 8) { d.moving = false; d.tilt = 0; d.vx = d.vy = 0; }
+  });
+  // colisões entre dados
+  for (let i = 0; i < 4; i++) for (let j = i + 1; j < 4; j++) {
+    const A = dice[i], B = dice[j];
+    const dx = B.x - A.x, dy = B.y - A.y, dist = Math.hypot(dx, dy);
+    if (dist >= 17 || dist === 0) continue;
+    const nx = dx / dist, ny = dy / dist, o = (17 - dist) / 2;
+    A.x -= nx * o; A.y -= ny * o; B.x += nx * o; B.y += ny * o;
+    const vn = (B.vx - A.vx) * nx + (B.vy - A.vy) * ny;
+    if (vn < 0) { A.vx += vn * nx; A.vy += vn * ny; B.vx -= vn * nx; B.vy -= vn * ny; A.moving = B.moving = true; }
+  }
+}
+
+// ---------- Desenho ----------
+
+let t0 = performance.now(), frame = 0;
+
+function render(now) {
+  const dt = Math.min(0.033, (now - t0) / 1000); t0 = now; frame++;
+  physics(dt);
+
+  ctx.save();
+  if (shake > 0) { ctx.translate(((frame % 2) ? 1 : -1) * Math.ceil(shake / 4), 0); shake--; }
+
+  drawWall();
+  const fl = Math.floor(now / 160) % 2;
+  drawGlow(11, 38, 14, PAL.a); drawGlow(133, 38, 14, PAL.a);
+  draw(TORCH[fl], 10, 34); draw(TORCH[1 - fl], 132, 34);
+
+  // inimigo
+  const ex = 61, ey = 46 + (Math.floor(now / 500) % 2);
+  if (enemyHp > 0) {
+    draw(SLIME[Math.floor(now / 500) % 2], ex, ey);
+    if (flashT > 0) { ctx.globalAlpha = 0.6; rect("b", ex, ey, 22, 16); ctx.globalAlpha = 1; flashT--; }
+  }
+  // nome e vida do inimigo (barra)
+  bar(42, 8, 60, enemyHp, "r", "R");
+
+  // você (de costas, na diagonal, à esquerda)
+  draw(HERO, 4, 106 - HERO.h + 2);
+
+  drawTray();
+  dice.forEach(d => {
+    const val = d.moving ? 1 + Math.floor(d.dist / 15) % 6 : d.v;
+    drawDie(d.x, d.y, val, d.held, d.tilt);
+  });
+  ctx.restore();
+
+  // texto da combinação
+  const ready = dice.every(d => d.v && !d.moving);
+  if (ready) {
+    const held = dice.filter(d => d.held);
+    const r = evaluate((held.length ? held : dice).map(d => d.v));
+    document.getElementById("combo").textContent = `${r.name} ×${r.mult}`;
+    document.getElementById("dmg").textContent = `${r.dmg} de dano`;
+  }
+
+  requestAnimationFrame(render);
+}
+
+// Amplia a tela pequena por um número inteiro (pixels nítidos)
+function fit() {
+  const availH = window.innerHeight - 150;
+  // escala inteira quando cabe (pixels perfeitos); senão, a maior que couber
+  const fitScale = Math.min((window.innerWidth - 24) / W, availH / H);
+  // arredonda para um múltiplo do pixel físico da tela (pixels bem nítidos)
+  const dpr = window.devicePixelRatio || 1;
+  const scale = Math.max(1, Math.floor(fitScale * dpr) / dpr);
+  cv.style.width = W * scale + "px";
+  cv.style.height = H * scale + "px";
+}
+window.addEventListener("resize", fit);
+fit();
+requestAnimationFrame(render);
+</script>
+</body>
+</html>
