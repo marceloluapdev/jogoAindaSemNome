@@ -168,15 +168,36 @@ def caso_protegido_e_desselecionado_vai_para_reserva(j):
     igual(j.estado()["reserva"], 1, "reserva")
 
 
-def caso_reserva_tem_limite(j):
-    """A reserva acumula entre turnos, mas no máximo o número de dados (4)."""
+def caso_reserva_cheia_bloqueia_ataque(j):
+    """Se a reserva fosse transbordar, Atacar fica bloqueado e pede para selecionar mais dados (nada se perde)."""
     j.inimigo(vida=999, intencao=1)
-    for _ in range(2):
-        j.rolar(6, 1, 2, 3)
-        j.selecionar(0)
-        j.atacar()
-        j.aguentar()
-    igual(j.estado()["reserva"], 4, "reserva (3 + 3, limite 4)")
+    j.rolar(6, 1, 2, 3)
+    j.selecionar(0, 1)
+    j.atacar()
+    j.aguentar()                      # reserva = 2
+    j.rolar(6, 1, 2, 3)
+    j.selecionar(0)                   # 3 iriam para a reserva, só cabem 2
+    texto = j.page.inner_text("#damage")
+    assert "selecione +1" in texto, f"prévia: {texto!r}"
+    igual(j.page.is_disabled("#attack"), True, "Atacar bloqueado")
+    j.selecionar(1)                   # agora só 2 vão para a reserva: cabe
+    igual(j.page.is_disabled("#attack"), False, "Atacar liberado")
+    j.atacar()
+    igual(j.estado()["reserva"], 4, "reserva cheia sem perder nada")
+
+
+def caso_reserva_tem_limite(j):
+    """A reserva acumula entre turnos até o número de dados (4)."""
+    j.inimigo(vida=999, intencao=1)
+    j.rolar(6, 1, 2, 3)
+    j.selecionar(0)
+    j.atacar()
+    j.aguentar()                      # reserva 3
+    j.rolar(6, 1, 2, 3)
+    j.selecionar(0, 1, 2)             # só 1 vai para a reserva: cabe
+    j.atacar()
+    j.aguentar()
+    igual(j.estado()["reserva"], 4, "reserva (3 + 1, limite 4)")
 
 
 def caso_defender_bloqueia_e_zera_reserva(j):

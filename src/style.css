@@ -201,7 +201,8 @@ main {
 /* ---------- Jogador ---------- */
 .player-area { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
 .log { margin: 0; min-height: 1.2em; color: var(--muted); font-size: 0.85rem; }
-.combo-line { display: flex; justify-content: space-between; align-items: baseline; }
+.combo-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; white-space: nowrap; }
+.combo-line .damage { font-size: clamp(0.75rem, 3.6vw, 1rem); overflow: hidden; text-overflow: ellipsis; }
 #combo { font-size: 1.1rem; color: var(--accent); font-weight: 700; }
 .damage { font-weight: 700; }
 .player-hp { position: relative; display: flex; align-items: center; gap: 8px; }
@@ -213,6 +214,18 @@ main {
   width: 12px; height: 12px; border-radius: 2px;
   box-shadow: inset 0 0 0 2px var(--steel);
 }
+.reserve .slot.incoming { animation: blink 0.8s steps(1) infinite; background: var(--steel-l); }
+.reserve.overflow .slot { box-shadow: inset 0 0 0 2px var(--red); }
+.reserve.overflow .slot.full { box-shadow: inset 0 0 0 2px var(--red), inset 0 -3px 0 var(--steel); }
+@keyframes blink { 50% { background: transparent; } }
+.lost { color: var(--red); }
+/* Números: fonte Silkscreen (mais legível que a Pixelify em números pequenos) */
+.num, .bar span, #rolls, #defend-count, .float {
+  font-family: "Silkscreen", monospace;
+  font-weight: 700;
+}
+.mini { display: inline-block; width: 13px; height: 13px; margin-left: 2px; vertical-align: -1px; }
+.mini svg { display: block; width: 100%; height: 100%; }
 .reserve .slot.full { background: var(--steel-l); box-shadow: inset 0 0 0 2px var(--ink), inset 0 -3px 0 var(--steel); }
 .buttons[hidden] { display: none; }
 .buttons { display: flex; gap: 14px; padding: 4px; }

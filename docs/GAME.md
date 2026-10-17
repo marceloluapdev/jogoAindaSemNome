@@ -35,6 +35,11 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Quando o inimigo vai atacar e há reserva: **Defender** (rola a reserva toda, a soma bloqueia, reserva zera)
   ou **Concentrar** ("respirar fundo": leva o dano e guarda a reserva para um ataque maior).
 - Botões com ícone em pixel art + nome pequeno: dado (Rolar), espada (Atacar), escudo (Defender), energia verde (Concentrar).
+- Se a reserva vai transbordar, a prévia **avisa** quantos dados se perdem (em vermelho) e os quadradinhos
+  que vão encher piscam. Princípio: o jogador sempre vê a consequência antes de confirmar.
+- **Nada se perde**: se o ataque fosse fazer a reserva transbordar, Atacar fica bloqueado e a prévia pede para
+  selecionar mais dados. Os quadradinhos que vão encher piscam. Princípio: o jogador sempre vê a consequência antes.
+  Futuro: o excesso pode virar **outro tipo de acúmulo** (magia/item que aproveita dados que sobram) — aí libera.
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),
@@ -58,6 +63,7 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   Resolução lógica um pouco maior que a da amostra, para reduzir o serrilhado.
 - **Todo pixel tem o mesmo tamanho na tela**; o que varia é quantos pixels cada sprite tem.
   Nunca esticar/encolher uma imagem gerada (mistura "pixels gordos" e "finos").
+- Fontes: **Pixelify Sans** nos textos e **Silkscreen** só nos números (mais legíveis: 1/7 e 2/8 distintos).
 - Inimigos de **tamanhos variados**: pequeno ~32×32 · normal ~64×64 · grande ~96–128 ·
   chefe pode ocupar a cena inteira, com fundo próprio.
 - Arte: inimigos e personagem gerados no **PixelLab** (Marcel envia os PNGs, já no tamanho final);

@@ -47,6 +47,10 @@ let over = false;   // derrota
 
 const randInt = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
 
+// Números na fonte própria (Silkscreen): 1, 2, 7 e 8 bem distintos
+const N = v => `<b class="num">${v}</b>`;
+const withNums = text => String(text).replace(/[-+×]?\d+(?:[.,]\d+)?/g, m => N(m));
+
 // Usado por dice.js: pode selecionar dados agora? (inclusive após a última rolagem)
 function canHoldDice() {
   return !busy && !over;
@@ -73,17 +77,24 @@ function render() {
   $("enemy-name").textContent = enemy.name;
   $("enemy-hp-text").textContent = `${Math.max(0, enemy.hp)} / ${enemy.maxHp}`;
   $("enemy-hp-fill").style.width = `${(100 * Math.max(0, enemy.hp)) / enemy.maxHp}%`;
-  $("enemy-intent").textContent = enemy.hp > 0 ? `Vai atacar: ${enemy.intent}` : "";
+  $("enemy-intent").innerHTML = enemy.hp > 0 ? `Vai atacar: ${N(enemy.intent)}` : "";
 
   $("player-hp-text").textContent = `${Math.max(0, player.hp)} / ${player.maxHp}`;
   $("player-hp-fill").style.width = `${(100 * Math.max(0, player.hp)) / player.maxHp}%`;
 
   const rolled = dice[0] !== null;
+  // Prévia da reserva: quantos dados entram e quantos se perdem (reserva cheia)
+  const going = rolled && !busy ? toReserve() : 0;
+  const gain = Math.min(going, NUM_DICE - reserve);
+  const lost = going - gain;
   if (rolled) {
     const r = evaluate(attackValues());
-    $("combo").textContent = `${r.name} ×${r.mult}`;
-    const extra = Math.min(toReserve(), NUM_DICE - reserve);
-    $("damage").textContent = `${r.points} de dano` + (extra && !busy ? ` · +${extra} defesa` : "");
+    $("combo").innerHTML = `${r.name} ${N("×" + r.mult)}`;
+    // Reserva cheia: não deixa perder dados — pede para selecionar mais antes de atacar
+    $("damage").innerHTML = lost
+      ? `<span class="lost">reserva cheia · selecione ${N("+" + lost)}</span>`
+      : `${N(r.points)} de dano` +
+        (gain ? ` · ${N("+" + gain)}<span class="mini" title="defesa">${iconSVG("escudo")}</span>` : "");
   } else {
     $("combo").textContent = "Role os dados";
     $("damage").textContent = "";
@@ -91,11 +102,13 @@ function render() {
   $("rolls").textContent = `(${rollsLeft})`;
 
   // Reserva de defesa: quadradinhos azuis (cheios = guardados)
-  $("reserve").innerHTML = Array.from({ length: NUM_DICE },
-    (_, i) => `<span class="slot${i < reserve ? " full" : ""}"></span>`).join("");
+  // cheios = guardados; piscando = vão entrar se você atacar agora
+  $("reserve").innerHTML = Array.from({ length: NUM_DICE }, (_, i) =>
+    `<span class="slot${i < reserve ? " full" : i < reserve + gain ? " incoming" : ""}"></span>`).join("");
+  $("reserve").classList.toggle("overflow", lost > 0);
 
   $("roll").disabled = rolling || busy || over || rollsLeft === 0;
-  $("attack").disabled = rolling || busy || over || !rolled;
+  $("attack").disabled = rolling || busy || over || !rolled || lost > 0;
 }
 
 function log(text) {
@@ -106,7 +119,7 @@ function log(text) {
 function floatText(anchor, text, cls) {
   const el = document.createElement("div");
   el.className = `float ${cls}`;
-  el.textContent = text;
+  el.innerHTML = withNums(text);
   anchor.appendChild(el);
   el.animate(
     [{ transform: "translate(-50%, 0) scale(0.6)", opacity: 0 },
