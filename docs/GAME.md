@@ -79,6 +79,12 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   5. Carga da Maldição e Aposta Final podem ser ensinadas quando a carga encher pela primeira vez (no jogo livre).
 - Depois disso, segue o jogo normal (livre).
 
+## História: fases planejadas
+- **Fase 1**: só retrato (rosto) + texto + escolhas (estilo visual novel simples).
+- **Fase 2 (depois)**: exploração em mapinhas estilo **EarthBound** (andar, falar com personagens).
+- Por isso as cenas/diálogos devem ser **dados separados da apresentação**: a mesma cena serve
+  para a caixa de texto da fase 1 e para o diálogo de um personagem no mapa da fase 2.
+
 ## Livro-jogo: visual (a decidir)
 Objetivo: **econômico, consistente e seguro**. Opções:
 - **A) Estilo visual novel** (recomendado): poucos **cenários de fundo reutilizáveis** (taverna, masmorra, estrada...)
