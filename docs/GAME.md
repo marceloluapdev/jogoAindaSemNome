@@ -45,6 +45,16 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - As escolhas **mudam o personagem** (atributos, magias, maldições, aliados).
 - Objetivo: histórias **emergentes**, diferentes a cada partida (referência: Dwarf Fortress).
 
+## Estética
+- **Pixel art** com paleta fixa estilo grimório (roxos, âmbar, verde-alquímico, vinho).
+  Resolução lógica um pouco maior que a da amostra, para reduzir o serrilhado.
+- **Todo pixel tem o mesmo tamanho na tela**; o que varia é quantos pixels cada sprite tem.
+  Nunca esticar/encolher uma imagem gerada (mistura "pixels gordos" e "finos").
+- Inimigos de **tamanhos variados**: pequeno ~32×32 · normal ~64×64 · grande ~96–128 ·
+  chefe pode ocupar a cena inteira, com fundo próprio.
+- Arte: inimigos e personagem gerados no **PixelLab** (Marcel envia os PNGs, já no tamanho final);
+  cenário, bandeja, dados, interface e efeitos feitos em código. Ajustar as cores das imagens à paleta.
+
 ## Layout (futuro)
 - Você aparece **de costas, na diagonal** (um pouco do rosto visível); o inimigo de frente.
 - A bandeja pode **entrar e sair da tela** (ex.: sair para mostrar ataques e cenas).
