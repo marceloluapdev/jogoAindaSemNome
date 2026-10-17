@@ -108,6 +108,13 @@ Objetivo: **econômico, consistente e seguro**. Opções:
   chefe pode ocupar a cena inteira, com fundo próprio.
 - Arte: inimigos e personagem gerados no **PixelLab** (Marcel envia os PNGs, já no tamanho final);
   cenário, bandeja, dados, interface e efeitos feitos em código. Ajustar as cores das imagens à paleta.
+- **Decidido**: foco no PixelLab + Claude montando em código. Divisão:
+  personagens, inimigos e objetos → PixelLab · fundos de combate e da história → código ·
+  mapinhas estilo EarthBound (fase 2) → tilesets do PixelLab. (Ludo.ai descartado por ora: gera "estilo pixel",
+  não pixel real; no máximo um teste com os créditos grátis.)
+- **Gerar sprites com folga**: o personagem não pode encostar na borda da imagem (ex.: imagem 64 px,
+  personagem ~40–44 px de altura), senão poses maiores são cortadas (como o dado na Aposta Final).
+  Magias/efeitos sempre em código, fora da sprite. Reduzir o tamanho geral na tela: polir depois.
 
 ## Layout (futuro)
 - Você aparece **de costas, na diagonal** (um pouco do rosto visível); o inimigo de frente.
