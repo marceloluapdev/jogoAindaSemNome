@@ -14,7 +14,7 @@
 
 ## Próximos passos
 - [ ] Mais inimigos (PixelLab) de tamanhos variados
-- [ ] Layout: bandeja que entra/sai da tela, menus de combate
+- [ ] Layout: bandeja que desliza para baixo; menu de 4 botões (Rolar, Atacar, Itens, Habilidades) com submenus
 - [ ] Balancear vida/ataque dos inimigos
 - [ ] Especiais por combinação (queimadura, raio, escudo...)
 - [ ] Primeiras magias/ingredientes que alteram dados ou multiplicador

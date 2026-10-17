@@ -74,6 +74,12 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - A bandeja pode **entrar e sair da tela**: desliza para fora por baixo quando não está em uso e volta
   subindo quando precisa. A cena **não cresce** (o resto da tela fica parado).
 - Menus de combate contextuais (ex.: escolher quantos dados de defesa usar).
+- **Menu de ação com 4 botões** (estilo RPG clássico), cada um com ícone pixel + nome pequeno. Proposta:
+  **Rolar** · **Atacar** · **Itens** (poções, ingredientes) · **Habilidades** (magias, especiais, Carga da Maldição).
+  Itens e Habilidades abrem **submenu**: a bandeja desliza para baixo e a lista sobe no lugar dela;
+  escolher/voltar devolve a bandeja. Botões que não se aplicam ficam apagados (ex.: Itens sem itens).
+  No turno do inimigo, os 4 viram as escolhas de defesa (Defender, Concentrar...).
+  Layout: 2×2 em telas estreitas, ou 4 lado a lado se couber.
 - Amostra em pixel art (`amostra-pixel.html`): a cena em tamanho menor deixa **espaço livre nas laterais e embaixo**
   para menus de escolha e outros elementos — manter essa proporção.
 
