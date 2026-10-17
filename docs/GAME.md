@@ -47,8 +47,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   no inimigo. Dano = soma × 3. Substitui o ataque do turno; carga zera. Ele sobe e **gira**: para de frente para nós e volta a encarar o inimigo
   (pose "flutuando" do PixelLab nas 8 direções, em `assets/hero/aposta/`).
   Efeitos (estilo magia de Super Nintendo/FF6: formas preenchidas, translúcidas, poucas faixas de cor, somando luz;
-  carregam devagar durante o giro): aura verde crescendo atrás dele, círculo mágico
-  girando, faíscas subindo e uma **aurora boreal** verde se formando sobre o inimigo — que continua enquanto os dados caem.
+  carregam devagar durante o giro): aura verde atrás dele e um casulo translúcido
+  envolvendo-o, e uma **aurora boreal** verde se formando sobre o inimigo — que continua enquanto os dados caem.
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),

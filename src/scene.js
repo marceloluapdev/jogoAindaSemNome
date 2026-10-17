@@ -298,17 +298,6 @@ function fxLoop(now) {
     fxDot(d, hx + x, hy + y, I, null, 240);
   }
 
-  // 3) círculo mágico em volta de você: anel translúcido com traços girando
-  const rr = 30 + 4 * L;
-  for (let a = 0; a < Math.PI * 2; a += 0.012) {
-    const dash = Math.sin(a * 8 - t * 5) > -0.3;
-    const I = L * (dash ? 1 : 0.4);
-    const cy = hy + 6;
-    fxDot(d, hx + Math.cos(a) * rr, cy + Math.sin(a) * rr * 0.7, I, FX_GREEN[2], 230);
-    fxDot(d, hx + Math.cos(a) * (rr - 2), cy + Math.sin(a) * (rr - 2) * 0.7, I * 0.7, FX_GREEN[1], 200);
-    fxDot(d, hx + Math.cos(a) * (rr - 5), cy + Math.sin(a) * (rr - 5) * 0.7, I * 0.35, FX_GREEN[0], 160);
-  }
-
   fx.ctx.putImageData(fx.img, 0, 0);
 
   // 4) aura na frente de você: um "casulo" de energia translúcido e claro,

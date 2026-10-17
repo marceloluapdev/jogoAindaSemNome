@@ -75,6 +75,15 @@ def remendar(caminho):
         if (len(pts) < 60 and set(pts) <= principal) or len(pts) < 12:
             for p in pts:
                 px[p] = (0, 0, 0, 0)
+    # 4) pixel verde isolado no meio do corpo/chapéu: pinta com a cor dos vizinhos
+    for y in range(1, h - 1):
+        for x in range(1, w - 1):
+            if not verde(px[x, y]):
+                continue
+            viz = [px[x + dx, y + dy] for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy]
+            if sum(1 for c in viz if verde(c)) == 0 and all(c[3] for c in viz):
+                cores = sorted(viz, key=lambda c: c[0] + c[1] + c[2])
+                px[x, y] = cores[len(cores) // 2]
     im.save(caminho)
 
 
