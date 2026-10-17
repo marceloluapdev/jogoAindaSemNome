@@ -219,7 +219,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // level: 0..1 (o quanto a magia já carregou). Some com fade no final.
 
 const FX_GREEN = [[0x8f, 0xd1, 0x6a], [0x4f, 0xa3, 0x5a], [0xd4, 0xf5, 0x9a], [0x6f, 0x8f, 0xc7]];
-const fx = { canvas: null, ctx: null, img: null, level: 0, fade: 1, running: false, heroY: 0 };
+const fx = { canvas: null, ctx: null, img: null, level: 0, fade: 1, running: false, heroY: 0, heroX: 0 };
 
 function fxStart() {
   const c = document.createElement("canvas");
@@ -281,7 +281,7 @@ function fxLoop(now) {
   }
 
   // 2) aura atrás de você: brilho que cresce com a carga
-  const hx = HERO_POS.x + 32, hy = HERO_POS.y + 20 + fx.heroY;
+  const hx = HERO_POS.x + 32 + fx.heroX, hy = HERO_POS.y + 20 + fx.heroY;
   const R = 10 + 26 * L + Math.sin(t * 6) * 2;      // grande o bastante para aparecer em volta dele
   for (let y = -R; y <= R; y++) for (let x = -R; x <= R; x++) {
     const dist = Math.hypot(x, y) / R;
@@ -336,8 +336,9 @@ async function heroUltimate(values, onImpact) {
 
   // 1) sobe flutuando enquanto a cena escurece; os efeitos começam a carregar
   heroPose("ultimate");
+  // sobe e se afasta um pouco da borda esquerda (para nada da pose ficar cortado)
   const float = heroImg.animate(
-    [{ transform: "translateY(0)" }, { transform: "translateY(-8px)" }],
+    [{ transform: "translate(0, 0)" }, { transform: "translate(8px, -8px)" }],
     { duration: 700, easing: "ease-out", fill: "forwards" }
   );
   const dark = document.createElement("div");
@@ -346,6 +347,7 @@ async function heroUltimate(values, onImpact) {
   dark.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, fill: "forwards" });
   fxStart();
   fxTween("heroY", -8, 700);
+  fxTween("heroX", 8, 700);
   const charging = fxTween("level", 1, 3200);     // carrega durante todo o giro
   await sleep(500);
 
@@ -384,7 +386,7 @@ async function heroUltimate(values, onImpact) {
 
   // 4) a aurora e a aura se dissipam
   await sleep(300);
-  await Promise.all([fxTween("fade", 0, 600), fxTween("heroY", 0, 600)]);
+  await Promise.all([fxTween("fade", 0, 600), fxTween("heroY", 0, 600), fxTween("heroX", 0, 600)]);
   fxStop();
   dark.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400 }).onfinish = () => dark.remove();
   float.cancel();
