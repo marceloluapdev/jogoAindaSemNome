@@ -42,7 +42,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   Princípio: o jogador sempre vê a consequência antes de confirmar.
 - **Carga da Maldição** (5 segmentos verdes): enche com o excesso da reserva e com **+1 a cada Concentrar**.
 - **Aposta Final** (ultimate, carga cheia): o apostador flutua, a masmorra escurece e **5 dados da maldição caem**
-  no inimigo. Dano = soma × 3. Substitui o ataque do turno; carga zera. Pose própria "flutuando" a gerar no PixelLab.
+  no inimigo. Dano = soma × 3. Substitui o ataque do turno; carga zera. Ele sobe e **gira**: para de frente para nós e volta a encarar o inimigo
+  (pose "flutuando" do PixelLab nas 8 direções, em `assets/hero/aposta/`).
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),

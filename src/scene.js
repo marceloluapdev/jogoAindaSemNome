@@ -206,23 +206,34 @@ function heroCast(color = "#8fd16a") {
 // O apostador flutua, a masmorra escurece e 5 dados da maldição caem do alto
 // no inimigo, um de cada vez. onImpact(valor, i) é chamado a cada dado que cai.
 
-// Pose própria do ultimate (do PixelLab). Até chegar, usa a de conjurar.
-HERO_POSES.ultimate = HERO_POSES.cast;
+// Pose flutuando (PixelLab) nas 8 direções: ele gira até olhar para nós
+// e completa a volta até encarar o inimigo de novo.
+const ULT_DIRS = ["north-east", "east", "south-east", "south", "south-west", "west", "north-west", "north", "north-east"];
+const ultFrame = d => `assets/hero/aposta/${d}.png`;
+ULT_DIRS.forEach(d => loadImage(ultFrame(d)));
+HERO_POSES.ultimate = ultFrame("north-east");
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function heroUltimate(values, onImpact) {
   if (window.TEST_MODE) { values.forEach((v, i) => onImpact(v, i)); return; }
+  // sobe flutuando enquanto a cena escurece
   heroPose("ultimate");
   const float = heroImg.animate(
-    [{ transform: "translateY(0)" }, { transform: "translateY(-6px)" }, { transform: "translateY(-4px)" }],
-    { duration: 600, easing: "ease-out", fill: "forwards" }
+    [{ transform: "translateY(0)" }, { transform: "translateY(-8px)" }],
+    { duration: 500, easing: "ease-out", fill: "forwards" }
   );
-
-  // escurece a cena
   const dark = document.createElement("div");
   dark.className = "darken";
   stage.insertBefore(dark, enemyWrap);
-  dark.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, fill: "forwards" });
-  await new Promise(r => setTimeout(r, 450));
+  dark.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: "forwards" });
+  await sleep(350);
+
+  // gira: até ficar de frente para nós (segura um instante) e volta a encarar o inimigo
+  for (let i = 1; i < ULT_DIRS.length; i++) {
+    heroImg.src = ultFrame(ULT_DIRS[i]);
+    await sleep(ULT_DIRS[i] === "south" ? 550 : 75);
+  }
+  await sleep(150);
 
   const ex = parseFloat(enemyWrap.style.left), ey = parseFloat(enemyWrap.style.top);
   const ew = enemyCanvas.width, eh = enemyCanvas.height;

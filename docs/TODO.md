@@ -11,13 +11,12 @@
 - [x] Testes automáticos de casos de uso (`tests/run_tests.py`)
 - [x] Estética pixel art aplicada ao jogo: cena (masmorra, tochas), Apostador Amaldiçoado e lodo do PixelLab, interface e dados no estilo
 - [x] Variações de inimigo por cor (Lodo Errante / Venenoso / de Brasa)
-- [x] Carga da Maldição + Aposta Final (ultimate com dados caindo)
+- [x] Carga da Maldição + Aposta Final (pose flutuando do PixelLab girando nas 8 direções, dados caindo)
 
 ## Próximos passos
 - [ ] Mais inimigos (PixelLab) de tamanhos variados
 - [ ] Layout: bandeja que desliza para baixo; menu de 4 botões (Rolar, Atacar, Itens, Habilidades) com submenus
 - [ ] Balancear vida/ataque dos inimigos
-- [ ] Pose "flutuando" do apostador para a Aposta Final (PixelLab)
 - [ ] Especiais por combinação (Par=escudo, Dois pares=drenar, Trinca=fogo, Sequência=raio, Quadra=maldição)
 - [ ] Primeiras magias/ingredientes que alteram dados ou multiplicador
 - [ ] Ganhar dados/rolagens extras como recompensa (até 6 dados)
