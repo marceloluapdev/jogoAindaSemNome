@@ -238,15 +238,22 @@ function fxStop() {
   fx.canvas = null;
 }
 
-// Ponto com "transparência pontilhada": a intensidade vira densidade de pixels
-const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+// Pixel preenchido e translúcido, estilo magias de Super Nintendo (FF6):
+// a intensidade vira poucos níveis de transparência (faixas de cor bem definidas)
+// e o tom clareia no núcleo. O canvas soma luz sobre o fundo (mix-blend-mode: screen).
+const FX_LEVELS = 4;
+const FX_RAMP = [[0x4f, 0xa3, 0x5a], [0x8f, 0xd1, 0x6a], [0xc4, 0xee, 0x8a], [0xf0, 0xff, 0xd8]];
 function fxDot(d, x, y, intensity, color, alpha = 200) {
   x |= 0; y |= 0;
   if (x < 0 || y < 0 || x >= SW || y >= SH) return;
-  if (intensity * 16 <= BAYER[(y & 3) * 4 + (x & 3)]) return;
+  const q = Math.min(FX_LEVELS, Math.floor(intensity * FX_LEVELS + 0.15));   // 0..4
+  if (q <= 0) return;
   const k = (y * SW + x) * 4;
-  d[k] = color[0]; d[k + 1] = color[1]; d[k + 2] = color[2];
-  d[k + 3] = Math.max(d[k + 3], alpha);
+  const a = Math.round((q / FX_LEVELS) * alpha);
+  if (a <= d[k + 3]) return;                     // fica a camada mais forte
+  const c = color || FX_RAMP[q - 1];             // sem cor fixa: rampa escuro → claro
+  d[k] = c[0]; d[k + 1] = c[1]; d[k + 2] = c[2];
+  d[k + 3] = a;
 }
 
 function fxLoop(now) {
@@ -266,10 +273,9 @@ function fxLoop(now) {
     for (let y = top; y < yBottom; y++) {
       const v = (y - top) / (yBottom - top);                             // 0 em cima, 1 embaixo
       const fall = v < 0.25 ? v / 0.25 : 1 - (v - 0.25) / 0.75;
-      const I = L * edge * wave * fall * 0.9;
+      const I = Math.min(1, L * edge * wave * fall * 1.6);
       if (I <= 0.02) continue;
-      const col = v < 0.3 ? FX_GREEN[2] : (x + (t * 8 | 0)) % 7 === 0 ? FX_GREEN[3] : FX_GREEN[0];
-      fxDot(d, x, y, I, col, 170);
+      fxDot(d, x, y, I, null, 235);
     }
   }
 
@@ -279,8 +285,8 @@ function fxLoop(now) {
   for (let y = -R; y <= R; y++) for (let x = -R; x <= R; x++) {
     const dist = Math.hypot(x, y) / R;
     if (dist > 1) continue;
-    const I = L * (1 - dist) * 1.3;
-    fxDot(d, hx + x, hy + y, I, dist < 0.35 ? FX_GREEN[2] : FX_GREEN[0], 190);
+    const I = Math.min(1, L * (1 - dist) * 1.8);
+    fxDot(d, hx + x, hy + y, I, null, 240);
   }
 
   // 3) círculo mágico em volta de você: anel translúcido com traços girando

@@ -44,7 +44,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - **Aposta Final** (ultimate, carga cheia): o apostador flutua, a masmorra escurece e **5 dados da maldição caem**
   no inimigo. Dano = soma × 3. Substitui o ataque do turno; carga zera. Ele sobe e **gira**: para de frente para nós e volta a encarar o inimigo
   (pose "flutuando" do PixelLab nas 8 direções, em `assets/hero/aposta/`).
-  Efeitos (pixel pontilhado, carregam devagar durante o giro): aura verde crescendo atrás dele, círculo mágico
+  Efeitos (estilo magia de Super Nintendo/FF6: formas preenchidas, translúcidas, poucas faixas de cor, somando luz;
+  carregam devagar durante o giro): aura verde crescendo atrás dele, círculo mágico
   girando, faíscas subindo e uma **aurora boreal** verde se formando sobre o inimigo — que continua enquanto os dados caem.
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
@@ -69,6 +70,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   Resolução lógica um pouco maior que a da amostra, para reduzir o serrilhado.
 - **Todo pixel tem o mesmo tamanho na tela**; o que varia é quantos pixels cada sprite tem.
   Nunca esticar/encolher uma imagem gerada (mistura "pixels gordos" e "finos").
+- **Efeitos de magia** no estilo SNES/FF6: preenchidos e translúcidos, 4 faixas de cor (escuro → núcleo claro),
+  somando luz sobre o fundo. Nada de pontilhado "peneira" nas magias (o pontilhado fica só no brilho das tochas).
 - Fontes: **Pixelify Sans** nos textos e **Silkscreen** só nos números (mais legíveis: 1/7 e 2/8 distintos).
 - Inimigos de **tamanhos variados**: pequeno ~32×32 · normal ~64×64 · grande ~96–128 ·
   chefe pode ocupar a cena inteira, com fundo próprio.
