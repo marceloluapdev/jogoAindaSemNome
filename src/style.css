@@ -220,7 +220,7 @@ main {
 button {
   --btn: var(--amber); --btn-d: var(--amber-d); --btn-text: var(--ink);
   flex: 1;
-  padding: clamp(8px, 1.8dvh, 14px) 0;
+  padding: clamp(4px, 1dvh, 8px) 0;
   font: 700 1.2rem "Pixelify Sans", monospace;
   border: none;
   color: var(--btn-text);
@@ -231,7 +231,14 @@ button {
     inset 0 -4px 0 0 var(--btn-d);
 }
 button:active:not(:disabled) { transform: translateY(2px); }
-button small { font-weight: 400; opacity: 0.75; }
+/* ícone em pixel art + nome pequeno embaixo */
+button {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+button .ico { display: block; width: 33px; height: 33px; }
+button .ico svg { display: block; width: 100%; height: 100%; }
+button small { font-size: 0.8rem; font-weight: 700; line-height: 1; }
+button small span { font-weight: 400; opacity: 0.75; }
 button.attack { --btn: var(--red); --btn-d: var(--red-d); --btn-text: var(--bone); }
 button.defend { --btn: var(--steel-l); --btn-d: var(--steel); }
 button.endure { --btn: var(--violet); --btn-d: var(--dusk); --btn-text: var(--bone); }

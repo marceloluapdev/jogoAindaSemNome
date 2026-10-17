@@ -33,7 +33,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   Truque: selecionar um dado para protegê-lo da rerrolagem e desselecioná-lo antes de atacar — ele vai para a defesa.
   (Regra provisória; pode mudar depois.)
 - Quando o inimigo vai atacar e há reserva: **Defender** (rola a reserva toda, a soma bloqueia, reserva zera)
-  ou **Aguentar** (leva o dano e guarda a reserva para um ataque maior).
+  ou **Poupar** (leva o dano e guarda a reserva para um ataque maior).
+- Botões com ícone em pixel art + nome pequeno: dado (Rolar), espada (Atacar), escudo (Defender), bolsa (Poupar).
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),
@@ -64,7 +65,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 
 ## Layout (futuro)
 - Você aparece **de costas, na diagonal** (um pouco do rosto visível); o inimigo de frente.
-- A bandeja pode **entrar e sair da tela** (ex.: sair para mostrar ataques e cenas).
+- A bandeja pode **entrar e sair da tela**: desliza para fora por baixo quando não está em uso e volta
+  subindo quando precisa. A cena **não cresce** (o resto da tela fica parado).
 - Menus de combate contextuais (ex.: escolher quantos dados de defesa usar).
 - Amostra em pixel art (`amostra-pixel.html`): a cena em tamanho menor deixa **espaço livre nas laterais e embaixo**
   para menus de escolha e outros elementos — manter essa proporção.

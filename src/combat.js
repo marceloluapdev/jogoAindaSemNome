@@ -9,7 +9,7 @@
 // RESERVA DE DEFESA (até o nº de dados). Rerrolar um dado "gasta" esse dado.
 // Turno do inimigo: ele faz o ataque anunciado (a "intenção"). Se houver
 // reserva, você escolhe: Defender (rola a reserva toda, a soma bloqueia)
-// ou Aguentar (leva o dano e guarda a reserva).
+// ou Poupar (leva o dano e guarda a reserva para depois).
 
 const PLAYER_MAX_HP = 40;
 
@@ -242,9 +242,9 @@ $("attack").onclick = async () => {
   startPlayerTurn();
 };
 
-// Troca os botões por Defender / Aguentar e espera a escolha
+// Troca os botões por Defender / Poupar e espera a escolha
 function askDefense() {
-  $("defend").textContent = `Defender (${reserve})`;
+  $("defend-count").textContent = `(${reserve})`;
   $("turn-buttons").hidden = true;
   $("defense-buttons").hidden = false;
   return new Promise(res => {
