@@ -13,11 +13,13 @@
 
 const PLAYER_MAX_HP = 40;
 
-// Inimigos provisórios (arte e nomes trocam quando a estética estiver definida)
+// Inimigos. sprite: PNG do PixelLab; foot: última linha desenhada do sprite
+// (para apoiar no chão); tint: troca a cor para criar variações sem arte nova.
+const SLIME = "assets/enemies/slime.png";
 const ENEMIES = [
-  { name: "Lodo Errante",     hp: 50,  atk: [4, 7],   color: "#7fbf6a" },
-  { name: "Morcego de Cinza", hp: 90,  atk: [6, 10],  color: "#9a8fb8" },
-  { name: "Golem de Sal",     hp: 140, atk: [8, 13],  color: "#d8cfc0" },
+  { name: "Lodo Errante",  hp: 50,  atk: [4, 7],  sprite: SLIME, foot: 38, tint: null },
+  { name: "Lodo Venenoso", hp: 90,  atk: [6, 10], sprite: SLIME, foot: 38, tint: "#9a5cd0" },
+  { name: "Lodo de Brasa", hp: 140, atk: [8, 13], sprite: SLIME, foot: 38, tint: "#e0603a" },
 ];
 
 // Depois da lista, os inimigos repetem cada vez mais fortes
@@ -29,7 +31,9 @@ function enemyFor(level) {
     name: loop ? `${base.name} ${"+".repeat(loop)}` : base.name,
     maxHp: Math.round(base.hp * k),
     atk: base.atk.map(a => Math.round(a * k)),
-    color: base.color,
+    sprite: base.sprite,
+    foot: base.foot,
+    tint: base.tint,
   };
 }
 
@@ -120,8 +124,8 @@ const wait = ms => new Promise(r => setTimeout(r, window.TEST_MODE ? 0 : ms));
 function newEnemy() {
   enemy = enemyFor(level);
   enemy.hp = enemy.maxHp;
-  $("enemy-sprite").style.setProperty("--enemy-color", enemy.color);
-  $("enemy-sprite").classList.remove("dead");
+  setEnemySprite(enemy);
+  enemyGone(false);
   newIntent();
 }
 
@@ -160,8 +164,8 @@ $("attack").onclick = async () => {
   enemy.hp -= r.points;
   sprite.animate(
     [{ transform: "translateX(0)", filter: "brightness(3)" },
-     { transform: "translateX(-10px)" }, { transform: "translateX(8px)" },
-     { transform: "translateX(-4px)" }, { transform: "translateX(0)", filter: "brightness(1)" }],
+     { transform: "translateX(-3px)" }, { transform: "translateX(3px)" },
+     { transform: "translateX(-1px)" }, { transform: "translateX(0)", filter: "brightness(1)" }],
     { duration: 400 }
   );
   floatText($("enemy-area"), `-${r.points}`, "dmg");
@@ -170,7 +174,7 @@ $("attack").onclick = async () => {
   await wait(700);
 
   if (enemy.hp <= 0) {
-    sprite.classList.add("dead");
+    enemyGone(true);
     log(`${enemy.name} foi derrotado!`);
     await wait(900);
     showOverlay("Vitória!", `${enemy.name} caiu. Você recupera um pouco de vida.`, "Próximo inimigo", () => {
@@ -206,7 +210,7 @@ $("attack").onclick = async () => {
   // Ataque do inimigo
   log(`${enemy.name} ataca!`);
   sprite.animate(
-    [{ transform: "scale(1)" }, { transform: "scale(1.25) translateY(16px)", offset: 0.4 }, { transform: "scale(1)" }],
+    [{ transform: "scale(1)" }, { transform: "translateY(6px) scale(1.2)", offset: 0.4 }, { transform: "scale(1)" }],
     { duration: 450, easing: "ease-in-out" }
   );
   await wait(220);

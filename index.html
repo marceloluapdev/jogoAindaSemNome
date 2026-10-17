@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>Jogo Ainda Sem Nome</title>
-  <link rel="stylesheet" href="src/style.css?v=15">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/style.css?v=16">
 </head>
 <body>
   <main>
@@ -15,15 +17,15 @@
         <span id="enemy-intent" class="intent"></span>
       </div>
       <div class="bar enemy-bar"><div id="enemy-hp-fill" class="fill"></div><span id="enemy-hp-text"></span></div>
-      <!-- Cena provisória: formas simples até a estética do jogo ser definida -->
-      <div class="scene">
-        <div id="enemy-sprite" class="enemy-sprite">
-          <div class="body"><span class="eye"></span><span class="eye"></span><span class="mouth"></span></div>
-        </div>
-        <!-- Você: de costas, na diagonal, com um pouco do rosto aparecendo -->
-        <div class="hero">
-          <div class="hero-head"><span class="hero-face"></span><span class="hero-ear"></span></div>
-          <div class="hero-body"></div>
+      <!-- Cena em pixel art (palco ampliado sem borrar; ver src/scene.js) -->
+      <div id="scene" class="scene">
+        <div id="stage" class="stage">
+          <canvas id="scene-bg" class="px"></canvas>
+          <div id="enemy-wrap" class="enemy-wrap">
+            <canvas id="enemy-sprite" class="px enemy-sprite"></canvas>
+          </div>
+          <!-- Você: Apostador Amaldiçoado, de costas na diagonal -->
+          <img id="hero" class="px hero" src="assets/hero/apostador_costas.png" alt="">
         </div>
       </div>
     </section>
@@ -64,7 +66,8 @@
     </div>
   </div>
 
-  <script src="src/dice.js?v=15"></script>
-  <script src="src/combat.js?v=15"></script>
+  <script src="src/dice.js?v=16"></script>
+  <script src="src/scene.js?v=16"></script>
+  <script src="src/combat.js?v=16"></script>
 </body>
 </html>

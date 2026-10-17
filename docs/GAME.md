@@ -80,7 +80,6 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 
 ## Em aberto
 - Nome do jogo
-- Estética visual do jogo (arte de inimigos, interface, bandeja)
 - Tipos de dados (d6, d8, dados especiais?)
 - Limite de rolagens: 3 ou 4?
 - Sistema de ingredientes/magias

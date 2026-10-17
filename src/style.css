@@ -1,10 +1,17 @@
 :root {
-  --bg: #1a1424;
-  --panel: #2a2138;
-  --text: #f1e9ff;
-  --muted: #a594c2;
-  --accent: #b77cff;
-  --held: #f2c14e;
+  /* Paleta "grimório" — todo o jogo usa só estas cores */
+  --ink: #120d1a; --night: #1e1630; --dusk: #2e2347; --violet: #463565;
+  --lilac: #9a7cc0; --amber: #f2b84b; --amber-d: #c97f2a;
+  --bone: #f3e7c9; --bone-d: #c9b48f; --red: #d0455a; --red-d: #8c2236;
+  --green: #4fa35a; --green-d: #2f6b3f; --steel: #6f8fc7; --steel-l: #c3d6f2;
+  --wood: #7a4a1c; --wood-l: #a86a33; --felt: #4a1228; --felt-l: #5e1a34;
+
+  --bg: var(--ink);
+  --panel: var(--night);
+  --text: var(--bone);
+  --muted: var(--lilac);
+  --accent: var(--amber);
+  --held: var(--amber);
 }
 * { box-sizing: border-box; }
 body {
@@ -13,7 +20,7 @@ body {
   overflow: hidden;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, sans-serif;
+  font-family: "Pixelify Sans", monospace;
   display: flex;
   justify-content: center;
   -webkit-tap-highlight-color: transparent;
@@ -27,21 +34,21 @@ main {
   display: flex; flex-direction: column; gap: 8px;
   text-align: center;
 }
-/* Bandeja de dados: moldura de madeira + feltro */
+/* Bandeja de dados em pixel art: moldura de tábuas + feltro pontilhado */
 .tray {
   position: relative;
   /* encolhe em telas baixas, cresce até 260px nas altas */
   height: clamp(150px, 33dvh, 260px);
   flex-shrink: 0;
-  border-radius: 18px;
-  border: 12px solid #6b4426;
-  background:
-    radial-gradient(ellipse at 50% 40%, #6e1f3a 0%, #4a1228 60%, #300a1a 100%);
-  box-shadow:
-    inset 0 0 0 2px #3d2412,
-    inset 0 8px 24px rgba(0, 0, 0, 0.7),
-    0 0 0 2px #8f5f37,
-    0 10px 24px rgba(0, 0, 0, 0.6);
+  border: 10px solid var(--wood);
+  border-image: repeating-linear-gradient(90deg, var(--wood) 0 14px, var(--wood-l) 14px 16px) 10;
+  background-color: var(--felt);
+  background-image:
+    linear-gradient(var(--red-d), var(--red-d)),
+    repeating-linear-gradient(45deg, var(--felt-l) 0 2px, transparent 2px 6px);
+  background-size: 100% 4px, auto;
+  background-repeat: no-repeat, repeat;
+  box-shadow: 0 0 0 3px var(--ink), 0 6px 0 0 var(--ink);
   overflow: hidden;
 }
 .tray { perspective: 1600px; }
@@ -77,8 +84,8 @@ main {
   position: absolute; inset: 0;
   border-radius: 9px;
   overflow: hidden;
-  background: linear-gradient(145deg, #fffaf0, #e4d9c4);
-  box-shadow: inset 0 0 0 1px #c9b994;
+  background: var(--bone);
+  box-shadow: inset 0 0 0 3px var(--ink), inset 0 -6px 0 0 var(--bone-d);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -96,26 +103,26 @@ main {
   opacity: 0;
 }
 .pip {
-  width: 9px; height: 9px;
-  border-radius: 50%;
-  background: #2a1a3a;
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  background: var(--ink);
 }
 .pip.off { visibility: hidden; }
 .blank {
   grid-column: 1 / -1; grid-row: 1 / -1;
-  font-size: 1.6rem; font-weight: 700; color: #9c8c70;
+  font-size: 1.6rem; font-weight: 700; color: var(--bone-d);
 }
 /* dado segurado: contorno dourado */
-.die.held .side { box-shadow: inset 0 0 0 3px var(--held); }
+.die.held .side { box-shadow: inset 0 0 0 4px var(--held), inset 0 -8px 0 0 var(--bone-d); }
 .die.held .glow { opacity: 0.6; }
 /* dado gasto (rolado de novo) que não vai atacar nem defender */
-.die.spent .side { background: linear-gradient(145deg, #b9b1a2, #8e8676); }
+.die.spent .side { background: var(--bone-d); }
 /* dados de defesa: aço azulado */
 .die.defense .side {
-  background: linear-gradient(145deg, #c9d8ee, #7f97bd);
-  box-shadow: inset 0 0 0 1px #5d749a;
+  background: var(--steel-l);
+  box-shadow: inset 0 0 0 3px var(--ink), inset 0 -6px 0 0 var(--steel);
 }
-.die.defense .pip { background: #f4f8ff; }
+.die.defense .pip { background: var(--ink); }
 .die.defense .glow { background: radial-gradient(closest-side, rgba(140, 190, 255, 0.9), rgba(140, 190, 255, 0)); }
 
 /* ---------- Inimigo ---------- */
@@ -126,99 +133,61 @@ main {
   display: flex; flex-direction: column; align-items: center;
 }
 .enemy-head { width: 100%; display: flex; justify-content: space-between; align-items: baseline; }
-.enemy-name { font-weight: 700; font-size: 1.1rem; }
-.intent { color: #ff9a8a; font-size: 0.9rem; font-weight: 600; }
+.enemy-name { font-weight: 700; font-size: 1.2rem; }
+.intent { color: var(--red); font-size: 1rem; font-weight: 700; }
 .bar {
   position: relative;
   width: 100%; height: 16px;
   margin-top: 6px;
-  border-radius: 8px;
-  background: #120c1a;
-  box-shadow: inset 0 0 0 2px #3a2d4c;
+  background: var(--night);
+  border: 2px solid var(--ink);
+  box-shadow: 0 0 0 1px var(--violet);
   overflow: hidden;
 }
 .bar .fill { height: 100%; transition: width 0.4s ease-out; }
 .bar span {
   position: absolute; inset: 0;
-  font-size: 0.75rem; font-weight: 700; line-height: 16px;
-  text-shadow: 0 1px 2px #000;
+  font-size: 0.8rem; font-weight: 700; line-height: 12px;
+  text-shadow: 1px 1px 0 var(--ink);
 }
-.enemy-bar .fill { background: linear-gradient(#e0566b, #a8283f); }
-.player-bar .fill { background: linear-gradient(#6ad08a, #2f8f51); }
+.enemy-bar .fill { background: var(--red); box-shadow: inset 0 -3px 0 var(--red-d); }
+.player-bar .fill { background: var(--green); box-shadow: inset 0 -3px 0 var(--green-d); }
 
-/* Cena provisória: inimigo de frente + você de costas na diagonal */
+/* Cena em pixel art: palco de 144×106 px lógicos, ampliado sem borrar (src/scene.js) */
 .scene {
   position: relative;
   flex: 1;
   width: 100%;
   min-height: 0;
-}
-.enemy-sprite {
-  --enemy-color: #7fbf6a;
-  position: absolute; left: 50%; top: 18%;
-  margin-left: -36px;
-  transition: opacity 0.6s, transform 0.6s;
-}
-.enemy-sprite .body {
-  position: relative;
-  width: 84px; height: 70px;
-  border-radius: 50% 50% 42% 42% / 60% 60% 40% 40%;
-  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.35), transparent 40%), var(--enemy-color);
-  box-shadow: inset 0 -12px 20px rgba(0,0,0,0.35), 0 14px 18px -8px rgba(0,0,0,0.6);
-  animation: idle 2.4s ease-in-out infinite;
-}
-.enemy-sprite .eye {
-  position: absolute; top: 34%;
-  width: 10px; height: 13px; border-radius: 50%;
-  background: #1a0f24;
-}
-.enemy-sprite .eye:nth-child(1) { left: 30%; }
-.enemy-sprite .eye:nth-child(2) { right: 30%; }
-.enemy-sprite .mouth {
-  position: absolute; left: 50%; top: 62%;
-  width: 24px; height: 7px; margin-left: -12px;
-  border-radius: 0 0 20px 20px;
-  background: #1a0f24;
-}
-.enemy-sprite.dead { opacity: 0; transform: scale(0.6) translateY(20px); }
-
-/* Você (provisório): cabeça e ombros de costas, virado um pouco para a direita */
-.hero {
-  position: absolute; left: 4%; bottom: -12px;
-  width: 120px; height: 120px;
-  pointer-events: none;
-  transform-origin: left bottom;
-  transform: scale(var(--scene-scale, 1));
-}
-.hero-body {
-  position: absolute; left: 0; bottom: 0;
-  width: 120px; height: 58px;
-  border-radius: 60px 70px 0 0 / 46px 50px 0 0;
-  background: linear-gradient(100deg, #3b2f52, #2a2140 70%, #1f1830);
-  box-shadow: inset 6px 6px 12px rgba(255,255,255,0.06);
-}
-.hero-head {
-  position: absolute; left: 32px; bottom: 44px;
-  width: 54px; height: 60px;
-  border-radius: 48% 52% 46% 46%;
-  background: #4a3424;            /* cabelo (nuca) */
   overflow: hidden;
 }
-.hero-face {                       /* pedacinho do rosto: bochecha à direita */
-  position: absolute; right: -10px; top: 18px;
-  width: 22px; height: 34px;
-  border-radius: 50%;
-  background: #d9a782;
+.stage {
+  position: absolute; left: 0; top: 0;
+  width: 144px; height: 106px;
+  transform-origin: 0 0;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--ink);
 }
-.hero-ear {
-  position: absolute; right: 6px; top: 26px;
-  width: 8px; height: 13px;
-  border-radius: 50%;
-  background: #c48f6c;
+.px {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
-@keyframes idle {
-  50% { transform: translateY(-6px) scaleY(1.03); }
+#scene-bg { position: absolute; left: 0; top: 0; width: 144px; height: 106px; }
+.enemy-wrap {
+  position: absolute;
+  animation: breathe 1s steps(1) infinite;
+  transition: opacity 0.6s, transform 0.6s;
 }
+.enemy-wrap.gone { opacity: 0; transform: translateY(6px) scale(0.6); animation: none; }
+.enemy-sprite { display: block; }
+.hero {
+  position: absolute; left: -8px; top: 58px;
+  width: 64px; height: 64px;
+  pointer-events: none;
+  animation: breathe 1.4s steps(1) infinite;
+}
+/* "respirar": sobe e desce 1 pixel */
+@keyframes breathe { 50% { transform: translateY(1px); } }
 
 /* ---------- Jogador ---------- */
 .player-area { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
@@ -232,21 +201,31 @@ main {
 /* Reserva de defesa */
 .reserve { display: flex; gap: 3px; }
 .reserve .slot {
-  width: 12px; height: 12px; border-radius: 3px;
-  box-shadow: inset 0 0 0 2px #5d749a;
+  width: 12px; height: 12px; border-radius: 2px;
+  box-shadow: inset 0 0 0 2px var(--steel);
 }
-.reserve .slot.full { background: linear-gradient(145deg, #c9d8ee, #7f97bd); box-shadow: none; }
+.reserve .slot.full { background: var(--steel-l); box-shadow: inset 0 0 0 2px var(--ink), inset 0 -3px 0 var(--steel); }
 .buttons[hidden] { display: none; }
-button.defend { background: #7f97bd; color: #0e1626; }
-button.endure { background: #3a2d4c; color: var(--text); }
-.buttons { display: flex; gap: 12px; }
+.buttons { display: flex; gap: 14px; padding: 4px; }
+/* Botão com borda "em degraus" de pixel */
 button {
-  flex: 1; padding: clamp(10px, 2dvh, 16px); font-size: 1.05rem; font-weight: 700;
-  border: none; border-radius: 12px;
-  background: var(--accent); color: #1a1424;
+  --btn: var(--amber); --btn-d: var(--amber-d); --btn-text: var(--ink);
+  flex: 1;
+  padding: clamp(8px, 1.8dvh, 14px) 0;
+  font: 700 1.2rem "Pixelify Sans", monospace;
+  border: none;
+  color: var(--btn-text);
+  background: var(--btn);
+  box-shadow:
+    0 -4px 0 0 var(--ink), 0 4px 0 0 var(--ink),
+    -4px 0 0 0 var(--ink), 4px 0 0 0 var(--ink),
+    inset 0 -4px 0 0 var(--btn-d);
 }
-button small { font-weight: 600; opacity: 0.7; }
-button.attack { background: #e0566b; color: #fff; }
+button:active:not(:disabled) { transform: translateY(2px); }
+button small { font-weight: 400; opacity: 0.75; }
+button.attack { --btn: var(--red); --btn-d: var(--red-d); --btn-text: var(--bone); }
+button.defend { --btn: var(--steel-l); --btn-d: var(--steel); }
+button.endure { --btn: var(--violet); --btn-d: var(--dusk); --btn-text: var(--bone); }
 button:disabled { opacity: 0.35; }
 
 /* Números que sobem (dano, cura) */
@@ -254,18 +233,18 @@ button:disabled { opacity: 0.35; }
   position: absolute; left: 50%; top: 45%;
   font-size: 2rem; font-weight: 800;
   pointer-events: none;
-  text-shadow: 0 2px 4px #000;
+  text-shadow: 2px 2px 0 var(--ink);
 }
 .player-hp .float { top: -10px; font-size: 1.5rem; }
-.float.dmg { color: #ffd166; }
-.player-hp .float.dmg { color: #ff6b6b; }
-.float.heal { color: #6ad08a; }
-.player-hp .float.block { color: #9cc0ff; font-size: 1.2rem; white-space: nowrap; }
+.float.dmg { color: var(--amber); }
+.player-hp .float.dmg { color: var(--red); }
+.float.heal { color: var(--green); }
+.player-hp .float.block { color: var(--steel-l); font-size: 1.2rem; white-space: nowrap; }
 
 /* Flash vermelho quando você leva dano */
 .hurt {
   position: fixed; inset: 0;
-  background: #c0182f;
+  background: var(--red);
   opacity: 0;
   pointer-events: none;
 }
@@ -274,28 +253,22 @@ button:disabled { opacity: 0.35; }
 .overlay {
   position: fixed; inset: 0;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(10, 6, 16, 0.75);
+  background: rgba(18, 13, 26, 0.8);
   padding: 16px;
 }
 .overlay[hidden] { display: none; }
 .overlay-box {
   width: 100%; max-width: 340px;
   background: var(--panel);
-  border-radius: 16px;
   padding: 24px;
+  box-shadow: 0 0 0 4px var(--ink), 0 0 0 8px var(--violet);
   text-align: center;
 }
 .overlay-box h2 { margin: 0 0 8px; }
 .overlay-box p { color: var(--muted); margin: 0 0 20px; }
 .overlay-box button { width: 100%; }
 
-/* Telas baixas: cena menor */
-@media (max-height: 700px) {
-  .scene { --scene-scale: 0.8; }
-  .enemy-sprite .body { width: 70px; height: 58px; }
-  .enemy-sprite { margin-left: -30px; top: 10%; }
-}
+/* Telas baixas: esconde a linha de texto para sobrar espaço */
 @media (max-height: 600px) {
-  .scene { --scene-scale: 0.62; }
   .log { display: none; }
 }

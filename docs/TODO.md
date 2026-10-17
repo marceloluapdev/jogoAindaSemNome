@@ -9,10 +9,11 @@
 - [x] Combate em turnos em primeira pessoa (inimigo com vida e intenção, jogador com vida, vitória/derrota)
 - [x] Seleção de dados para atacar; não selecionados e não rerrolados vão para a reserva de defesa (Defender/Aguentar)
 - [x] Testes automáticos de casos de uso (`tests/run_tests.py`)
-- [x] Personagem provisório de costas na diagonal; inimigo menor
+- [x] Estética pixel art aplicada ao jogo: cena (masmorra, tochas), Apostador Amaldiçoado e lodo do PixelLab, interface e dados no estilo
+- [x] Variações de inimigo por cor (Lodo Errante / Venenoso / de Brasa)
 
 ## Próximos passos
-- [ ] Definir a estética do jogo e trocar a arte provisória
+- [ ] Mais inimigos (PixelLab) de tamanhos variados
 - [ ] Layout: bandeja que entra/sai da tela, menus de combate
 - [ ] Balancear vida/ataque dos inimigos
 - [ ] Especiais por combinação (queimadura, raio, escudo...)

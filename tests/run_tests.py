@@ -287,6 +287,23 @@ def caso_combinacoes(j):
         igual((r["name"], r["points"]), (nome, pontos), f"evaluate{dados}")
 
 
+def caso_cena_pixel_carrega(j):
+    """A cena em pixel art carrega o sprite do inimigo (48×48) e o personagem (64×64)."""
+    j.page.wait_for_function("document.getElementById('enemy-sprite').width === 48")
+    j.page.wait_for_function("document.getElementById('hero').naturalWidth === 64")
+    igual(j.estado()["inimigo"], "Lodo Errante", "primeiro inimigo")
+
+
+def caso_variacao_de_cor_do_inimigo(j):
+    """Vencer troca para a variação seguinte (mesmo sprite, outra cor)."""
+    j.inimigo(vida=1, intencao=1)
+    j.rolar(1, 1, 1, 1)
+    j.atacar()
+    j.page.click("#overlay-btn")
+    igual(j.estado()["inimigo"], "Lodo Venenoso", "segundo inimigo")
+    j.page.wait_for_function("document.getElementById('enemy-sprite').width === 48")
+
+
 def caso_tela_cabe_no_celular(j):
     """Em vários tamanhos de celular, nome do inimigo e botões ficam visíveis sem rolar."""
     for w, h in [(360, 560), (360, 640), (390, 664), (412, 760), (430, 860)]:
