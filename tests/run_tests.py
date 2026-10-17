@@ -195,6 +195,23 @@ def caso_concentrar_da_carga(j):
     igual(j.js("charge"), 1, "carga")
 
 
+def caso_concentrar_mostra_carga(j):
+    """O botão Concentrar mostra '+1 carga' ou 'carga cheia' (aí só guarda a reserva)."""
+    j.inimigo(vida=999, intencao=1)
+    j.rolar(6, 1, 2, 3)
+    j.selecionar(0)
+    j.atacar()
+    assert "+1 carga" in j.page.inner_text("#endure"), j.page.inner_text("#endure")
+    j.aguentar()
+    j.js("charge = 5; render()")
+    j.rolar(6, 1, 2, 3)
+    j.selecionar(0, 1, 2)
+    j.atacar()
+    assert "carga cheia" in j.page.inner_text("#endure"), j.page.inner_text("#endure")
+    j.aguentar()
+    igual(j.js("charge"), 5, "carga continua cheia")
+
+
 def caso_tudo_cheio_bloqueia_ataque(j):
     """Reserva e carga cheias: Atacar fica bloqueado e pede para selecionar mais dados."""
     j.inimigo(vida=999, intencao=1)

@@ -282,6 +282,7 @@ button[hidden] { display: none; }
 .float.big { font-size: 3rem; }
 button.endure { --btn: var(--violet); --btn-d: var(--dusk); --btn-text: var(--bone); }
 button:disabled { opacity: 0.35; }
+button.muted small span { color: var(--red); opacity: 1; }
 
 /* Números que sobem (dano, cura) */
 .float {

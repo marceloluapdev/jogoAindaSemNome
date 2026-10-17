@@ -323,6 +323,9 @@ async function enemyTurn() {
 // Troca os botões por Defender / Concentrar e espera a escolha
 function askDefense() {
   $("defend-count").textContent = `(${reserve})`;
+  // Concentrar: mostra se ainda dá carga (com carga cheia, só guarda a reserva)
+  $("endure-info").textContent = charge < CHARGE_MAX ? "· +1 carga" : "· carga cheia";
+  $("endure").classList.toggle("muted", charge >= CHARGE_MAX);
   $("turn-buttons").hidden = true;
   $("defense-buttons").hidden = false;
   return new Promise(res => {
