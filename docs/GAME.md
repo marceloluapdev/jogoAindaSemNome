@@ -71,9 +71,11 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Começa com **3 dados** (menos coisa para entender); a história dá o **4º dado** depois do tutorial.
 - Cada mecânica é apresentada por um momento da história, em lutas curtas e fáceis:
   1. **Prólogo (livro-jogo)**: a taverna, a aposta perdida, a maldição prende 3 dados à alma do apostador.
-  2. **Luta 1**: rolar, selecionar e atacar (1 rolagem, inimigo fraco).
+  2. **Luta 1** (na taverna): rolar, selecionar e atacar (1 rolagem, inimigo fraco).
   3. **Luta 2**: rolar de novo, dados "gastos" e a reserva de defesa; Defender x Concentrar.
-  4. **Evento**: ganha o 4º dado (ideias: arrancado do lodo derrotado; ganho numa nova aposta; a maldição "cobra" e oferece mais um).
+  4. **Evento**: quem dá o **4º dado** é a **dona da taverna** onde ele estava jogando — ele a defendeu do inimigo
+     das lutas do tutorial (o ataque acontece na própria taverna), e ela retribui com um dado.
+     (Ideias descartadas por ora: arrancado do lodo derrotado; ganho numa nova aposta; oferecido pela maldição.)
   5. Carga da Maldição e Aposta Final podem ser ensinadas quando a carga encher pela primeira vez (no jogo livre).
 - Depois disso, segue o jogo normal (livre).
 
