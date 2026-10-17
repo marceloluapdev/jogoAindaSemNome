@@ -118,6 +118,55 @@ ICONS.carga = [
   "..kkk......",
 ];
 
+// Efeitos das combinações (Par = escudo, que já existe acima)
+ICON_COLORS.R = "#8c2236";
+ICON_COLORS.v = "#9a7cc0";
+ICON_COLORS.V = "#463565";
+// Coração (Dois pares: drena e cura)
+ICONS.cura = [
+  ".kkk...kkk.",
+  "krrrk.krrrk",
+  "krbrrkrrrRk",
+  "krbrrrrrrRk",
+  "krrrrrrrrRk",
+  ".krrrrrrRk.",
+  "..krrrrRk..",
+  "...krrRk...",
+  "....kRk....",
+  ".....k.....",
+  "...........",
+];
+// Chama (Trinca: queima)
+ICONS.fogo = [
+  ".....k.....",
+  "....kak....",
+  "...karak...",
+  "..karrak...",
+  "..karrrak..",
+  ".karraarak.",
+  ".karabbarak",
+  "kAraabbaark",
+  "kArabbbbark",
+  ".kArrrrrAk.",
+  "..kkkkkkk..",
+];
+// Raio âmbar (Sequência: atordoa)
+ICONS.raio = ICONS.carga.map(r => r.replace(/g/g, "a"));
+// Caveira lilás (Quadra: amaldiçoa)
+ICONS.maldicao = [
+  "..kkkkkkk..",
+  ".kvvvvvvvk.",
+  "kvvvvvvvvvk",
+  "kvkkvvvkkvk",
+  "kvkkvvvkkvk",
+  "kvvvvkvvvvk",
+  ".kVvvvvvVk.",
+  "..kvkvkvk..",
+  "..kVVVVVk..",
+  "...kkkkk...",
+  "...........",
+];
+
 // Dado da maldição (verde) com qualquer face — usado na Aposta Final
 const DIE_PIPS = {
   1: [[5, 5]], 2: [[2, 2], [8, 8]], 3: [[2, 2], [5, 5], [8, 8]],
