@@ -258,7 +258,9 @@ function lineUp() {
 // Dados parados (ou segurados) são quadrados alinhados: se dois estão um por
 // cima do outro, empurra para separar. Segurados não se mexem.
 // "rate" < 1 separa aos poucos (suave). Devolve a maior sobreposição achada.
-function separateResting(W, H, rate = 1) {
+// "force": segurados também podem ser empurrados (para destravar quando um dado
+// fica espremido entre um segurado e a parede e não tem para onde ir).
+function separateResting(W, H, rate = 1, force = false) {
   const size = DIE_SIZE + GAP;
   const list = activeDice();
   let worst = 0;
@@ -276,14 +278,15 @@ function separateResting(W, H, rate = 1) {
       if (ox < oy) px = (dx >= 0 ? 1 : -1) * ox * rate;
       else py = (dy >= 0 ? 1 : -1) * oy * rate;
       if (dx === 0 && dy === 0) px = size * rate;
-      const aShare = isHeld(A) ? 0 : isHeld(B) ? 1 : 0.5;
+      const aFix = isHeld(A) && !force, bFix = isHeld(B) && !force;
+      const aShare = aFix ? 0 : bFix ? 1 : 0.5;
       const bShare = 1 - aShare;
       A.x -= px * aShare; A.y -= py * aShare;
       B.x += px * bShare; B.y += py * bShare;
     }
   }
   list.forEach(b => {
-    if (isHeld(b)) return;
+    if (isHeld(b) && !force) return;
     b.x = Math.max(R, Math.min(W - R, b.x));
     b.y = Math.max(R, Math.min(H - R, b.y));
   });
@@ -335,6 +338,7 @@ function throwDice(moving, onDone) {
 
   let last = performance.now();
   const start = last;
+  let stuck = 0;   // quadros com todos parados mas ainda encavalados
 
   function step(now) {
     const dt = Math.min((now - last) / 1000, 1 / 30);
@@ -432,8 +436,10 @@ function throwDice(moving, onDone) {
       }
     }
 
-    // Separa aos poucos quem já parou em cima de outro
-    const overlapLeft = separateResting(W, H, 0.35);
+    // Separa aos poucos quem já parou em cima de outro; se travar, destrava
+    const allStill = moving.every(b => b.state === "stopped");
+    stuck = allStill ? stuck + 1 : 0;
+    const overlapLeft = separateResting(W, H, 0.35, stuck > 30);
 
     active.forEach(place);
 
@@ -451,6 +457,7 @@ function throwDice(moving, onDone) {
         }
       });
       for (let k = 0; k < 40 && separateResting(W, H) > 0.5; k++);
+      for (let k = 0; k < 40 && separateResting(W, H, 1, true) > 0.5; k++);
       active.forEach(place);
       setTimeout(onDone, 200);
     }

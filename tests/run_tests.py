@@ -304,6 +304,25 @@ def caso_variacao_de_cor_do_inimigo(j):
     j.page.wait_for_function("document.getElementById('enemy-sprite').width === 48")
 
 
+def caso_fisica_sem_dados_encavalados(j):
+    """Física de verdade (10 rodadas): ao final, nenhum dado fica encavalado em outro — inclusive defesa x selecionados."""
+    j.js("window.TEST_MODE = false")
+    medir = """() => { const a = bodies.filter(b => b.active); let w = 0;
+      for (let i = 0; i < a.length; i++) for (let k = i + 1; k < a.length; k++) {
+        const ox = DIE_SIZE - Math.abs(a[i].x - a[k].x), oy = DIE_SIZE - Math.abs(a[i].y - a[k].y);
+        if (ox > 0 && oy > 0) w = Math.max(w, Math.min(ox, oy)); }
+      return w; }"""
+    for rodada in range(10):
+        j.js("resetDice()")
+        j.js("new Promise(res => rollDice(res))")
+        j.page.wait_for_function("!rolling", timeout=10000)
+        assert j.js(medir) <= 0.5, f"rodada {rodada}: dados de ataque encavalados"
+        j.js("held = [true, true, false, false]; render()")
+        j.js("new Promise(res => rollDefense(3, res))")
+        j.page.wait_for_function("!rolling", timeout=10000)
+        assert j.js(medir) <= 0.5, f"rodada {rodada}: dado de defesa encavalado"
+
+
 def caso_tela_cabe_no_celular(j):
     """Em vários tamanhos de celular, nome do inimigo e botões ficam visíveis sem rolar."""
     for w, h in [(360, 560), (360, 640), (390, 664), (412, 760), (430, 860)]:
