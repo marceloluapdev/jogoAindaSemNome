@@ -62,9 +62,9 @@ const PIPS = {
   6: [0, 2, 3, 5, 6, 8],
 };
 
-const DIE_SIZE = 44;
+const DIE_SIZE = 40;
 const R = DIE_SIZE / 2; // metade do dado (raio de rolagem)
-const RC = 26;           // raio de colisão em movimento (um pouco maior: o dado é quadrado)
+const RC = 24;           // raio de colisão em movimento (um pouco maior: o dado é quadrado)
 const GAP = 4;           // espaço mínimo entre dados parados
 
 // Para cada valor: direção da face no cubo (x direita, y baixo, z para quem olha)

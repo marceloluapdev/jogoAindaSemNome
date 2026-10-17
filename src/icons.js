@@ -86,17 +86,19 @@ const ICONS = {
 
 // Dado branco com uma mini caveira vermelha no lugar do 1 (Sem sorte: a pior jogada)
 ICONS.semsorte = [
-  ".kkkkkkkkk.",
-  "kbbbbbbbbbk",
-  "kbbbrrrbbbk",
-  "kbbrrrrrbbk",
-  "kbbrkrkrbbk",
-  "kbbrrrrrbbk",
-  "kbbbrkrbbbk",
-  "kbbbrbrbbbk",
-  "kbbbbbbbbbk",
-  "kmmmmmmmmmk",
-  ".kkkkkkkkk.",
+  ".kkkkkkkkkkk.",
+  "kbbbbbbbbbbbk",
+  "kbbbbbbbbbbbk",
+  "kbbbbrrrbbbbk",
+  "kbbbrrrrrbbbk",
+  "kbbbrkrkrbbbk",
+  "kbbbrrrrrbbbk",
+  "kbbbbrkrbbbbk",
+  "kbbbbrbrbbbbk",
+  "kbbbbbbbbbbbk",
+  "kbbbbbbbbbbbk",
+  "kmmmmmmmmmmmk",
+  ".kkkkkkkkkkk.",
 ];
 ICON_COLORS.m = "#5a4a38";
 ICON_COLORS.r = "#d0455a";

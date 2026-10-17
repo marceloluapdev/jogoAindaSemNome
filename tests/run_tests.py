@@ -396,6 +396,24 @@ def caso_fisica_sem_dados_encavalados(j):
         assert j.js(medir) <= 0.5, f"rodada {rodada}: dado de defesa encavalado"
 
 
+def caso_tela_nao_pula(j):
+    """Cena, bandeja e botões ficam no mesmo lugar ao rolar e ao trocar ataque ↔ defesa (mesmo com nome longo)."""
+    for w, h in [(320, 600), (360, 640), (412, 760)]:
+        j.page.set_viewport_size({"width": w, "height": h})
+        j.js("resetDice(); busy = false; over = false; reserve = 0; charge = 5; rollsLeft = 2;"
+             "enemy.name = 'Lodo de Brasa Ancestral'; enemy.hp = enemy.maxHp = 999; render()")
+        pos = """['scene', 'tray'].map(i => document.getElementById(i).getBoundingClientRect().top | 0)
+                 .concat([document.querySelector('.buttons:not([hidden])').getBoundingClientRect().top | 0])"""
+        antes = j.js(pos)
+        j.rolar(6, 1, 2, 3)
+        j.selecionar(0)
+        depois = j.js(pos)
+        j.atacar()
+        defesa = j.js(pos)
+        igual((depois, defesa), (antes, antes), f"{w}x{h} posições (cena, bandeja, botões)")
+        j.defender(1, 1, 1)
+
+
 def caso_tela_cabe_no_celular(j):
     """Em vários tamanhos de celular, nome do inimigo e botões ficam visíveis sem rolar."""
     for w, h in [(360, 560), (360, 640), (390, 664), (412, 760), (430, 860)]:
