@@ -216,6 +216,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function heroUltimate(values, onImpact) {
   if (window.TEST_MODE) { values.forEach((v, i) => onImpact(v, i)); return; }
+  // garante que todos os quadros do giro já estão baixados e decodificados
+  // (no celular, com a rede lenta, os quadros eram pulados antes de aparecer)
+  await Promise.all(ULT_DIRS.map(async d => {
+    const img = await loadImage(ultFrame(d));
+    if (img && img.decode) { try { await img.decode(); } catch (e) {} }
+  }));
+
   // sobe flutuando enquanto a cena escurece
   heroPose("ultimate");
   const float = heroImg.animate(
@@ -231,7 +238,7 @@ async function heroUltimate(values, onImpact) {
   // gira: até ficar de frente para nós (segura um instante) e volta a encarar o inimigo
   for (let i = 1; i < ULT_DIRS.length; i++) {
     heroImg.src = ultFrame(ULT_DIRS[i]);
-    await sleep(ULT_DIRS[i] === "south" ? 550 : 75);
+    await sleep(ULT_DIRS[i] === "south" ? 650 : 110);
   }
   await sleep(150);
 
