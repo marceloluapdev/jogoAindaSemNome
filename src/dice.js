@@ -62,9 +62,9 @@ const PIPS = {
   6: [0, 2, 3, 5, 6, 8],
 };
 
-const DIE_SIZE = 52;
+const DIE_SIZE = 44;
 const R = DIE_SIZE / 2; // metade do dado (raio de rolagem)
-const RC = 30;           // raio de colisão em movimento (um pouco maior: o dado é quadrado)
+const RC = 26;           // raio de colisão em movimento (um pouco maior: o dado é quadrado)
 const GAP = 4;           // espaço mínimo entre dados parados
 
 // Para cada valor: direção da face no cubo (x direita, y baixo, z para quem olha)
@@ -527,10 +527,9 @@ function resetDice() {
   held = Array(NUM_DICE).fill(false);
   spent = Array(NUM_DICE).fill(false);
   bodies.forEach(b => {
-    if (b.kind === "defense") {
-      b.active = false;
-      b.el.hidden = true;
-    }
+    // dados de defesa saem; os de ataque voltam para a mesa
+    b.active = b.kind === "attack";
+    b.el.hidden = !b.active;
   });
   lineUp();
 }

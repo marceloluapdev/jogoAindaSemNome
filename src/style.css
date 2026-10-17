@@ -54,7 +54,7 @@ main {
 .tray { perspective: 1600px; }
 .die {
   position: absolute; left: 0; top: 0;
-  width: 52px; height: 52px;
+  width: 44px; height: 44px;
   cursor: pointer; user-select: none;
   will-change: transform;
   transform-style: preserve-3d;
@@ -63,14 +63,14 @@ main {
   position: absolute; inset: -6px;
   border-radius: 50%;
   background: radial-gradient(closest-side, rgba(0,0,0,0.55), rgba(0,0,0,0));
-  transform: translate3d(5px, 9px, -27px);
+  transform: translate3d(4px, 8px, -23px);
 }
 .glow {
   position: absolute; inset: -18px;
   border-radius: 50%;
   background: radial-gradient(closest-side, rgba(255, 220, 140, 0.9), rgba(255, 220, 140, 0));
   opacity: 0;
-  transform: translateZ(-26px);
+  transform: translateZ(-22px);
   pointer-events: none;
 }
 .bounce, .cube {
@@ -91,7 +91,7 @@ main {
 }
 .pips {
   position: absolute; inset: 0;
-  padding: 7px;
+  padding: 6px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -103,7 +103,7 @@ main {
   opacity: 0;
 }
 .pip {
-  width: 8px; height: 8px;
+  width: 7px; height: 7px;
   border-radius: 2px;
   background: var(--ink);
 }
