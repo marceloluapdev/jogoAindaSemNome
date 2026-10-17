@@ -67,6 +67,27 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - As escolhas **mudam o personagem** (atributos, magias, maldições, aliados).
 - Objetivo: histórias **emergentes**, diferentes a cada partida (referência: Dwarf Fortress).
 
+## Tutorial integrado à história (rascunho)
+- Começa com **3 dados** (menos coisa para entender); a história dá o **4º dado** depois do tutorial.
+- Cada mecânica é apresentada por um momento da história, em lutas curtas e fáceis:
+  1. **Prólogo (livro-jogo)**: a taverna, a aposta perdida, a maldição prende 3 dados à alma do apostador.
+  2. **Luta 1**: rolar, selecionar e atacar (1 rolagem, inimigo fraco).
+  3. **Luta 2**: rolar de novo, dados "gastos" e a reserva de defesa; Defender x Concentrar.
+  4. **Evento**: ganha o 4º dado (ideias: arrancado do lodo derrotado; ganho numa nova aposta; a maldição "cobra" e oferece mais um).
+  5. Carga da Maldição e Aposta Final podem ser ensinadas quando a carga encher pela primeira vez (no jogo livre).
+- Depois disso, segue o jogo normal (livre).
+
+## Livro-jogo: visual (a decidir)
+Objetivo: **econômico, consistente e seguro**. Opções:
+- **A) Estilo visual novel** (recomendado): poucos **cenários de fundo reutilizáveis** (taverna, masmorra, estrada...)
+  + **retratos dos personagens** com expressões (normal, bravo, assustado, rindo) + caixa de texto e escolhas.
+  Retratos/expressões via PixelLab **Create State** (mesmo personagem → consistente e barato).
+  Fundos: desenhados em código no mesmo estilo da masmorra (grátis e consistente), ou gerados no PixelLab se
+  houver ferramenta de cenário com custo aceitável.
+- **B) Ilustração por cena** (cada página uma imagem): mais bonito, mas caro e difícil manter consistente.
+- **C) Texto com vinhetas** (ícones/pequenas artes, estilo livros-jogo antigos): o mais barato.
+- Imagens geradas por outra IA (ex.: GPT): risco de **inconsistência** de estilo; usar no máximo como referência.
+
 ## Estética
 - **Pixel art** com paleta fixa estilo grimório (roxos, âmbar, verde-alquímico, vinho).
   Resolução lógica um pouco maior que a da amostra, para reduzir o serrilhado.

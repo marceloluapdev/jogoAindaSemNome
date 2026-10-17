@@ -21,9 +21,9 @@
 - [ ] Primeiras magias/ingredientes que alteram dados ou multiplicador
 - [ ] Ganhar dados/rolagens extras como recompensa (até 6 dados)
 - [ ] Usar as colisões como mecânica (ver "Ideias para avaliar depois" no GAME.md)
-- [ ] Primeira cena de livro-jogo entre rodadas, com 2–3 escolhas
+- [ ] Decidir o visual do livro-jogo (ver opções no GAME.md) e fazer a primeira cena com 2–3 escolhas
 - [ ] Atributos do personagem afetados pelas escolhas
-- [ ] Tutorial (primeira luta guiada). Explicar, um de cada vez:
+- [ ] Tutorial integrado à história (começa com 3 dados; 4º dado vem da história — ver GAME.md). Explicar, um de cada vez:
   - selecionar dados = os que atacam e os que ficam na rerrolagem
   - não selecionados e não rerrolados vão para a reserva de defesa (rerrolar "gasta" o dado)
   - Defender x Concentrar (Concentrar = leva o golpe e guarda a reserva)
