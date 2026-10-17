@@ -228,6 +228,13 @@ function fxStart() {
   stage.insertBefore(c, enemyWrap);               // atrás do inimigo e de você
   fx.canvas = c; fx.ctx = c.getContext("2d");
   fx.img = fx.ctx.createImageData(SW, SH);
+  // camada da frente: aura translúcida que envolve o personagem
+  const f = document.createElement("canvas");
+  f.width = SW; f.height = SH;
+  f.className = "px fx fx-front";
+  stage.appendChild(f);                            // na frente de você
+  fx.front = f; fx.fctx = f.getContext("2d");
+  fx.fimg = fx.fctx.createImageData(SW, SH);
   fx.level = 0; fx.fade = 1; fx.running = true;
   requestAnimationFrame(fxLoop);
 }
@@ -235,7 +242,8 @@ function fxStart() {
 function fxStop() {
   fx.running = false;
   if (fx.canvas) fx.canvas.remove();
-  fx.canvas = null;
+  if (fx.front) fx.front.remove();
+  fx.canvas = null; fx.front = null;
 }
 
 // Pixel preenchido e translúcido, estilo magias de Super Nintendo (FF6):
@@ -302,6 +310,21 @@ function fxLoop(now) {
   }
 
   fx.ctx.putImageData(fx.img, 0, 0);
+
+  // 4) aura na frente de você: um "casulo" de energia translúcido e claro,
+  //    no formato do corpo (oval alto), mais forte nas bordas e ondulando
+  const fd = fx.fimg.data;
+  fd.fill(0);
+  const ax = 22 + 3 * L, ay = 30 + 3 * L;
+  for (let y = -ay - 2; y <= ay + 2; y++) for (let x = -ax - 2; x <= ax + 2; x++) {
+    const wob = 1 + 0.06 * Math.sin(Math.atan2(y, x) * 5 + t * 4);
+    const r = Math.hypot(x / ax, y / ay) / wob;
+    if (r > 1) continue;
+    const rim = Math.max(0, (r - 0.55) / 0.45);         // borda mais forte, meio bem leve
+    const I = Math.min(1, L * (0.35 + 0.65 * rim));
+    fxDot(fd, hx + x, hy + 8 + y, I, null, 110);       // bem translúcido
+  }
+  fx.fctx.putImageData(fx.fimg, 0, 0);
   requestAnimationFrame(fxLoop);
 }
 
