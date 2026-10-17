@@ -52,7 +52,11 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),
-  modificados por alquimia/magias.
+  modificados por alquimia/magias. Fazer primeiro só os efeitos (dão personalidade a cada mão;
+  ex.: atacar com Par às vezes vale pelo escudo).
+- **Fraqueza do inimigo por tipo de combinação: adiada.** Depender do dado para acertar a fraqueza
+  pode parecer azar, e é difícil balancear agora. Se voltar: só como bônus (ex.: ×1,5), nunca obrigação,
+  e quando houver mais inimigos diferentes.
 
 ## Dados e rolagens
 - Começo: **4 dados** e **2 rolagens** por jogada.
