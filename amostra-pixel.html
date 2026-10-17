@@ -313,6 +313,8 @@ ENEMY_IMG.onload = () => {
   c.fillRect(0, 0, ENEMY_FLASH.width, ENEMY_FLASH.height);
 };
 ENEMY_IMG.src = "assets/enemies/slime.png";
+const HERO_IMG = new Image();
+HERO_IMG.src = "assets/hero/apostador_costas.png";
 
 function evaluate(vals) {
   const c = {}; vals.forEach(v => c[v] = (c[v] || 0) + 1);
@@ -418,7 +420,8 @@ function render(now) {
   bar(42, 8, 60, enemyHp, "r", "R");
 
   // você (de costas, na diagonal, à esquerda)
-  draw(HERO, 4, 106 - HERO.h + 2);
+  // você: Apostador Amaldiçoado (PixelLab, vista de costas na diagonal); as pernas ficam atrás da bandeja
+  if (HERO_IMG.complete && HERO_IMG.naturalWidth) ctx.drawImage(HERO_IMG, -8, 58 + (Math.floor(now / 700) % 2));
 
   drawTray();
   dice.forEach(d => {
