@@ -301,6 +301,19 @@ let enemyHp = 1;
 let shake = 0;
 let flashT = 0;
 
+// Sprite do inimigo (gerado no PixelLab) + versão branca para o "pisca" ao levar dano
+const ENEMY_IMG = new Image();
+const ENEMY_FLASH = document.createElement("canvas");
+ENEMY_IMG.onload = () => {
+  ENEMY_FLASH.width = ENEMY_IMG.width; ENEMY_FLASH.height = ENEMY_IMG.height;
+  const c = ENEMY_FLASH.getContext("2d");
+  c.drawImage(ENEMY_IMG, 0, 0);
+  c.globalCompositeOperation = "source-atop";
+  c.fillStyle = "#f3e7c9";
+  c.fillRect(0, 0, ENEMY_FLASH.width, ENEMY_FLASH.height);
+};
+ENEMY_IMG.src = "assets/enemies/slime.png";
+
 function evaluate(vals) {
   const c = {}; vals.forEach(v => c[v] = (c[v] || 0) + 1);
   const n = Object.values(c).sort((a, b) => b - a);
@@ -391,11 +404,15 @@ function render(now) {
   drawGlow(11, 38, 14, PAL.a); drawGlow(133, 38, 14, PAL.a);
   draw(TORCH[fl], 10, 34); draw(TORCH[1 - fl], 132, 34);
 
-  // inimigo
-  const ex = 61, ey = 46 + (Math.floor(now / 500) % 2);
+  // inimigo: sprite do PixelLab (48×48), "respirando" 1px
+  const ex = 48, ey = 42 + (Math.floor(now / 500) % 2);
   if (enemyHp > 0) {
-    draw(SLIME[Math.floor(now / 500) % 2], ex, ey);
-    if (flashT > 0) { ctx.globalAlpha = 0.6; rect("b", ex, ey, 22, 16); ctx.globalAlpha = 1; flashT--; }
+    // sombra no chão (o jogo desenha a sombra, não o sprite)
+    ctx.globalAlpha = 0.45; rect("k", ex + 12, 81, 24, 2); rect("k", ex + 15, 83, 18, 1); ctx.globalAlpha = 1;
+    if (ENEMY_IMG.complete && ENEMY_IMG.naturalWidth) {
+      ctx.drawImage(flashT > 0 ? ENEMY_FLASH : ENEMY_IMG, ex, ey);
+    }
+    if (flashT > 0) flashT--;
   }
   // nome e vida do inimigo (barra)
   bar(42, 8, 60, enemyHp, "r", "R");
