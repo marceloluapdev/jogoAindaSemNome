@@ -23,4 +23,10 @@
 - [ ] Usar as colisões como mecânica (ver "Ideias para avaliar depois" no GAME.md)
 - [ ] Primeira cena de livro-jogo entre rodadas, com 2–3 escolhas
 - [ ] Atributos do personagem afetados pelas escolhas
+- [ ] Tutorial (primeira luta guiada). Explicar, um de cada vez:
+  - selecionar dados = os que atacam e os que ficam na rerrolagem
+  - não selecionados e não rerrolados vão para a reserva de defesa (rerrolar "gasta" o dado)
+  - Defender x Concentrar (Concentrar = leva o golpe e guarda a reserva)
+  - Carga da Maldição enche por **dois caminhos**: excesso da reserva **e** +1 a cada Concentrar
+  - carga cheia libera a Aposta Final
 - [ ] Escolher um nome para o jogo
