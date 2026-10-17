@@ -13,6 +13,13 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
    (o equivalente aos coringas do Balatro).
 4. **Entre as jogadas: livro-jogo** — trechos de história com escolhas.
 
+## Personagem
+- Inicial: **Apostador Amaldiçoado** — jogador de taverna que perdeu a alma numa aposta e ficou preso aos dados.
+  Chapéu largo, casaco puído, **dados pendurados** no chapéu/cabelo/roupa como amuletos (visíveis de costas).
+  Ideia: cada dado novo que você ganha aparece pendurado nele.
+- Futuro: **mais de um personagem inicial**. Candidato: **Homúnculo** (criatura com frasco brilhando nas costas;
+  a cor do líquido e partes do corpo mudam com poções e escolhas). Outras ideias: Aprendiz de Alquimista, Vidente Vendado.
+
 ## Combate
 - Em turnos, **primeira pessoa**: inimigo de frente no topo, ações do jogador embaixo
   (layout inspirado em Undertale; a **estética será própria**, ainda a definir — manter um estilo único no jogo todo).
