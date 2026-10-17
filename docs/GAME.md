@@ -51,9 +51,13 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   envolvendo-o, e uma **aurora boreal** verde se formando sobre o inimigo — que continua enquanto os dados caem.
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
-- Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),
-  modificados por alquimia/magias. Fazer primeiro só os efeitos (dão personalidade a cada mão;
-  ex.: atacar com Par às vezes vale pelo escudo).
+- **Efeitos por combinação** (além do dano; valores pela soma dos dados que atacam), mostrados na prévia:
+  **Par** escudo ⌈soma/2⌉ no próximo golpe · **Dois/Três pares** drena, cura ⌈soma/3⌉ ·
+  **Trinca/Duas trincas** queima: inimigo perde "soma" depois do ataque dele ·
+  **Sequência de 4+ / Duas sequências** raio: atordoa, inimigo perde o ataque ·
+  **Quadra/Quinteto/Sexteto** maldição: inimigo ataca com metade da força pelo resto da luta ·
+  **Casa cheia** escudo + queima · **Sequência curta** sem efeito (sai fácil demais para atordoar).
+  Estados do inimigo aparecem como ícones ao lado da intenção. Futuro: modificados por alquimia/magias.
 - **Fraqueza do inimigo por tipo de combinação: adiada.** Depender do dado para acertar a fraqueza
   pode parecer azar, e é difícil balancear agora. Se voltar: só como bônus (ex.: ×1,5), nunca obrigação,
   e quando houver mais inimigos diferentes.
@@ -62,9 +66,13 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Começo: **4 dados** e **2 rolagens** por jogada.
 - Dados e rolagens extras são recompensas (magias, ingredientes, escolhas da história).
 - Limite: **6 dados** na bandeja; rolagens até **3 ou 4** no total (a decidir).
-- Combinações (mult.): Sexteto ×15 · Quinteto ×10 · Quadra ×6 · Sequência grande (5) ×5 ·
-  Casa cheia ×4 · Sequência (4) ×3 · Trinca ×3 · Dois pares ×2 · Par ×1,5.
-  Quinteto, casa cheia e sequência grande só aparecem com 5+ dados; sexteto com 6.
+- Combinações (mult.) → efeito:
+  Sexteto ×15 · Quinteto ×10 · Sequência completa (6) ×8 · Duas trincas ×7 · Quadra ×6 ·
+  Sequência grande (5) ×5 · Casa cheia ×4 · Duas sequências ×4 · Sequência (4) ×3 · Trinca ×3 ·
+  Três pares ×3 · Dois pares ×2 · Sequência curta (3) ×2 · Par ×1,5.
+  Sequências contam pelo **tamanho** (3, 4, 5, 6 seguidos), não pelo nº de dados.
+  Quinteto, casa cheia e sequência grande só com 5+ dados; sexteto, sequência completa e as
+  **mãos duplas** (Duas sequências, Três pares, Duas trincas) só com 6.
 
 ## História emergente
 - Estilo **livro-jogo**: escolhas entre as rodadas.

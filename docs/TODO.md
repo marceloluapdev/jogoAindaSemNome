@@ -12,12 +12,12 @@
 - [x] Estética pixel art aplicada ao jogo: cena (masmorra, tochas), Apostador Amaldiçoado e lodo do PixelLab, interface e dados no estilo
 - [x] Variações de inimigo por cor (Lodo Errante / Venenoso / de Brasa)
 - [x] Carga da Maldição + Aposta Final (pose flutuando do PixelLab girando nas 8 direções, dados caindo)
+- [x] Efeitos por combinação (escudo, cura, queima, atordoa, maldição) + sequências de 3 a 6 e mãos duplas de 6 dados
 
 ## Próximos passos
 - [ ] Mais inimigos (PixelLab) de tamanhos variados
 - [ ] Layout: bandeja que desliza para baixo; menu de 4 botões (Rolar, Atacar, Itens, Habilidades) com submenus
 - [ ] Balancear vida/ataque dos inimigos
-- [ ] Especiais por combinação (Par=escudo, Dois pares=drenar, Trinca=fogo, Sequência=raio, Quadra=maldição)
 - [ ] Primeiras magias/ingredientes que alteram dados ou multiplicador
 - [ ] Ganhar dados/rolagens extras como recompensa (até 6 dados)
 - [ ] Usar as colisões como mecânica (ver "Ideias para avaliar depois" no GAME.md)

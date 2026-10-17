@@ -125,7 +125,8 @@ def caso_ataque_so_com_selecionados(j):
     j.rolar(5, 5, 5, 2)
     j.selecionar(0, 1, 2)            # trinca de 5
     j.atacar()
-    igual(999 - j.estado()["vidaInimigo"], 45, "dano (15 × 3)")
+    j.aguentar()                      # a queimadura arde depois do ataque do inimigo
+    igual(999 - j.estado()["vidaInimigo"], 45 + 15, "dano (15 × 3) + queimadura da trinca (15)")
 
 
 def caso_sem_selecao_ataca_com_todos(j):
@@ -296,7 +297,7 @@ def caso_sem_reserva_nao_pergunta(j):
     """Sem reserva, o inimigo ataca direto (sem botões de defesa)."""
     j.inimigo(vida=999, intencao=5)
     vida = j.estado()["vida"]
-    j.rolar(1, 2, 3, 4)
+    j.rolar(1, 3, 5, 6)               # sem combinação (sequência atordoaria)
     j.atacar()
     igual(j.esperando_defesa(), False, "pergunta de defesa")
     igual(vida - j.estado()["vida"], 5, "dano recebido")
@@ -333,7 +334,7 @@ def caso_vitoria_traz_proximo_inimigo(j):
 def caso_derrota(j):
     """Vida zerada: tela de derrota; Recomeçar volta ao início."""
     j.inimigo(vida=999, intencao=50)
-    j.rolar(1, 2, 3, 4)
+    j.rolar(1, 3, 5, 6)
     j.atacar()
     igual(j.tela_final(), "Derrota", "tela")
     j.page.click("#overlay-btn")
@@ -354,10 +355,122 @@ def caso_combinacoes(j):
         (3, 3, 3, 2, 2): ("Casa cheia", 52),
         (4, 4, 4, 4, 4): ("Quinteto", 200),
         (6, 6, 6, 6, 6, 6): ("Sexteto", 540),
+        (2, 3, 4, 6): ("Sequência curta", 30),
+        (1, 2, 3, 4, 5, 6): ("Sequência completa", 168),
+        (2, 3, 4, 2, 3, 4): ("Duas sequências", 72),
+        (1, 1, 3, 3, 6, 6): ("Três pares", 60),
+        (2, 2, 2, 5, 5, 5): ("Duas trincas", 147),
     }
     for dados, (nome, pontos) in casos.items():
         r = j.js(f"evaluate({list(dados)})")
         igual((r["name"], r["points"]), (nome, pontos), f"evaluate{dados}")
+
+
+def caso_par_da_escudo(j):
+    """Par: além do dano, um escudo de ⌈soma/2⌉ bloqueia o próximo golpe."""
+    j.inimigo(vida=999, intencao=10)
+    j.rolar(6, 6, 1, 1)
+    j.selecionar(0, 1)               # par de 6: escudo 6, reserva 2
+    assert "escudo" in j.page.inner_html("#combo"), "prévia mostra o escudo"
+    j.atacar()
+    j.aguentar()                      # não usa a reserva: só o escudo bloqueia
+    igual(j.estado()["vida"], 40 - 4, "vida (10 - escudo 6)")
+
+
+def caso_dois_pares_cura(j):
+    """Dois pares: drena e cura ⌈soma/3⌉."""
+    j.inimigo(vida=999, intencao=0)
+    j.js("player.hp = 20; render()")
+    j.rolar(5, 5, 4, 4)
+    j.atacar()
+    igual(j.estado()["vida"], 26, "vida (20 + 6)")
+
+
+def caso_trinca_queima(j):
+    """Trinca: o inimigo queima (perde a soma dos dados) depois do ataque dele."""
+    j.inimigo(vida=999, intencao=1)
+    j.rolar(2, 2, 2, 6)
+    j.selecionar(0, 1, 2)
+    j.atacar()
+    j.aguentar()
+    igual(999 - j.estado()["vidaInimigo"], 18 + 6, "dano (6 × 3) + queimadura 6")
+
+
+def caso_sequencia_atordoa(j):
+    """Sequência: o inimigo fica atordoado e não ataca neste turno."""
+    j.inimigo(vida=999, intencao=10)
+    j.rolar(3, 4, 5, 6)
+    j.atacar()
+    igual(j.estado()["vida"], 40, "vida intacta")
+
+
+def caso_quadra_amaldicoa(j):
+    """Quadra: o inimigo ataca com metade da força pelo resto da luta."""
+    j.inimigo(vida=999, intencao=10)
+    j.rolar(2, 2, 2, 2)
+    j.atacar()
+    igual(j.estado()["vida"], 35, "vida (10 / 2)")
+    j.js("newIntent(); render()")
+    assert j.estado()["intencao"] <= 4, "próximas intenções pela metade"
+
+
+def caso_par_da_escudo(j):
+    """Par: além do dano, um escudo de ⌈soma/2⌉ bloqueia o próximo golpe."""
+    j.inimigo(vida=999, intencao=10)
+    j.rolar(6, 6, 1, 5)
+    j.selecionar(0, 1)               # par de 6: escudo 6, reserva 2
+    assert "escudo" in j.page.inner_html("#combo"), "prévia mostra o escudo"
+    j.atacar()
+    j.aguentar()                      # não usa a reserva: só o escudo bloqueia
+    igual(j.estado()["vida"], 40 - 4, "vida (10 - escudo 6)")
+
+
+def caso_dois_pares_cura(j):
+    """Dois pares: drena e cura ⌈soma/3⌉."""
+    j.inimigo(vida=999, intencao=0)
+    j.js("player.hp = 20; render()")
+    j.rolar(5, 5, 4, 4)
+    j.atacar()
+    igual(j.estado()["vida"], 26, "vida (20 + 6)")
+
+
+def caso_trinca_queima(j):
+    """Trinca: o inimigo queima (perde a soma dos dados) depois do ataque dele."""
+    j.inimigo(vida=999, intencao=1)
+    j.rolar(2, 2, 2, 6)
+    j.selecionar(0, 1, 2)
+    j.atacar()
+    j.aguentar()
+    igual(999 - j.estado()["vidaInimigo"], 18 + 6, "dano (6 × 3) + queimadura 6")
+
+
+def caso_sequencia_atordoa(j):
+    """Sequência de 4: o inimigo fica atordoado e não ataca neste turno."""
+    j.inimigo(vida=999, intencao=10)
+    j.rolar(3, 4, 5, 6)
+    j.atacar()
+    igual(j.estado()["vida"], 40, "vida intacta")
+
+
+def caso_sequencia_curta_nao_atordoa(j):
+    """Sequência curta (3): só dano ×2, o inimigo ataca normalmente."""
+    j.inimigo(vida=999, intencao=10)
+    j.rolar(2, 3, 4, 1)
+    j.selecionar(0, 1, 2)
+    j.atacar()
+    j.aguentar()
+    e = j.estado()
+    igual((999 - e["vidaInimigo"], e["vida"]), (18, 30), "(dano 9 × 2, vida 40 - 10)")
+
+
+def caso_quadra_amaldicoa(j):
+    """Quadra: o inimigo ataca com metade da força pelo resto da luta."""
+    j.inimigo(vida=999, intencao=10)
+    j.rolar(2, 2, 2, 2)
+    j.atacar()
+    igual(j.estado()["vida"], 35, "vida (10 / 2)")
+    j.js("newIntent(); render()")
+    assert j.estado()["intencao"] <= 4, "próximas intenções pela metade"
 
 
 def caso_cena_pixel_carrega(j):

@@ -9,17 +9,24 @@ const MAX_ROLLS = 2;  // rolagens por jogada
 // Algumas combinações só são possíveis com mais dados — ganhar dados desbloqueia jogadas.
 
 const COMBOS = [
-  { name: "Sexteto",           mult: 15, test: c => c[0] === 6 },
-  { name: "Quinteto",          mult: 10, test: c => c[0] === 5 },
-  { name: "Quadra",            mult: 6,  test: c => c[0] === 4 },
-  { name: "Sequência grande",  mult: 5,  test: (c, s) => isStraight(s, 5) },
-  { name: "Casa cheia",        mult: 4,  test: c => c[0] === 3 && c[1] === 2 },
-  { name: "Sequência",         mult: 3,  test: (c, s) => isStraight(s, 4) },
-  { name: "Trinca",            mult: 3,  test: c => c[0] === 3 },
-  { name: "Dois pares",        mult: 2,  test: c => c[0] === 2 && c[1] === 2 },
-  { name: "Par",               mult: 1.5, test: c => c[0] === 2 },
-  { name: "Nada",              mult: 1,  test: () => true },
+  { name: "Sexteto",            mult: 15, test: c => c[0] === 6 },
+  { name: "Quinteto",           mult: 10, test: c => c[0] === 5 },
+  { name: "Sequência completa", mult: 8,  test: (c, s) => isStraight(s, 6) },
+  { name: "Duas trincas",       mult: 7,  test: c => c[0] === 3 && c[1] === 3 },
+  { name: "Quadra",             mult: 6,  test: c => c[0] === 4 },
+  { name: "Sequência grande",   mult: 5,  test: (c, s) => isStraight(s, 5) },
+  { name: "Casa cheia",         mult: 4,  test: c => c[0] === 3 && c[1] === 2 },
+  { name: "Duas sequências",    mult: 4,  test: (c, s, v) => twoStraights(v) },
+  { name: "Sequência",          mult: 3,  test: (c, s) => isStraight(s, 4) },
+  { name: "Trinca",             mult: 3,  test: c => c[0] === 3 },
+  { name: "Três pares",         mult: 3,  test: c => c[0] === 2 && c[1] === 2 && c[2] === 2 },
+  { name: "Dois pares",         mult: 2,  test: c => c[0] === 2 && c[1] === 2 },
+  { name: "Sequência curta",    mult: 2,  test: (c, s) => isStraight(s, 3) },
+  { name: "Par",                mult: 1.5, test: c => c[0] === 2 },
+  { name: "Nada",               mult: 1,  test: () => true },
 ];
+// Sequências são pelo tamanho (3, 4, 5 ou 6 seguidos), não pelo nº de dados.
+// Mãos duplas (Duas sequências, Três pares, Duas trincas) só existem com 6 dados.
 
 let dice = Array(NUM_DICE).fill(null);
 let held = Array(NUM_DICE).fill(false);
@@ -37,12 +44,22 @@ function isStraight(sortedUnique, len) {
   return len === 1;
 }
 
+// Seis dados formando duas sequências de 3 (ex.: 2-3-4 + 2-3-4)
+function twoStraights(values) {
+  if (values.length !== 6) return false;
+  const key = [...values].sort((a, b) => a - b).join();
+  for (let a = 1; a <= 4; a++)
+    for (let b = a; b <= 4; b++)
+      if ([a, a + 1, a + 2, b, b + 1, b + 2].sort((x, y) => x - y).join() === key) return true;
+  return false;
+}
+
 function evaluate(values) {
   const counts = {};
   values.forEach(v => (counts[v] = (counts[v] || 0) + 1));
   const c = Object.values(counts).sort((a, b) => b - a);
   const s = [...new Set(values)].sort((a, b) => a - b);
-  const combo = COMBOS.find(k => k.test(c, s));
+  const combo = COMBOS.find(k => k.test(c, s, values));
   const sum = values.reduce((a, b) => a + b, 0);
   return { ...combo, points: Math.round(sum * combo.mult) };
 }

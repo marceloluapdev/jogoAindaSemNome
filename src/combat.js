@@ -47,6 +47,7 @@ let reserve = 0;    // dados guardados para defesa (até NUM_DICE)
 const CHARGE_MAX = 5;
 const ULTIMATE_DICE = 5, ULTIMATE_MULT = 3;
 let charge = 0;
+let shield = 0;     // escudo do Par: bloqueia o próximo golpe do inimigo
 let busy = false;   // animações / turno do inimigo em andamento
 let over = false;   // derrota
 
@@ -66,6 +67,34 @@ function attackValues() {
   const sel = dice.filter((v, i) => held[i]);
   return sel.length ? sel : [...dice];
 }
+// Efeitos das combinações (além do dano). Valores pela soma dos dados que atacam:
+//   escudo  (Par)        bloqueia ⌈soma/2⌉ do próximo golpe do inimigo
+//   cura    (Dois pares) drena: cura ⌈soma/3⌉
+//   fogo    (Trinca)     queima: o inimigo perde "soma" de vida depois do ataque dele
+//   raio    (Sequência de 4+) atordoa: o inimigo perde o próximo ataque
+//           (Sequência curta, de 3, não tem efeito: sai fácil demais para atordoar)
+//   maldição (Quadra)    o inimigo ataca com metade da força pelo resto da luta
+// Mãos de 5–6 dados herdam: Casa cheia = escudo + fogo; Sequências grande/completa e
+// Duas sequências = raio; Três pares = cura; Duas trincas = fogo; Quinteto/Sexteto = maldição.
+const COMBO_EFFECTS = {
+  "Par": ["escudo"], "Dois pares": ["cura"], "Trinca": ["fogo"], "Sequência": ["raio"],
+  "Quadra": ["maldicao"], "Casa cheia": ["escudo", "fogo"], "Sequência grande": ["raio"],
+  "Quinteto": ["maldicao"], "Sexteto": ["maldicao"], "Sequência completa": ["raio"],
+  "Duas sequências": ["raio"], "Três pares": ["cura"], "Duas trincas": ["fogo"],
+};
+function comboEffects(r, values) {
+  const sum = values.reduce((a, v) => a + v, 0);
+  return (COMBO_EFFECTS[r.name] || []).map(type => ({
+    type,
+    amount: type === "escudo" ? Math.ceil(sum / 2) : type === "cura" ? Math.ceil(sum / 3)
+          : type === "fogo" ? sum : 0,
+  }));
+}
+// Prévia curta do efeito (ícone + número)
+const effectPreview = e =>
+  `<span class="mini" title="${e.type}">${iconSVG(e.type)}</span>${e.amount ? N(e.amount) : ""}`;
+const cursedAtk = v => (enemy.cursed ? Math.ceil(v / 2) : v);
+
 // Vão para a reserva: não selecionados que não foram rolados de novo
 const toReserve = () =>
   held.some(h => h) ? held.filter((h, i) => !h && !spent[i]).length : 0;
@@ -82,7 +111,11 @@ function render() {
   $("enemy-name").textContent = enemy.name;
   $("enemy-hp-text").textContent = `${Math.max(0, enemy.hp)} / ${enemy.maxHp}`;
   $("enemy-hp-fill").style.width = `${(100 * Math.max(0, enemy.hp)) / enemy.maxHp}%`;
-  $("enemy-intent").innerHTML = enemy.hp > 0 ? `Vai atacar: ${N(enemy.intent)}` : "";
+  // Estados do inimigo (queimando, amaldiçoado) aparecem como ícones ao lado da intenção
+  const status = (enemy.burn ? `<span class="mini" title="queimando">${iconSVG("fogo")}</span>` : "") +
+                 (enemy.cursed ? `<span class="mini" title="amaldiçoado">${iconSVG("maldicao")}</span>` : "");
+  $("enemy-intent").innerHTML = enemy.hp > 0
+    ? status + (enemy.stunned ? " Atordoado" : ` Vai atacar: ${N(enemy.intent)}`) : "";
 
   $("player-hp-text").textContent = `${Math.max(0, player.hp)} / ${player.maxHp}`;
   $("player-hp-fill").style.width = `${(100 * Math.max(0, player.hp)) / player.maxHp}%`;
@@ -95,7 +128,8 @@ function render() {
   const lost = going - gain - toCharge;                            // reserva E carga cheias
   if (rolled) {
     const r = evaluate(attackValues());
-    $("combo").innerHTML = `${r.name} ${N("×" + r.mult)}`;
+    $("combo").innerHTML = `${r.name} ${N("×" + r.mult)}` +
+      comboEffects(r, attackValues()).map(e => " " + effectPreview(e)).join("");
     // Reserva cheia: não deixa perder dados — pede para selecionar mais antes de atacar
     $("damage").innerHTML = lost
       ? `<span class="lost">tudo cheio · selecione ${N("+" + lost)}</span>`
@@ -157,7 +191,7 @@ function newEnemy() {
 }
 
 function newIntent() {
-  enemy.intent = randInt(...enemy.atk);
+  enemy.intent = cursedAtk(randInt(...enemy.atk));
 }
 
 function startPlayerTurn() {
@@ -178,6 +212,7 @@ $("attack").onclick = async () => {
   if (busy || rolling || over || dice[0] === null) return;
   busy = true;
   const r = evaluate(attackValues());
+  const effects = comboEffects(r, attackValues());
   // Os não selecionados vão para a reserva de defesa
   const going = toReserve();
   const gained = Math.min(going, NUM_DICE - reserve);
@@ -206,8 +241,53 @@ $("attack").onclick = async () => {
   log(`${r.name}! Você causou ${r.points} de dano.`);
   render();
   await wait(700);
+  if (enemy.hp > 0) await applyEffects(effects);
   await enemyTurn();
 };
+
+// Aplica os efeitos da combinação depois do dano
+async function applyEffects(effects) {
+  for (const e of effects) {
+    if (e.type === "escudo") {
+      shield += e.amount;
+      floatText($("player-hp"), `Escudo ${e.amount}`, "block");
+      log(`Um escudo de ${e.amount} se forma à sua frente.`);
+    } else if (e.type === "cura") {
+      const heal = Math.min(e.amount, player.maxHp - player.hp);
+      player.hp += heal;
+      floatText($("player-hp"), `+${heal}`, "heal");
+      log(`Você drena ${heal} de vida do inimigo.`);
+    } else if (e.type === "fogo") {
+      enemy.burn = Math.max(enemy.burn || 0, e.amount);
+      log(`${enemy.name} pega fogo!`);
+    } else if (e.type === "raio") {
+      enemy.stunned = true;
+      log(`${enemy.name} ficou atordoado!`);
+    } else if (e.type === "maldicao" && !enemy.cursed) {
+      enemy.cursed = true;
+      enemy.intent = cursedAtk(enemy.intent);
+      log(`${enemy.name} foi amaldiçoado: ataca com metade da força.`);
+    }
+    render();
+    await wait(600);
+  }
+}
+
+// Vitória: tela de vitória e próximo inimigo
+async function victory() {
+  enemyGone(true);
+  log(`${enemy.name} foi derrotado!`);
+  await wait(900);
+  showOverlay("Vitória!", `${enemy.name} caiu. Você recupera um pouco de vida.`, "Próximo inimigo", () => {
+    level++;
+    const heal = Math.round(player.maxHp * 0.3);
+    player.hp = Math.min(player.maxHp, player.hp + heal);
+    newEnemy();
+    log("Um novo inimigo surge...");
+    startPlayerTurn();
+    floatText($("player-hp"), `+${heal}`, "heal");
+  });
+}
 
 // Aposta Final: 5 dados da maldição caem no inimigo. Dano = soma × 3.
 $("ultimate").onclick = async () => {
@@ -245,25 +325,26 @@ $("ultimate").onclick = async () => {
 // Depois do seu ataque: vitória, ou o inimigo ataca (com a chance de defender)
 async function enemyTurn() {
   const sprite = $("enemy-sprite");
-  if (enemy.hp <= 0) {
-    enemyGone(true);
-    log(`${enemy.name} foi derrotado!`);
-    await wait(900);
-    showOverlay("Vitória!", `${enemy.name} caiu. Você recupera um pouco de vida.`, "Próximo inimigo", () => {
-      level++;
-      const heal = Math.round(player.maxHp * 0.3);
-      player.hp = Math.min(player.maxHp, player.hp + heal);
-      newEnemy();
-      log("Um novo inimigo surge...");
-      startPlayerTurn();
-      floatText($("player-hp"), `+${heal}`, "heal");
-    });
-    return;
+  if (enemy.hp <= 0) return victory();
+
+  // Atordoado (Sequência): perde este ataque; a reserva fica guardada
+  if (enemy.stunned) {
+    enemy.stunned = false;
+    log(`${enemy.name} está atordoado e não ataca.`);
+    sprite.animate([{ transform: "rotate(-6deg)" }, { transform: "rotate(6deg)" }, { transform: "rotate(0)" }],
+      { duration: 500 });
+    await wait(800);
+    return afterEnemyAttack();
   }
 
   // Defesa: com reserva, você escolhe se defende agora ou guarda
   let block = 0;
-  if (reserve > 0) {
+  if (shield > 0) {
+    block += shield;
+    shield = 0;
+    floatText($("player-hp"), `Escudo ${block}`, "block");
+  }
+  if (reserve > 0 && block < enemy.intent) {
     log(`${enemy.name} vai atacar (${enemy.intent}). Defender?`);
     const defend = await askDefense();
     if (!defend) {
@@ -279,7 +360,7 @@ async function enemyTurn() {
       render();
       log(`Você se defende com ${n} ${n === 1 ? "dado" : "dados"}...`);
       const values = await new Promise(res => rollDefense(n, res));
-      block = values.reduce((a, v) => a + v, 0);
+      block += values.reduce((a, v) => a + v, 0);
       floatText($("player-hp"), `Bloqueio ${block}`, "block");
       await wait(500);
     }
@@ -315,7 +396,23 @@ async function enemyTurn() {
     showOverlay("Derrota", `Você chegou ao inimigo ${level + 1}.`, "Recomeçar", restart);
     return;
   }
+  await afterEnemyAttack();
+}
 
+// Fim do turno do inimigo: a queimadura (Trinca) arde, depois volta a sua vez
+async function afterEnemyAttack() {
+  if (enemy.burn) {
+    const dmg = enemy.burn;
+    enemy.burn = 0;
+    enemy.hp -= dmg;
+    $("enemy-sprite").animate([{ filter: "brightness(2) sepia(1) saturate(4)" }, { filter: "none" }],
+      { duration: 500 });
+    floatText($("enemy-area"), `-${dmg}`, "dmg");
+    log(`${enemy.name} queima e perde ${dmg} de vida.`);
+    render();
+    await wait(700);
+    if (enemy.hp <= 0) return victory();
+  }
   newIntent();
   startPlayerTurn();
 }
@@ -358,6 +455,7 @@ function restart() {
   level = 0;
   reserve = 0;
   charge = 0;
+  shield = 0;
   player.hp = player.maxHp;
   newEnemy();
   log("Um inimigo bloqueia o caminho.");
