@@ -86,6 +86,14 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   baterem em mais dados. Combina com as magias de colisão. Testar se a física deixa a escolha
   previsível o bastante para parecer estratégia e não só sorte.
 
+- **Carga da Maldição** (junto com os especiais): dados que sobrariam com a reserva cheia viram pontos de carga;
+  carga cheia (ex.: 5) libera um ataque especial. Só então bloqueia (como hoje).
+- **Habilidade "Segurar a magia" (não atacar)**: um turno guardando todos os dados na reserva, sem atacar.
+  Hoje é impossível — e isso pode ser **parte do enredo**: o apostador acredita que, depois de lançar os dados,
+  não consegue conter a magia (seria parte da maldição). Mais tarde descobre que **sempre pôde segurar**,
+  só não sabia — momento **cômico** da história que destrava a habilidade. Cuidado: evitar turnos de só defender
+  ficarem lentos/repetitivos (limite da reserva ajuda).
+
 ## Em aberto
 - Nome do jogo
 - Tipos de dados (d6, d8, dados especiais?)
