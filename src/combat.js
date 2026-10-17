@@ -161,6 +161,7 @@ $("attack").onclick = async () => {
 
   // Seu ataque
   const sprite = $("enemy-sprite");
+  await heroCast();        // a magia sai da mão e voa até o inimigo
   enemy.hp -= r.points;
   sprite.animate(
     [{ transform: "translateX(0)", filter: "brightness(3)" },

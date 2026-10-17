@@ -152,3 +152,53 @@ function fitStage() {
 window.addEventListener("resize", fitStage);
 new ResizeObserver(fitStage).observe($("scene"));
 fitStage();
+
+// ---------- Você: poses e magia ----------
+
+const HERO_POSES = {
+  idle: "assets/hero/apostador_costas.png",
+  cast: "assets/hero/apostador_conjurando_costas.png",
+};
+Object.values(HERO_POSES).forEach(loadImage);   // pré-carrega para não piscar
+
+// Onde fica o dado brilhante na pose de conjurar (pixels do sprite) e o personagem no palco
+const HERO_POS = { x: -8, y: 58 };
+const CAST_HAND = { x: 56, y: 9 };
+
+function heroPose(name) {
+  heroImg.src = HERO_POSES[name];
+}
+
+// Conjura: troca para a pose, uma rajada sai da mão até o inimigo.
+// Resolve quando a rajada acerta (para o dano aparecer na hora certa).
+function heroCast(color = "#8fd16a") {
+  if (window.TEST_MODE) return Promise.resolve();
+  heroPose("cast");
+  const from = { x: HERO_POS.x + CAST_HAND.x, y: HERO_POS.y + CAST_HAND.y };
+  const er = enemyCanvas;
+  const to = {
+    x: parseFloat(enemyWrap.style.left) + er.width / 2,
+    y: parseFloat(enemyWrap.style.top) + er.height / 2,
+  };
+  const bolt = document.createElement("div");
+  bolt.className = "bolt";
+  bolt.style.setProperty("--bolt", color);
+  stage.appendChild(bolt);
+  const dx = to.x - from.x, dy = to.y - from.y;
+  const anim = bolt.animate(
+    [
+      { transform: `translate(${from.x}px, ${from.y}px) scale(0.4)`, opacity: 0 },
+      { transform: `translate(${from.x}px, ${from.y}px) scale(1.2)`, opacity: 1, offset: 0.35 },
+      { transform: `translate(${from.x + dx * 0.5}px, ${from.y + dy * 0.5 - 6}px) scale(1)`, offset: 0.7 },
+      { transform: `translate(${to.x}px, ${to.y}px) scale(1.6)`, opacity: 1 },
+    ],
+    { duration: 520, easing: "ease-in" }
+  );
+  return new Promise(res => {
+    anim.onfinish = () => {
+      bolt.remove();
+      setTimeout(() => heroPose("idle"), 350);
+      res();
+    };
+  });
+}

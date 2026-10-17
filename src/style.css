@@ -186,6 +186,15 @@ main {
   pointer-events: none;
   animation: breathe 1.4s steps(1) infinite;
 }
+/* Rajada de magia (pixel 4×4 com halo em degraus) */
+.bolt {
+  --bolt: #8fd16a;
+  position: absolute; left: -2px; top: -2px;
+  width: 4px; height: 4px;
+  background: #f3e7c9;
+  box-shadow: 0 0 0 1px var(--bolt), 0 0 0 2px rgba(143, 209, 106, 0.5);
+  pointer-events: none;
+}
 /* "respirar": sobe e desce 1 pixel */
 @keyframes breathe { 50% { transform: translateY(1px); } }
 
