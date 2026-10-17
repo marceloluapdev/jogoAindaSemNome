@@ -84,20 +84,19 @@ const ICONS = {
   ],
 };
 
-// Dado partido ao meio mostrando 1 (Sem sorte): as metades se abrem em cima
-// e continuam juntas embaixo, em "V"; o pip vermelho do 1 fica dividido.
+// Dado branco com uma mini caveira vermelha no lugar do 1 (Sem sorte: a pior jogada)
 ICONS.semsorte = [
-  ".kkkk.....kkkk.",
-  "kBBBBk...kBBBBk",
-  "kBBBBBk.kBBBBBk",
-  "kBBBBrrkrrBBBBk",
-  "kBBBBrrkrrBBBBk",
-  "kBBBBBBkBBBBBBk",
-  "kBBBBBBkBBBBBBk",
-  "kBBBBBBkBBBBBBk",
-  "kBBBBBBkBBBBBBk",
-  "kmmmmmmkmmmmmmk",
-  ".kkkkkkkkkkkkk.",
+  ".kkkkkkkkk.",
+  "kbbbbbbbbbk",
+  "kbbbrrrbbbk",
+  "kbbrrrrrbbk",
+  "kbbrkrkrbbk",
+  "kbbrrrrrbbk",
+  "kbbbrkrbbbk",
+  "kbbbrbrbbbk",
+  "kbbbbbbbbbk",
+  "kmmmmmmmmmk",
+  ".kkkkkkkkk.",
 ];
 ICON_COLORS.m = "#5a4a38";
 ICON_COLORS.r = "#d0455a";
