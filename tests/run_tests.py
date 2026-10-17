@@ -168,22 +168,56 @@ def caso_protegido_e_desselecionado_vai_para_reserva(j):
     igual(j.estado()["reserva"], 1, "reserva")
 
 
-def caso_reserva_cheia_bloqueia_ataque(j):
-    """Se a reserva fosse transbordar, Atacar fica bloqueado e pede para selecionar mais dados (nada se perde)."""
+def caso_excesso_vira_carga(j):
+    """O que não cabe na reserva vira Carga da Maldição (nada se perde)."""
     j.inimigo(vida=999, intencao=1)
     j.rolar(6, 1, 2, 3)
     j.selecionar(0, 1)
     j.atacar()
-    j.aguentar()                      # reserva = 2
+    j.aguentar()                      # reserva 2 (+1 carga por Concentrar)
     j.rolar(6, 1, 2, 3)
-    j.selecionar(0)                   # 3 iriam para a reserva, só cabem 2
+    j.selecionar(0)                   # 3 iriam para a reserva: 2 cabem, 1 vira carga
     texto = j.page.inner_text("#damage")
-    assert "selecione +1" in texto, f"prévia: {texto!r}"
-    igual(j.page.is_disabled("#attack"), True, "Atacar bloqueado")
-    j.selecionar(1)                   # agora só 2 vão para a reserva: cabe
-    igual(j.page.is_disabled("#attack"), False, "Atacar liberado")
+    assert "+2" in texto and "+1" in texto, f"prévia: {texto!r}"
     j.atacar()
-    igual(j.estado()["reserva"], 4, "reserva cheia sem perder nada")
+    e = j.estado()
+    igual((e["reserva"], j.js("charge")), (4, 2), "(reserva, carga)")
+
+
+def caso_concentrar_da_carga(j):
+    """Concentrar (não defender) dá +1 de carga."""
+    j.inimigo(vida=999, intencao=1)
+    j.rolar(6, 1, 2, 3)
+    j.selecionar(0)
+    j.atacar()
+    j.aguentar()
+    igual(j.js("charge"), 1, "carga")
+
+
+def caso_tudo_cheio_bloqueia_ataque(j):
+    """Reserva e carga cheias: Atacar fica bloqueado e pede para selecionar mais dados."""
+    j.inimigo(vida=999, intencao=1)
+    j.js("reserve = 4; charge = 5; render()")
+    j.rolar(6, 1, 2, 3)
+    j.selecionar(0)
+    assert "selecione +3" in j.page.inner_text("#damage"), j.page.inner_text("#damage")
+    igual(j.page.is_disabled("#attack"), True, "Atacar bloqueado")
+    j.selecionar(1, 2, 3)
+    igual(j.page.is_disabled("#attack"), False, "Atacar liberado")
+
+
+def caso_aposta_final(j):
+    """Carga cheia mostra a Aposta Final: 5 dados da maldição, dano = soma × 3, carga zera."""
+    j.inimigo(vida=999, intencao=1)
+    igual(j.page.is_visible("#ultimate"), False, "botão escondido sem carga")
+    j.js("charge = 5; render()")
+    igual(j.page.is_visible("#ultimate"), True, "botão visível com carga cheia")
+    j.js("window.TEST_ROLLS.push(6, 5, 4, 3, 2)")
+    j.page.click("#ultimate")
+    j.page.wait_for_function("!busy || !document.getElementById('defense-buttons').hidden")
+    e = j.estado()
+    igual(999 - e["vidaInimigo"], 60, "dano (20 × 3)")
+    igual(j.js("charge"), 0, "carga")
 
 
 def caso_reserva_tem_limite(j):

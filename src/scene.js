@@ -201,3 +201,56 @@ function heroCast(color = "#8fd16a") {
     };
   });
 }
+
+// ---------- Aposta Final (ultimate) ----------
+// O apostador flutua, a masmorra escurece e 5 dados da maldição caem do alto
+// no inimigo, um de cada vez. onImpact(valor, i) é chamado a cada dado que cai.
+
+// Pose própria do ultimate (do PixelLab). Até chegar, usa a de conjurar.
+HERO_POSES.ultimate = HERO_POSES.cast;
+
+async function heroUltimate(values, onImpact) {
+  if (window.TEST_MODE) { values.forEach((v, i) => onImpact(v, i)); return; }
+  heroPose("ultimate");
+  const float = heroImg.animate(
+    [{ transform: "translateY(0)" }, { transform: "translateY(-6px)" }, { transform: "translateY(-4px)" }],
+    { duration: 600, easing: "ease-out", fill: "forwards" }
+  );
+
+  // escurece a cena
+  const dark = document.createElement("div");
+  dark.className = "darken";
+  stage.insertBefore(dark, enemyWrap);
+  dark.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, fill: "forwards" });
+  await new Promise(r => setTimeout(r, 450));
+
+  const ex = parseFloat(enemyWrap.style.left), ey = parseFloat(enemyWrap.style.top);
+  const ew = enemyCanvas.width, eh = enemyCanvas.height;
+
+  for (let i = 0; i < values.length; i++) {
+    const die = document.createElement("div");
+    die.className = "fall-die";
+    die.innerHTML = iconSVG(null, cursedDie(values[i]));
+    stage.appendChild(die);
+    const x = ex + ew / 2 - 5 + (i - 2) * 7 + Math.round(Math.random() * 4 - 2);
+    const y = ey + eh * 0.35 + Math.round(Math.random() * 6);
+    const spin = (Math.random() < 0.5 ? -1 : 1) * 360;
+    await die.animate(
+      [{ transform: `translate(${x}px, -14px) rotate(0deg)` },
+       { transform: `translate(${x}px, ${y}px) rotate(${spin}deg)` }],
+      { duration: 260, easing: "ease-in", fill: "forwards" }
+    ).finished;
+    onImpact(values[i], i);
+    die.animate(
+      [{ transform: `translate(${x}px, ${y}px) scale(1)`, opacity: 1 },
+       { transform: `translate(${x}px, ${y - 4}px) scale(1.3)`, opacity: 0 }],
+      { duration: 350, easing: "ease-out", fill: "forwards" }
+    ).onfinish = () => die.remove();
+    await new Promise(r => setTimeout(r, 140));
+  }
+
+  await new Promise(r => setTimeout(r, 300));
+  dark.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400 }).onfinish = () => dark.remove();
+  float.cancel();
+  heroPose("idle");
+}

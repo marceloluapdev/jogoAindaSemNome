@@ -6,7 +6,7 @@
   <title>Jogo Ainda Sem Nome</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="src/style.css?v=26">
+  <link rel="stylesheet" href="src/style.css?v=27">
 </head>
 <body>
   <main>
@@ -44,11 +44,13 @@
         <span class="label">Vida</span>
         <div class="bar player-bar"><div id="player-hp-fill" class="fill"></div><span id="player-hp-text"></span></div>
         <span id="reserve" class="reserve" title="Reserva de defesa"></span>
+        <span id="charge" class="charge" title="Carga da Maldição"></span>
       </div>
       <!-- Botões com ícone em pixel art e o nome pequeno embaixo (ícones em src/icons.js) -->
       <div id="turn-buttons" class="buttons">
         <button id="roll"><span class="ico" data-icon="dado"></span><small>Rolar <span id="rolls"></span></small></button>
         <button id="attack" class="attack"><span class="ico" data-icon="espada"></span><small>Atacar</small></button>
+        <button id="ultimate" class="ultimate" hidden><span class="ico" data-icon="aposta"></span><small>Aposta Final</small></button>
       </div>
       <div id="defense-buttons" class="buttons" hidden>
         <button id="defend" class="defend"><span class="ico" data-icon="escudo"></span><small>Defender <span id="defend-count"></span></small></button>
@@ -67,9 +69,9 @@
     </div>
   </div>
 
-  <script src="src/icons.js?v=26"></script>
-  <script src="src/dice.js?v=26"></script>
-  <script src="src/scene.js?v=26"></script>
-  <script src="src/combat.js?v=26"></script>
+  <script src="src/icons.js?v=27"></script>
+  <script src="src/dice.js?v=27"></script>
+  <script src="src/scene.js?v=27"></script>
+  <script src="src/combat.js?v=27"></script>
 </body>
 </html>

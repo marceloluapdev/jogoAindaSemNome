@@ -84,8 +84,48 @@ const ICONS = {
   ],
 };
 
-function iconSVG(name) {
-  const rows = ICONS[name];
+// Raio verde (Carga da Maldição)
+ICONS.carga = [
+  "......kkk..",
+  ".....kggk..",
+  "....kggk...",
+  "...kggk....",
+  "..kggkkkk..",
+  ".kgggggggk.",
+  "..kkkkggk..",
+  "....kggk...",
+  "...kggk....",
+  "..kggk.....",
+  "..kkk......",
+];
+
+// Dado da maldição (verde) com qualquer face — usado na Aposta Final
+const DIE_PIPS = {
+  1: [[5, 5]], 2: [[2, 2], [8, 8]], 3: [[2, 2], [5, 5], [8, 8]],
+  4: [[2, 2], [8, 2], [2, 8], [8, 8]], 5: [[2, 2], [8, 2], [5, 5], [2, 8], [8, 8]],
+  6: [[2, 2], [8, 2], [2, 5], [8, 5], [2, 8], [8, 8]],
+};
+function cursedDie(value) {
+  const g = Array.from({ length: 11 }, (_, y) =>
+    Array.from({ length: 11 }, (_, x) => {
+      const edge = x === 0 || y === 0 || x === 10 || y === 10;
+      const corner = (x === 0 || x === 10) && (y === 0 || y === 10);
+      return corner ? "." : edge ? "k" : y === 9 ? "D" : "G";
+    }));
+  DIE_PIPS[value].forEach(([px, py]) => {
+    for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) {
+      const x = Math.min(9, px - 1 + dx + (px === 5 ? 0 : 0)), y = Math.min(9, py - 1 + dy);
+      g[y][x] = "k";
+    }
+  });
+  return g.map(r => r.join(""));
+}
+ICON_COLORS.G = "#8fd16a";
+ICON_COLORS.D = "#4fa35a";
+ICONS.aposta = cursedDie(6);
+
+function iconSVG(name, rowsOverride) {
+  const rows = rowsOverride || ICONS[name];
   const w = rows[0].length, h = rows.length;
   let rects = "";
   rows.forEach((row, y) =>

@@ -37,9 +37,12 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Botões com ícone em pixel art + nome pequeno: dado (Rolar), espada (Atacar), escudo (Defender), energia verde (Concentrar).
 - Se a reserva vai transbordar, a prévia **avisa** quantos dados se perdem (em vermelho) e os quadradinhos
   que vão encher piscam. Princípio: o jogador sempre vê a consequência antes de confirmar.
-- **Nada se perde**: se o ataque fosse fazer a reserva transbordar, Atacar fica bloqueado e a prévia pede para
-  selecionar mais dados. Os quadradinhos que vão encher piscam. Princípio: o jogador sempre vê a consequência antes.
-  Futuro: o excesso pode virar **outro tipo de acúmulo** (magia/item que aproveita dados que sobram) — aí libera.
+- **Nada se perde**: o que não cabe na reserva vira **Carga da Maldição**. Só se reserva E carga estiverem cheias,
+  Atacar fica bloqueado e a prévia pede para selecionar mais dados. Quadradinhos/segmentos que vão encher piscam.
+  Princípio: o jogador sempre vê a consequência antes de confirmar.
+- **Carga da Maldição** (5 segmentos verdes): enche com o excesso da reserva e com **+1 a cada Concentrar**.
+- **Aposta Final** (ultimate, carga cheia): o apostador flutua, a masmorra escurece e **5 dados da maldição caem**
+  no inimigo. Dano = soma × 3. Substitui o ataque do turno; carga zera. Pose própria "flutuando" a gerar no PixelLab.
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
 - Futuro: **especiais** por combinação (ex.: trinca = queimadura, sequência = raio, par = escudo),
@@ -92,8 +95,6 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   baterem em mais dados. Combina com as magias de colisão. Testar se a física deixa a escolha
   previsível o bastante para parecer estratégia e não só sorte.
 
-- **Carga da Maldição** (junto com os especiais): dados que sobrariam com a reserva cheia viram pontos de carga;
-  carga cheia (ex.: 5) libera um ataque especial. Só então bloqueia (como hoje).
 - **Habilidade "Segurar a magia" (não atacar)**: um turno guardando todos os dados na reserva, sem atacar.
   Hoje é impossível — e isso pode ser **parte do enredo**: o apostador acredita que, depois de lançar os dados,
   não consegue conter a magia (seria parte da maldição). Mais tarde descobre que **sempre pôde segurar**,

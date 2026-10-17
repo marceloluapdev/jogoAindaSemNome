@@ -42,6 +42,11 @@ let enemy;
 let level = 0;
 let rollsLeft = MAX_ROLLS;
 let reserve = 0;    // dados guardados para defesa (até NUM_DICE)
+// Carga da Maldição: dados que não cabem mais na reserva viram carga; Concentrar dá +1.
+// Carga cheia libera a Aposta Final.
+const CHARGE_MAX = 5;
+const ULTIMATE_DICE = 5, ULTIMATE_MULT = 3;
+let charge = 0;
 let busy = false;   // animações / turno do inimigo em andamento
 let over = false;   // derrota
 
@@ -86,15 +91,17 @@ function render() {
   // Prévia da reserva: quantos dados entram e quantos se perdem (reserva cheia)
   const going = rolled && !busy ? toReserve() : 0;
   const gain = Math.min(going, NUM_DICE - reserve);
-  const lost = going - gain;
+  const toCharge = Math.min(going - gain, CHARGE_MAX - charge);   // o que não cabe vira carga
+  const lost = going - gain - toCharge;                            // reserva E carga cheias
   if (rolled) {
     const r = evaluate(attackValues());
     $("combo").innerHTML = `${r.name} ${N("×" + r.mult)}`;
     // Reserva cheia: não deixa perder dados — pede para selecionar mais antes de atacar
     $("damage").innerHTML = lost
-      ? `<span class="lost">reserva cheia · selecione ${N("+" + lost)}</span>`
+      ? `<span class="lost">tudo cheio · selecione ${N("+" + lost)}</span>`
       : `${N(r.points)} de dano` +
-        (gain ? ` · ${N("+" + gain)}<span class="mini" title="defesa">${iconSVG("escudo")}</span>` : "");
+        (gain ? ` · ${N("+" + gain)}<span class="mini" title="defesa">${iconSVG("escudo")}</span>` : "") +
+        (toCharge ? ` · ${N("+" + toCharge)}<span class="mini" title="carga">${iconSVG("carga")}</span>` : "");
   } else {
     $("combo").textContent = "Role os dados";
     $("damage").textContent = "";
@@ -106,6 +113,13 @@ function render() {
   $("reserve").innerHTML = Array.from({ length: NUM_DICE }, (_, i) =>
     `<span class="slot${i < reserve ? " full" : i < reserve + gain ? " incoming" : ""}"></span>`).join("");
   $("reserve").classList.toggle("overflow", lost > 0);
+
+  // Carga da Maldição: segmentos verdes; piscando = vão encher se atacar agora
+  $("charge").innerHTML = Array.from({ length: CHARGE_MAX }, (_, i) =>
+    `<span class="seg${i < charge ? " full" : i < charge + toCharge ? " incoming" : ""}"></span>`).join("");
+  $("charge").classList.toggle("ready", charge >= CHARGE_MAX);
+  $("ultimate").hidden = charge < CHARGE_MAX;
+  $("ultimate").disabled = rolling || busy || over;
 
   $("roll").disabled = rolling || busy || over || rollsLeft === 0;
   $("attack").disabled = rolling || busy || over || !rolled || lost > 0;
@@ -165,10 +179,16 @@ $("attack").onclick = async () => {
   busy = true;
   const r = evaluate(attackValues());
   // Os não selecionados vão para a reserva de defesa
-  const gained = Math.min(toReserve(), NUM_DICE - reserve);
+  const going = toReserve();
+  const gained = Math.min(going, NUM_DICE - reserve);
+  const charged = Math.min(going - gained, CHARGE_MAX - charge);
   if (gained > 0) {
     reserve += gained;
     floatText($("player-hp"), `+${gained} defesa`, "block");
+  }
+  if (charged > 0) {
+    charge += charged;
+    floatText($("player-hp"), `+${charged} carga`, "charge");
   }
   render();
 
@@ -186,7 +206,45 @@ $("attack").onclick = async () => {
   log(`${r.name}! Você causou ${r.points} de dano.`);
   render();
   await wait(700);
+  await enemyTurn();
+};
 
+// Aposta Final: 5 dados da maldição caem no inimigo. Dano = soma × 3.
+$("ultimate").onclick = async () => {
+  if (busy || rolling || over || charge < CHARGE_MAX) return;
+  busy = true;
+  charge = 0;
+  render();
+  log("Aposta Final! A maldição desaba sobre o inimigo...");
+  const values = Array.from({ length: ULTIMATE_DICE }, () =>
+    window.TEST_MODE && window.TEST_ROLLS && window.TEST_ROLLS.length ? window.TEST_ROLLS.shift() : randInt(1, 6));
+  const sprite = $("enemy-sprite");
+  let sum = 0;
+  await heroUltimate(values, v => {
+    sum += v;
+    floatText($("enemy-area"), `${v}`, "dmg");
+    sprite.animate(
+      [{ transform: "translateY(0)", filter: "brightness(3)" }, { transform: "translateY(2px)" },
+       { transform: "translateY(0)", filter: "brightness(1)" }],
+      { duration: 200 }
+    );
+    document.querySelector("main").animate(
+      [{ transform: "translate(0,0)" }, { transform: "translate(-3px,2px)" }, { transform: "translate(0,0)" }],
+      { duration: 160 }
+    );
+  });
+  const dmg = sum * ULTIMATE_MULT;
+  enemy.hp -= dmg;
+  floatText($("enemy-area"), `-${dmg}`, "dmg big");
+  log(`Aposta Final! ${values.join(" + ")} = ${sum} × ${ULTIMATE_MULT} = ${dmg} de dano.`);
+  render();
+  await wait(900);
+  await enemyTurn();
+};
+
+// Depois do seu ataque: vitória, ou o inimigo ataca (com a chance de defender)
+async function enemyTurn() {
+  const sprite = $("enemy-sprite");
   if (enemy.hp <= 0) {
     enemyGone(true);
     log(`${enemy.name} foi derrotado!`);
@@ -208,6 +266,13 @@ $("attack").onclick = async () => {
   if (reserve > 0) {
     log(`${enemy.name} vai atacar (${enemy.intent}). Defender?`);
     const defend = await askDefense();
+    if (!defend) {
+      // Concentrar: leva o golpe e junta +1 de carga
+      if (charge < CHARGE_MAX) {
+        charge++;
+        floatText($("player-hp"), "+1 carga", "charge");
+      }
+    }
     if (defend) {
       const n = reserve;
       reserve = 0;
@@ -253,7 +318,7 @@ $("attack").onclick = async () => {
 
   newIntent();
   startPlayerTurn();
-};
+}
 
 // Troca os botões por Defender / Concentrar e espera a escolha
 function askDefense() {
@@ -286,6 +351,7 @@ function restart() {
   over = false;
   level = 0;
   reserve = 0;
+  charge = 0;
   player.hp = player.maxHp;
   newEnemy();
   log("Um inimigo bloqueia o caminho.");
