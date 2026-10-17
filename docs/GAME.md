@@ -49,6 +49,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Você aparece **de costas, na diagonal** (um pouco do rosto visível); o inimigo de frente.
 - A bandeja pode **entrar e sair da tela** (ex.: sair para mostrar ataques e cenas).
 - Menus de combate contextuais (ex.: escolher quantos dados de defesa usar).
+- Amostra em pixel art (`amostra-pixel.html`): a cena em tamanho menor deixa **espaço livre nas laterais e embaixo**
+  para menus de escolha e outros elementos — manter essa proporção.
 
 ## Ideias para avaliar depois
 - **Colisões como mecânica** (via magias/ingredientes): dado de defesa que bate num de ataque
