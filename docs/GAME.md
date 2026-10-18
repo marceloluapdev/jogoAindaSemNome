@@ -96,6 +96,9 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   pendurados no Sid) — às vezes larga um para pegar outro; inimigos crescem com a profundidade da partida.
 - **Equipamentos** (a desenhar): espaços limitados no Sid (ex.: chapéu, casaco, amuleto) e/ou **dados especiais**
   (dado de osso, de vidro, viciado...) que mudam como cada dado funciona.
+- **Alquimia (próxima a desenhar)**: alguém **na taverna** combina ingredientes (partes de monstros trazidas das
+  partidas) em poções/itens. Quem é: a decidir (ver HISTORIA.md).
+- **Dados especiais = habilidades adquiridas**, na taverna ou subindo de nível (não itens soltos).
 - **Taverna como base (ideia)**: ao voltar depois de perder, Sid pode **comprar** coisas e **usar partes de
   monstros** (trazidas das partidas) para fazer/liberar itens. Libera opções para as próximas partidas.
 - **Perder aproxima do amor** (ideia forte, ver HISTORIA.md "Azar no amor"): cada derrota afrouxa um pouco
@@ -160,6 +163,8 @@ Objetivo: **econômico, consistente e seguro**. Opções:
 
 ## Layout (futuro)
 - Você aparece **de costas, na diagonal** (um pouco do rosto visível); o inimigo de frente.
+- Ajustar o layout geral para caber até 7 dados (a decidir). Ideia: a bandeja **entra só na hora da ação**,
+  sobrepondo outras coisas/botões.
 - A bandeja pode **entrar e sair da tela**: desliza para fora por baixo quando não está em uso e volta
   subindo quando precisa. A cena **não cresce** (o resto da tela fica parado).
 - Menus de combate contextuais (ex.: escolher quantos dados de defesa usar).
