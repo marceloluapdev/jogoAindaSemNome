@@ -58,7 +58,9 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   mostrada na prévia), inimigo perde o ataque. Futuro: magias/itens que aumentam a chance (`stunBonus`) ·
   **Quadra/Quinteto/Sexteto** maldição: inimigo ataca com metade da força pelo resto da luta ·
   **Casa cheia** escudo + queima · **Sequência curta** sem efeito (sai fácil demais para atordoar).
-  Estados do inimigo aparecem como ícones ao lado da intenção. Futuro: modificados por alquimia/magias.
+  Cada efeito tem sua magia (`SPELLS` em scene.js): rajada verde comum · azul + placa de escudo na sua frente ·
+  vermelha + gotas drenadas voltando · âmbar com brasas + chamas no inimigo · raio em zigue-zague caindo do alto ·
+  lilás + anel que se fecha e o inimigo escurece. Estados do inimigo aparecem como ícones ao lado da intenção. Futuro: modificados por alquimia/magias.
 - **Fraqueza do inimigo por tipo de combinação: adiada.** Depender do dado para acertar a fraqueza
   pode parecer azar, e é difícil balancear agora. Se voltar: só como bônus (ex.: ×1,5), nunca obrigação,
   e quando houver mais inimigos diferentes.

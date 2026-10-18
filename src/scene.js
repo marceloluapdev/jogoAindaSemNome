@@ -171,8 +171,92 @@ function heroPose(name) {
 
 // Conjura: troca para a pose, uma rajada sai da mão até o inimigo.
 // Resolve quando a rajada acerta (para o dano aparecer na hora certa).
-function heroCast(color = "#8fd16a") {
+// Cada efeito de combinação tem sua magia (cor do projétil + impacto próprio).
+// kinds: tipos de efeito da combinação (ex.: ["escudo", "fogo"]); vazio = rajada verde comum.
+const SPELLS = {
+  base:     { core: "#f3e7c9", c: "#8fd16a", halo: "rgba(143,209,106,0.5)" },
+  escudo:   { core: "#f3e7c9", c: "#6f8fc7", halo: "rgba(195,214,242,0.6)" },
+  cura:     { core: "#f3e7c9", c: "#d0455a", halo: "rgba(208,69,90,0.5)" },
+  fogo:     { core: "#f3e7c9", c: "#f2b84b", halo: "rgba(208,69,90,0.6)" },
+  raio:     { core: "#f3e7c9", c: "#f2b84b", halo: "rgba(243,231,201,0.6)" },
+  maldicao: { core: "#f3e7c9", c: "#9a7cc0", halo: "rgba(70,53,101,0.7)" },
+};
+
+// Pixel solto no palco (unidades do palco), anima e some
+function pxBit(x, y, w, h, color, frames, ms) {
+  const el = document.createElement("div");
+  el.className = "spell-bit";
+  el.style.cssText = `width:${w}px;height:${h}px;background:${color};left:0;top:0;transform:translate(${x}px,${y}px)`;
+  stage.appendChild(el);
+  return new Promise(res => (el.animate(frames, { duration: ms, easing: "steps(6)" }).onfinish = () => { el.remove(); res(); }));
+}
+// Explosão de pixels saindo do ponto (ficam acesos e somem no fim)
+function burst(at, color, n = 12, dist = 18, size = 3) {
+  return Promise.all(Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * Math.PI * 2;
+    const ex = Math.round(Math.cos(a) * dist), ey = Math.round(Math.sin(a) * dist);
+    return pxBit(at.x - 1, at.y - 1, size, size, color, [
+      { transform: `translate(${at.x - 1}px,${at.y - 1}px)`, opacity: 1 },
+      { transform: `translate(${at.x + ex * 0.7}px,${at.y + ey * 0.7}px)`, opacity: 1, offset: 0.6 },
+      { transform: `translate(${at.x + ex}px,${at.y + ey}px)`, opacity: 0 },
+    ], 420);
+  }));
+}
+// Chamas subindo pelo inimigo (fogo)
+function flames(at) {
+  return Promise.all(Array.from({ length: 10 }, (_, i) => {
+    const x = at.x - 14 + i * 3, y = at.y + 10 - (i % 3) * 3;
+    const col = ["#d0455a", "#f2b84b", "#f3e7c9"][i % 3];
+    return pxBit(x, y, 2, 4, col, [
+      { transform: `translate(${x}px,${y}px)`, opacity: 0 },
+      { transform: `translate(${x}px,${y - 8}px)`, opacity: 1, offset: 0.4 },
+      { transform: `translate(${x}px,${y - 20}px)`, opacity: 0 },
+    ], 560 + (i % 4) * 60);
+  }));
+}
+// Anel que se fecha sobre o inimigo (maldição)
+function curseRing(at) {
+  return Promise.all(Array.from({ length: 16 }, (_, i) => {
+    const a = (i / 16) * Math.PI * 2;
+    const ox = Math.round(Math.cos(a) * 24), oy = Math.round(Math.sin(a) * 20);
+    return pxBit(at.x, at.y, 3, 3, i % 2 ? "#9a7cc0" : "#463565", [
+      { transform: `translate(${at.x + ox}px,${at.y + oy}px)`, opacity: 0 },
+      { transform: `translate(${at.x + ox * 0.6}px,${at.y + oy * 0.6}px)`, opacity: 1, offset: 0.4 },
+      { transform: `translate(${at.x}px,${at.y}px)`, opacity: 0 },
+    ], 600);
+  }));
+}
+// Raio em zigue-zague caindo do alto até o inimigo
+function lightning(to) {
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("class", "spell-svg");
+  svg.setAttribute("width", SW); svg.setAttribute("height", SH);
+  svg.setAttribute("viewBox", `0 0 ${SW} ${SH}`);
+  svg.setAttribute("shape-rendering", "crispEdges");
+  // zigue-zague em volta da coluna do inimigo, terminando nele
+  const cx = Math.round(to.x);
+  let y = 0, i = 0, d = `M${cx} 0`;
+  while (y < to.y) {
+    y = Math.min(to.y, y + 5 + (i % 2) * 3);
+    d += ` L${y === to.y ? cx : cx + (i % 2 ? 4 : -4) + (Math.random() < 0.5 ? -1 : 1)} ${y}`;
+    i++;
+  }
+  for (const [w, col] of [[4, "#c97f2a"], [2, "#f2b84b"], [1, "#f3e7c9"]]) {
+    const path = document.createElementNS(svgNS, "path");
+    path.setAttribute("d", d); path.setAttribute("fill", "none");
+    path.setAttribute("stroke", col); path.setAttribute("stroke-width", w);
+    svg.appendChild(path);
+  }
+  stage.appendChild(svg);
+  return new Promise(res => (svg.animate([{ opacity: 1 }, { opacity: 0.2 }, { opacity: 1 }, { opacity: 0 }],
+    { duration: 380, easing: "steps(4)" }).onfinish = () => { svg.remove(); res(); }));
+}
+
+function heroCast(kinds = []) {
   if (window.TEST_MODE) return Promise.resolve();
+  const main = kinds.includes("raio") ? "raio" : kinds[kinds.length - 1] || "base";
+  const sp = SPELLS[main] || SPELLS.base;
   heroPose("cast");
   const from = { x: HERO_POS.x + CAST_HAND.x, y: HERO_POS.y + CAST_HAND.y };
   const er = enemyCanvas;
@@ -182,9 +266,17 @@ function heroCast(color = "#8fd16a") {
   };
   const bolt = document.createElement("div");
   bolt.className = "bolt";
-  bolt.style.setProperty("--bolt", color);
+  bolt.style.setProperty("--bolt", sp.c);
+  bolt.style.setProperty("--bolt-halo", sp.halo);
+  bolt.style.background = sp.core;
   stage.appendChild(bolt);
-  const dx = to.x - from.x, dy = to.y - from.y;
+  // Fogo deixa brasas pelo caminho
+  const embers = kinds.includes("fogo") ? setInterval(() => {
+    const m = new DOMMatrix(getComputedStyle(bolt).transform);
+    pxBit(m.e, m.f, 1, 1, Math.random() < 0.5 ? "#f2b84b" : "#d0455a", [
+      { transform: `translate(${m.e}px,${m.f}px)`, opacity: 1 },
+      { transform: `translate(${m.e}px,${m.f + 6}px)`, opacity: 0 }], 300);
+  }, 40) : null;
   const anim = bolt.animate(
     [
       { transform: `translate(${from.x}px, ${from.y}px) scale(0.4)`, opacity: 0 },
@@ -196,6 +288,39 @@ function heroCast(color = "#8fd16a") {
   return new Promise(res => {
     anim.onfinish = () => {
       bolt.remove();
+      clearInterval(embers);
+      // Impacto: explosão de pixels na cor da magia + o efeito de cada tipo
+      burst(to, sp.c);
+      if (kinds.includes("raio")) lightning(to);
+      if (kinds.includes("maldicao")) {
+        curseRing(to);
+        enemyCanvas.animate([{ filter: "none" }, { filter: "brightness(0.5) sepia(1) hue-rotate(220deg) saturate(3)" },
+          { filter: "none" }], { duration: 700 });
+      }
+      if (kinds.includes("fogo")) flames(to);
+      if (kinds.includes("cura")) {   // drena: gotas vermelhas voltam do inimigo até você
+        for (let i = 0; i < 5; i++) {
+          const y0 = to.y + (i % 2 ? -4 : 4);
+          pxBit(to.x, y0, 3, 3, i % 2 ? "#d0455a" : "#8c2236", [
+            { transform: `translate(${to.x}px,${y0}px)`, opacity: 0 },
+            { transform: `translate(${to.x}px,${y0}px)`, opacity: 1, offset: 0.1 + i * 0.1 },
+            { transform: `translate(${from.x - 6}px,${from.y}px)`, opacity: 1, offset: 0.9 },
+            { transform: `translate(${from.x - 6}px,${from.y}px)`, opacity: 0 }], 800);
+        }
+      }
+      if (kinds.includes("escudo")) { // escudo azul translúcido na sua frente
+        const sx = HERO_POS.x + 38, sy = HERO_POS.y - 2;
+        const sh = document.createElement("div");
+        sh.className = "spell-shield";
+        sh.style.transform = `translate(${sx}px,${sy}px)`;
+        stage.appendChild(sh);
+        sh.animate([
+          { transform: `translate(${sx}px,${sy}px) scaleY(0.1)`, opacity: 0 },
+          { transform: `translate(${sx}px,${sy}px) scaleY(1)`, opacity: 1, offset: 0.25 },
+          { transform: `translate(${sx}px,${sy}px) scaleY(1)`, opacity: 1, offset: 0.75 },
+          { transform: `translate(${sx}px,${sy}px) scaleY(1)`, opacity: 0 }],
+          { duration: 900, easing: "steps(8)" }).onfinish = () => sh.remove();
+      }
       setTimeout(() => heroPose("idle"), 350);
       res();
     };
