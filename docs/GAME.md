@@ -81,6 +81,7 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   **mãos duplas** (Duas sequências, Três pares, Duas trincas) só com 6.
 
 ## História emergente
+- Lore, mitologia, personagens e tom: **`docs/HISTORIA.md`**.
 - Estilo **livro-jogo**: escolhas entre as rodadas.
 - As escolhas **mudam o personagem** (atributos, magias, maldições, aliados).
 - Objetivo: histórias **emergentes**, diferentes a cada partida (referência: Dwarf Fortress).

@@ -6,6 +6,7 @@ Desenvolvido principalmente pelo celular — mantenha tudo testável no navegado
 Leia só quando precisar:
 - `docs/GAME.md` — conceito, mecânicas e regras do jogo
 - `docs/TODO.md` — próximos passos e o que já foi feito
+- `docs/HISTORIA.md` — lore, mitologia, personagens e tom (bíblia da história)
 
 Muita coisa já está decidida só no GAME.md (tutorial integrado à história, livro-jogo, layout futuro,
 personagens, ideias guardadas). Antes de propor ou discutir qualquer coisa de design, história ou
