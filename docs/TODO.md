@@ -29,4 +29,5 @@
   - Defender x Concentrar (Concentrar = leva o golpe e guarda a reserva)
   - Carga da Maldição enche por **dois caminhos**: excesso da reserva **e** +1 a cada Concentrar
   - carga cheia libera a Aposta Final
+- [ ] Teste `caso_tela_nao_pula` às vezes falha por 1px (já falhava antes; investigar)
 - [ ] Escolher um nome para o jogo
