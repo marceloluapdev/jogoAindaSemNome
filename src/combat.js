@@ -90,8 +90,11 @@ const STUN_CHANCE = {
 let stunBonus = 0;
 const stunChance = name => Math.min(100, (STUN_CHANCE[name] || 0) + stunBonus);
 // Sorteio de chance (no modo de teste, window.TEST_CHANCE = true/false decide)
+// (menu de administrador: window.FORCE_CHANCE = true/false força também)
 const chance = pct =>
-  window.TEST_MODE && typeof window.TEST_CHANCE === "boolean" ? window.TEST_CHANCE : Math.random() * 100 < pct;
+  typeof window.FORCE_CHANCE === "boolean" ? window.FORCE_CHANCE
+  : window.TEST_MODE && typeof window.TEST_CHANCE === "boolean" ? window.TEST_CHANCE
+  : Math.random() * 100 < pct;
 
 function comboEffects(r, values) {
   const sum = values.reduce((a, v) => a + v, 0);

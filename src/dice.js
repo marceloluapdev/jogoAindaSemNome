@@ -517,6 +517,20 @@ function testThrow(list, onDone) {
   setTimeout(onDone, 0);
 }
 
+// Menu de administrador (src/admin.js): valores escolhidos para a próxima rolagem.
+// Depois que a física para, o dado vira para a face escolhida (posição no ADMIN_ROLLS = nº do dado).
+function adminForce(moving) {
+  const want = window.ADMIN_ROLLS;
+  if (!want) return;
+  moving.forEach(b => {
+    const v = want[b.idx];
+    if (!v) return;
+    b.value = v;
+    b.M = mul(rotZ(rand(-0.3, 0.3)), orientFor(v));
+    place(b);
+  });
+}
+
 // Joga os dados de ataque não segurados; chama onDone() quando todos pararem.
 function rollDice(onDone) {
   rolling = true;
@@ -524,6 +538,7 @@ function rollDice(onDone) {
   // Rolar de novo um dado que já tinha valor = gastar esse dado
   moving.forEach(b => { if (dice[b.idx] !== null) spent[b.idx] = true; });
   (TEST() ? testThrow : throwDice)(moving, () => {
+    adminForce(moving);
     moving.forEach(b => (dice[b.idx] = b.value));
     rolling = false;
     onDone();

@@ -367,3 +367,32 @@ button:disabled { opacity: 0.35; }
 @media (max-height: 600px) {
   .log { display: none; }
 }
+
+/* ---------- Menu de administrador (?admin) ---------- */
+#admin-btn {
+  position: fixed; right: 4px; top: 64px; z-index: 50;
+  flex: none; width: auto; height: auto; padding: 2px 6px;
+  font-size: 0.7rem; --btn: var(--violet); --btn-d: var(--dusk); --btn-text: var(--bone);
+  opacity: 0.8;
+}
+#admin {
+  position: fixed; inset: 0; z-index: 60;
+  background: rgba(18, 13, 26, 0.85);
+  display: flex; align-items: center; justify-content: center; padding: 12px;
+}
+#admin[hidden] { display: none; }
+.admin-box {
+  width: 100%; max-width: 380px; max-height: 100%; overflow-y: auto;
+  background: var(--panel); padding: 12px;
+  box-shadow: 0 0 0 3px var(--ink), 0 0 0 6px var(--violet);
+}
+.admin-box h3 { margin: 0 0 6px; display: flex; justify-content: space-between; align-items: center; }
+.admin-box p { margin: 10px 0 4px; color: var(--muted); font-size: 0.8rem; }
+.admin-box button {
+  flex: 1; height: auto; padding: 6px 4px; font-size: 0.8rem;
+  --btn: var(--dusk); --btn-d: var(--ink); --btn-text: var(--bone);
+}
+.admin-box h3 button { flex: none; padding: 2px 8px; }
+.admin-row { display: flex; gap: 6px; }
+.admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.admin-box .admin-die { font: 700 1.2rem "Silkscreen", monospace; --btn: var(--bone); --btn-text: var(--ink); }

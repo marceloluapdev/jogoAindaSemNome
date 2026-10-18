@@ -513,6 +513,21 @@ def caso_quadra_amaldicoa(j):
     assert j.estado()["intencao"] <= 4, "próximas intenções pela metade"
 
 
+def caso_menu_admin(j):
+    """Com ?admin aparece o menu: força os dados (atalho Sequência) e o atordoar; sem ?admin, nada aparece."""
+    igual(j.page.locator("#admin-btn").count(), 0, "sem ?admin não tem menu")
+    j.page.goto(GAME + "?admin")
+    j.inimigo(vida=999, intencao=10)
+    j.page.click("#admin-btn")
+    j.page.click("[data-preset='Sequência']")
+    j.page.click("[data-stun]")                       # normal → sempre
+    j.page.click("[data-close]")
+    j.rolar(1, 1, 1, 1)                              # o menu manda mais que a fila
+    igual(j.estado()["dados"], [3, 4, 5, 6], "dados forçados")
+    j.atacar()
+    igual(j.estado()["vida"], 40, "atordoou (sempre)")
+
+
 def caso_cena_pixel_carrega(j):
     """A cena em pixel art carrega o sprite do inimigo (48×48) e o personagem (64×64)."""
     j.page.wait_for_function("document.getElementById('enemy-sprite').width === 48")

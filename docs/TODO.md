@@ -12,6 +12,7 @@
 - [x] Estética pixel art aplicada ao jogo: cena (masmorra, tochas), Apostador Amaldiçoado e lodo do PixelLab, interface e dados no estilo
 - [x] Variações de inimigo por cor (Lodo Errante / Venenoso / de Brasa)
 - [x] Carga da Maldição + Aposta Final (pose flutuando do PixelLab girando nas 8 direções, dados caindo)
+- [x] Menu de administrador (`?admin` no endereço, `src/admin.js`): forçar dados, chance de atordoar, estados
 - [x] Efeitos por combinação (escudo, cura, queima, atordoa, maldição) + sequências de 3 a 6 e mãos duplas de 6 dados
 
 ## Próximos passos
@@ -30,5 +31,4 @@
   - Carga da Maldição enche por **dois caminhos**: excesso da reserva **e** +1 a cada Concentrar
   - carga cheia libera a Aposta Final
 - [ ] Teste `caso_tela_nao_pula` às vezes falha por 1px (já falhava antes; investigar)
-- [ ] Menu de administrador para teste (no celular): escolher os dados da próxima rolagem, forçar efeitos (atordoar, queimar...), encher carga/reserva, trocar inimigo
 - [ ] Escolher um nome para o jogo

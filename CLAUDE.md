@@ -16,6 +16,9 @@ Convenções: código em `src/` (`dice.js` = dados/física/combinações, `scene
 originais guardados com sufixo `_original`), scripts de edição de arte em `tools/`. Textos do jogo em português.
 Visual: pixel art, paleta fixa em `:root` no `src/style.css` — use só essas cores (ver "Estética" no GAME.md).
 
+Teste manual no celular: abra o jogo com `?admin` no endereço (menu em `src/admin.js`; ao criar
+mecânica nova, adicione lá um atalho para testá-la).
+
 Ao mudar CSS/JS, aumente o `?v=N` deles no `index.html` (evita cache no celular).
 
 Testes: `python3 tests/run_tests.py` (Playwright). Adicione um caso `caso_...` para cada regra nova ou bug corrigido.
