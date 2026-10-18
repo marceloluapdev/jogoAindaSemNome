@@ -18,7 +18,7 @@
 - [ ] Mais inimigos (PixelLab) de tamanhos variados
 - [ ] Layout: bandeja que desliza para baixo; menu de 4 botões (Rolar, Atacar, Itens, Habilidades) com submenus
 - [ ] Balancear vida/ataque dos inimigos
-- [ ] Primeiras magias/ingredientes que alteram dados ou multiplicador
+- [ ] Primeiras magias/ingredientes que alteram dados ou multiplicador (ex.: aumentar a chance de atordoar)
 - [ ] Ganhar dados/rolagens extras como recompensa (até 6 dados)
 - [ ] Usar as colisões como mecânica (ver "Ideias para avaliar depois" no GAME.md)
 - [ ] Decidir o visual do livro-jogo (ver opções no GAME.md) e fazer a primeira cena com 2–3 escolhas

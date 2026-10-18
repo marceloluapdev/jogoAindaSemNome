@@ -54,7 +54,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - **Efeitos por combinação** (além do dano; valores pela soma dos dados que atacam), mostrados na prévia:
   **Par** escudo ⌈soma/2⌉ no próximo golpe · **Dois/Três pares** drena, cura ⌈soma/3⌉ ·
   **Trinca/Duas trincas** queima: inimigo perde "soma" depois do ataque dele ·
-  **Sequência de 4+ / Duas sequências** raio: atordoa, inimigo perde o ataque ·
+  **Sequência de 4+ / Duas sequências** raio: **chance** de atordoar (4: 35% · 5 e duas: 50% · 6: 70%;
+  mostrada na prévia), inimigo perde o ataque. Futuro: magias/itens que aumentam a chance (`stunBonus`) ·
   **Quadra/Quinteto/Sexteto** maldição: inimigo ataca com metade da força pelo resto da luta ·
   **Casa cheia** escudo + queima · **Sequência curta** sem efeito (sai fácil demais para atordoar).
   Estados do inimigo aparecem como ícones ao lado da intenção. Futuro: modificados por alquimia/magias.

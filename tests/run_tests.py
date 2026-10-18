@@ -445,11 +445,22 @@ def caso_trinca_queima(j):
 
 
 def caso_sequencia_atordoa(j):
-    """Sequência de 4: o inimigo fica atordoado e não ataca neste turno."""
+    """Sequência de 4: chance de atordoar (prévia mostra %); acertando, o inimigo não ataca."""
     j.inimigo(vida=999, intencao=10)
+    j.js("window.TEST_CHANCE = true")
     j.rolar(3, 4, 5, 6)
+    assert "35%" in j.page.inner_text("#combo"), j.page.inner_text("#combo")
     j.atacar()
     igual(j.estado()["vida"], 40, "vida intacta")
+
+
+def caso_sequencia_pode_falhar(j):
+    """Sequência de 4: se a chance falhar, o inimigo ataca normalmente."""
+    j.inimigo(vida=999, intencao=10)
+    j.js("window.TEST_CHANCE = false")
+    j.rolar(3, 4, 5, 6)
+    j.atacar()
+    igual(j.estado()["vida"], 30, "vida (40 - 10)")
 
 
 def caso_sequencia_curta_nao_atordoa(j):

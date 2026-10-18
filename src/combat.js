@@ -71,7 +71,7 @@ function attackValues() {
 //   escudo  (Par)        bloqueia ⌈soma/2⌉ do próximo golpe do inimigo
 //   cura    (Dois pares) drena: cura ⌈soma/3⌉
 //   fogo    (Trinca)     queima: o inimigo perde "soma" de vida depois do ataque dele
-//   raio    (Sequência de 4+) atordoa: o inimigo perde o próximo ataque
+//   raio    (Sequência de 4+) CHANCE de atordoar (STUN_CHANCE): o inimigo perde o próximo ataque
 //           (Sequência curta, de 3, não tem efeito: sai fácil demais para atordoar)
 //   maldição (Quadra)    o inimigo ataca com metade da força pelo resto da luta
 // Mãos de 5–6 dados herdam: Casa cheia = escudo + fogo; Sequências grande/completa e
@@ -82,17 +82,29 @@ const COMBO_EFFECTS = {
   "Quinteto": ["maldicao"], "Sexteto": ["maldicao"], "Sequência completa": ["raio"],
   "Duas sequências": ["raio"], "Três pares": ["cura"], "Duas trincas": ["fogo"],
 };
+// Raio: CHANCE de atordoar (%), maior quanto mais longa a sequência.
+// stunBonus soma a todas — para magias/itens futuros que aumentam a chance.
+const STUN_CHANCE = {
+  "Sequência": 35, "Duas sequências": 50, "Sequência grande": 50, "Sequência completa": 70,
+};
+let stunBonus = 0;
+const stunChance = name => Math.min(100, (STUN_CHANCE[name] || 0) + stunBonus);
+// Sorteio de chance (no modo de teste, window.TEST_CHANCE = true/false decide)
+const chance = pct =>
+  window.TEST_MODE && typeof window.TEST_CHANCE === "boolean" ? window.TEST_CHANCE : Math.random() * 100 < pct;
+
 function comboEffects(r, values) {
   const sum = values.reduce((a, v) => a + v, 0);
   return (COMBO_EFFECTS[r.name] || []).map(type => ({
     type,
     amount: type === "escudo" ? Math.ceil(sum / 2) : type === "cura" ? Math.ceil(sum / 3)
-          : type === "fogo" ? sum : 0,
+          : type === "fogo" ? sum : type === "raio" ? stunChance(r.name) : 0,
   }));
 }
-// Prévia curta do efeito (ícone + número)
+// Prévia curta do efeito (ícone + número; o raio mostra a chance em %)
 const effectPreview = e =>
-  `<span class="mini" title="${e.type}">${iconSVG(e.type)}</span>${e.amount ? N(e.amount) : ""}`;
+  `<span class="mini" title="${e.type}">${iconSVG(e.type)}</span>` +
+  (e.amount ? N(e.amount + (e.type === "raio" ? "%" : "")) : "");
 const cursedAtk = v => (enemy.cursed ? Math.ceil(v / 2) : v);
 
 // Vão para a reserva: não selecionados que não foram rolados de novo
@@ -261,8 +273,12 @@ async function applyEffects(effects) {
       enemy.burn = Math.max(enemy.burn || 0, e.amount);
       log(`${enemy.name} pega fogo!`);
     } else if (e.type === "raio") {
-      enemy.stunned = true;
-      log(`${enemy.name} ficou atordoado!`);
+      if (chance(e.amount)) {
+        enemy.stunned = true;
+        log(`${enemy.name} ficou atordoado!`);
+      } else {
+        log(`O raio passa raspando: ${enemy.name} resiste.`);
+      }
     } else if (e.type === "maldicao" && !enemy.cursed) {
       enemy.cursed = true;
       enemy.intent = cursedAtk(enemy.intent);
