@@ -63,7 +63,14 @@
 - **Artha**, em sânscrito, também é **riqueza/prosperidade** (um dos 4 objetivos da vida no hinduísmo:
   dharma, artha, kama = amor/desejo, moksha = libertação). Ele ficou preso no *artha* (ganhar, a sorte)
   em vez da libertação — e no fim escolhe o *kama* (o amor) e as pessoas.
-- Apelido possível: **Sid**.
+- Todos o chamam de **Sid**. O nome completo só aparece mais tarde, num momento de revelação, com uma breve
+  explicação dele mesmo, em tom de ironia: **o destino pregou uma peça com o nome dele**.
+- Grafia a decidir: **Arta Sid** (mais fácil em português) ou **Artha Sid** (mais fiel ao sânscrito).
+- Rascunho da fala **(ideia)**:
+  > — Sid é como me chamam. O nome inteiro é Arta Sid.
+  > Na língua antiga, *artha* é o objetivo... e também a riqueza. Meu nome é o de alguém que alcançou o que buscava —
+  > só que escrito de trás pra frente.
+  > O destino gosta de piada. Pelo visto, começou comigo antes mesmo de eu nascer.
 
 ## Passado do protagonista (ideia forte)
 - Era um **príncipe** (ecos de Sidarta Gautama e de Nala) que saiu do palácio buscando **uma resposta para o sofrimento**.
