@@ -58,6 +58,7 @@ class Jogo:
         self.page.wait_for_function(
             "!document.getElementById('defense-buttons').hidden"
             " || !busy || !document.getElementById('overlay').hidden"
+            " || (document.getElementById('talk') && !document.getElementById('talk').hidden)"
         )
 
     def esperando_defesa(self):
@@ -66,7 +67,8 @@ class Jogo:
     def defender(self, *valores):
         self.js(f"window.TEST_ROLLS.push(...{list(valores)})")
         self.page.click("#defend")
-        self.page.wait_for_function("!busy || !document.getElementById('overlay').hidden")
+        self.page.wait_for_function("!busy || !document.getElementById('overlay').hidden"
+                                    " || (document.getElementById('talk') && !document.getElementById('talk').hidden)")
 
     def aguentar(self):
         self.page.click("#endure")
@@ -536,6 +538,58 @@ def caso_menu_admin(j):
     igual(j.estado()["dados"], [3, 4, 5, 6], "dados forçados")
     j.atacar()
     igual(j.estado()["vida"], 40, "atordoou (sempre)")
+
+
+def caso_tutorial_completo(j):
+    """Tutorial: abre com a frase, 3 dados na taverna (trinca garantida), 2 lutas, ganha o 4º dado e segue o jogo."""
+    pg = j.page
+    pg.add_init_script("window.TEST_TUTORIAL = true; try { localStorage.clear() } catch (e) {}")
+    pg.reload()
+    pg.wait_for_selector("#black", state="visible")
+    assert "anjos jogam por ele" in pg.inner_text("#black"), pg.inner_text("#black")
+    igual(j.js("NUM_DICE"), 3, "começa com 3 dados")
+    viu_trinca = False
+    for _ in range(200):
+        if j.js("localStorage.getItem('jasn.tutorial')") == "feito":
+            break
+        if pg.is_visible("#black"):
+            j.js("document.getElementById('black').click()"); pg.wait_for_timeout(20); continue
+        if pg.is_visible("#talk"):
+            j.js("document.getElementById('talk').click()"); continue
+        if pg.is_visible("#defense-buttons"):
+            j.defender(1, 1); continue
+        e = j.estado()
+        if j.js("busy || rolling"):
+            pg.wait_for_timeout(20); continue
+        if e["dados"][0] is None and e["rolagens"] > 0:
+            j.rolar(6, 5, 1, 2)
+            if j.js("!!window.LOCK_ATTACK"):          # jogo da taverna
+                igual(j.estado()["dados"][:3], [4, 4, 4], "sorte do Sid na taverna")
+                viu_trinca = True
+            continue
+        if not j.js("!!window.LOCK_ATTACK") and e["dados"][0] is not None:
+            j.selecionar(0, 1)
+            j.atacar(); continue
+        pg.wait_for_timeout(20)
+    igual(viu_trinca, True, "jogo da taverna aconteceu")
+    igual(j.js("localStorage.getItem('jasn.tutorial')"), "feito", "tutorial marcado como feito")
+    e = j.estado()
+    igual((len(e["dados"]), e["inimigo"], e["rolagens"]), (4, "Lodo Errante", 2), "jogo normal com 4 dados")
+
+
+def caso_grimorio_registra_combinacao(j):
+    """Combinação nova entra no grimório; as não descobertas aparecem como ???."""
+    j.inimigo(vida=999, intencao=1)
+    j.js("try { localStorage.removeItem('jasn.grimorio') } catch (e) {}; discovered = new Set(); 0")
+    j.rolar(5, 5, 5, 2)
+    j.selecionar(0, 1, 2)
+    j.atacar()
+    if j.esperando_defesa():
+        j.aguentar()
+    igual(j.js("discovered.has('Trinca')"), True, "Trinca descoberta")
+    j.page.click("#combo")
+    texto = j.page.inner_text("#overlay")
+    assert "Trinca" in texto and "???" in texto, texto
 
 
 def caso_cena_pixel_carrega(j):

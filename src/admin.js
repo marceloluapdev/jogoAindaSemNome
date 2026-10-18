@@ -41,6 +41,9 @@
     "+1 rolagem": () => { rollsLeft++; },
     "Atordoar já": () => { enemy.stunned = true; setStunned(true); },
     "Queimar já": () => { enemy.burn = 10; },
+    "Ver tutorial": () => { try { localStorage.removeItem("jasn.tutorial"); } catch (e) {} location.reload(); },
+    "Pular tutorial": () => { try { localStorage.setItem("jasn.tutorial", "feito"); } catch (e) {} location.reload(); },
+    "Zerar grimório": () => { try { localStorage.removeItem("jasn.grimorio"); } catch (e) {} location.reload(); },
     "Amaldiçoar já": () => { if (!enemy.cursed) { enemy.cursed = true; enemy.intent = cursedAtk(enemy.intent); } },
   };
 

@@ -396,3 +396,44 @@ button:disabled { opacity: 0.35; }
 .admin-row { display: flex; gap: 6px; }
 .admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .admin-box .admin-die { font: 700 1.2rem "Silkscreen", monospace; --btn: var(--bone); --btn-text: var(--ink); }
+
+/* ---------- História: caixa de diálogo, tela preta, avisos ---------- */
+/* Fora de combate: some o inimigo e o dano (visibility: não mexe no layout) */
+main.peace .enemy-head, main.peace .enemy-bar, main.peace #damage { visibility: hidden; }
+
+#talk {
+  position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 40;
+  min-height: 132px; display: flex; gap: 10px; align-items: flex-start;
+  padding: 12px; background: var(--night);
+  box-shadow: 0 0 0 3px var(--ink), 0 0 0 6px var(--violet);
+}
+#talk[hidden] { display: none; }
+#talk .portrait { width: 80px; height: 72px; flex: none; box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--wood); }
+#talk .talk-body { flex: 1; min-width: 0; }
+#talk .talk-name { color: var(--amber); display: block; margin-bottom: 4px; }
+#talk .talk-text { margin: 0; line-height: 1.35; font-size: 1.05rem; }
+#talk.narra .talk-text { font-style: italic; color: var(--lilac); }
+.talk-next { position: absolute; right: 10px; bottom: 6px; color: var(--amber); opacity: 0; }
+#talk.ready .talk-next { opacity: 1; animation: blink 0.8s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+#black {
+  position: fixed; inset: 0; z-index: 45; background: var(--ink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+  padding: 24px; text-align: center;
+}
+#black[hidden] { display: none; }
+#black p { margin: 0; font-size: 1.3rem; opacity: 0; animation: fade-in 1.2s forwards; }
+#black p:last-of-type { color: var(--amber); }
+#black .talk-next { opacity: 1; animation: blink 0.8s steps(2) infinite; bottom: 24px; right: 24px; }
+@keyframes fade-in { to { opacity: 1; } }
+
+.toast {
+  position: fixed; left: 50%; top: 38%; z-index: 30; transform: translate(-50%, 0);
+  background: var(--night); padding: 8px 12px; white-space: nowrap; font-size: 0.9rem;
+  box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--amber); pointer-events: none;
+}
+#combo { cursor: pointer; }
+.grimorio { list-style: none; padding: 0; margin: 0 0 16px; text-align: left; }
+.grimorio li { padding: 3px 0; color: var(--bone); }
+.grimorio li.unknown { color: var(--violet); }

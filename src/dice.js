@@ -3,8 +3,8 @@
 // Ganhar dados e rolagens extras será recompensa (magias, ingredientes, história).
 
 const MAX_DICE = 6;   // limite de dados na bandeja (mais que isso fica poluído no celular)
-const NUM_DICE = 4;   // dados no começo do jogo (até MAX_DICE)
-const MAX_ROLLS = 2;  // rolagens por jogada
+let NUM_DICE = 4;     // dados que você tem (até MAX_DICE); o tutorial começa com 3 — ver setDiceCount
+let MAX_ROLLS = 2;    // rolagens por jogada
 
 // Algumas combinações só são possíveis com mais dados — ganhar dados desbloqueia jogadas.
 
@@ -250,6 +250,16 @@ function createDice() {
   for (let i = 0; i < NUM_DICE; i++) makeDie("attack", i);
   for (let i = 0; i < MAX_DICE; i++) makeDie("defense", i);
   lineUp();
+}
+
+// Troca quantos dados de ataque você tem (ex.: tutorial com 3, a dona dá o 4º)
+function setDiceCount(n) {
+  n = Math.max(1, Math.min(MAX_DICE, n));
+  bodies.filter(b => b.kind === "attack").forEach(b => b.el.remove());
+  for (let i = bodies.length - 1; i >= 0; i--) if (bodies[i].kind === "attack") bodies.splice(i, 1);
+  NUM_DICE = n;
+  for (let i = 0; i < n; i++) makeDie("attack", i);
+  resetDice();
 }
 
 // Dados de ataque enfileirados no meio da bandeja (início de cada turno).
@@ -519,8 +529,10 @@ function testThrow(list, onDone) {
 
 // Menu de administrador (src/admin.js): valores escolhidos para a próxima rolagem.
 // Depois que a física para, o dado vira para a face escolhida (posição no ADMIN_ROLLS = nº do dado).
+// A história também pode escolher uma rolagem (window.STORY_ROLLS, vale uma vez só).
 function adminForce(moving) {
-  const want = window.ADMIN_ROLLS;
+  const want = window.STORY_ROLLS || window.ADMIN_ROLLS;
+  window.STORY_ROLLS = null;
   if (!want) return;
   moving.forEach(b => {
     const v = want[b.idx];

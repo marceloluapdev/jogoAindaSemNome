@@ -12,6 +12,8 @@
 - [x] Estética pixel art aplicada ao jogo: cena (masmorra, tochas), Apostador Amaldiçoado e lodo do PixelLab, interface e dados no estilo
 - [x] Variações de inimigo por cor (Lodo Errante / Venenoso / de Brasa)
 - [x] Carga da Maldição + Aposta Final (pose flutuando do PixelLab girando nas 8 direções, dados caindo)
+- [x] Tutorial (`src/story.js`): abertura, taverna (jogo com Bartô), 2 lutas, 4º dado da dona; caixa de diálogo com retrato
+- [x] Grimório de combinações (toque na combinação; novas aparecem como aviso)
 - [x] Menu de administrador (`?admin` no endereço, `src/admin.js`): forçar dados, chance de atordoar, estados
 - [x] Efeitos por combinação (escudo, cura, queima, atordoa, maldição) + sequências de 3 a 6 e mãos duplas de 6 dados
 
@@ -24,11 +26,7 @@
 - [ ] Usar as colisões como mecânica (ver "Ideias para avaliar depois" no GAME.md)
 - [ ] Decidir o visual do livro-jogo (ver opções no GAME.md) e fazer a primeira cena com 2–3 escolhas
 - [ ] Atributos do personagem afetados pelas escolhas
-- [ ] Tutorial integrado à história (começa com 3 dados; 4º dado vem da história — ver GAME.md). Explicar, um de cada vez:
-  - selecionar dados = os que atacam e os que ficam na rerrolagem
-  - não selecionados e não rerrolados vão para a reserva de defesa (rerrolar "gasta" o dado)
-  - Defender x Concentrar (Concentrar = leva o golpe e guarda a reserva)
-  - Carga da Maldição enche por **dois caminhos**: excesso da reserva **e** +1 a cada Concentrar
-  - carga cheia libera a Aposta Final
 - [ ] Teste `caso_tela_nao_pula` às vezes falha por 1px (já falhava antes; investigar)
+- [ ] Retratos do Sid, da dona e do Bartô no PixelLab (hoje provisórios) e nome da dona
+- [ ] Cenário da taverna no PixelLab? (hoje em código, 144×106)
 - [ ] Escolher um nome para o jogo

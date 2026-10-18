@@ -176,7 +176,7 @@ function render() {
   // Todos selecionados (depois da 1ª rolagem): não há o que rolar — não deixa gastar a rolagem à toa
   const allHeld = rolled && held.every(h => h);
   $("roll").disabled = rolling || busy || over || rollsLeft === 0 || allHeld;
-  $("attack").disabled = rolling || busy || over || !rolled || lost > 0;
+  $("attack").disabled = rolling || busy || over || !rolled || lost > 0 || !!window.LOCK_ATTACK;
 }
 
 function log(text) {
@@ -235,6 +235,7 @@ $("attack").onclick = async () => {
   busy = true;
   const r = evaluate(attackValues());
   const effects = comboEffects(r, attackValues());
+  discoverCombo(r);
   // Os não selecionados vão para a reserva de defesa
   const going = toReserve();
   const gained = Math.min(going, NUM_DICE - reserve);
@@ -304,6 +305,14 @@ async function applyEffects(effects) {
 async function victory() {
   enemyGone(true);
   setStunned(false);
+  // Luta da história (tutorial): sem tela de vitória, a história continua
+  if (storyFight) {
+    const done = storyFight.onWin;
+    storyFight = null;
+    log(`${enemy.name} foi derrotado!`);
+    await wait(900);
+    return done();
+  }
   log(`${enemy.name} foi derrotado!`);
   await wait(900);
   showOverlay("Vitória!", `${enemy.name} caiu. Você recupera um pouco de vida.`, "Próximo inimigo", () => {
@@ -373,6 +382,7 @@ async function enemyTurn() {
     block += shield;
     shield = 0;
   }
+  if (reserve > 0 && block < enemy.intent && window.storyHook) await window.storyHook("defesa");
   if (reserve > 0 && block < enemy.intent) {
     log(`${enemy.name} vai atacar (${enemy.intent}). Defender?`);
     const defend = await askDefense();
@@ -481,7 +491,62 @@ function showOverlay(title, text, button, action) {
   };
 }
 
+// ---------- Lutas da história ----------
+// Luta com inimigo próprio (ex.: tutorial). def: { name, hp, atk:[min,max], tint? }
+// opts: { rolls, onWin }. Ao vencer, chama onWin() em vez da tela de vitória.
+let storyFight = null;
+function startStoryFight(def, opts) {
+  storyFight = { onWin: opts.onWin };
+  MAX_ROLLS = opts.rolls || 2;
+  over = false;
+  enemy = { name: def.name, maxHp: def.hp, hp: def.hp, atk: def.atk,
+            sprite: def.sprite || SLIME, foot: def.foot || 38, tint: def.tint || null };
+  setEnemySprite(enemy);
+  enemyGone(false);
+  setStunned(false);
+  newIntent();
+  startPlayerTurn();
+}
+
+// ---------- Grimório: combinações descobertas ----------
+const GRIMORIO_KEY = "jasn.grimorio";
+let discovered = new Set();
+try { discovered = new Set(JSON.parse(localStorage.getItem(GRIMORIO_KEY) || "[]")); } catch (e) {}
+function discoverCombo(r) {
+  if (r.name === "Nada" || discovered.has(r.name)) return;
+  discovered.add(r.name);
+  try { localStorage.setItem(GRIMORIO_KEY, JSON.stringify([...discovered])); } catch (e) {}
+  const fx = (COMBO_EFFECTS[r.name] || []).map(t => `<span class="mini">${iconSVG(t)}</span>`).join("");
+  toast(`Nova combinação: <b>${r.name}</b> ${N("×" + r.mult)} ${fx}`);
+}
+// Aviso rápido no topo da bandeja
+function toast(html) {
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = html;
+  document.body.appendChild(el);
+  el.animate([{ opacity: 0, transform: "translate(-50%, 8px)" }, { opacity: 1, transform: "translate(-50%, 0)", offset: 0.12 },
+              { opacity: 1, transform: "translate(-50%, 0)", offset: 0.85 }, { opacity: 0, transform: "translate(-50%, -6px)" }],
+             { duration: 2600 }).onfinish = () => el.remove();
+}
+// Toque na linha da combinação: abre o grimório (descobertas e "???")
+function showGrimorio() {
+  const rows = COMBOS.filter(c => c.name !== "Nada").map(c => discovered.has(c.name)
+    ? `<li><b>${c.name}</b> ${N("×" + c.mult)} ${(COMBO_EFFECTS[c.name] || []).map(t => `<span class="mini">${iconSVG(t)}</span>`).join("")}</li>`
+    : `<li class="unknown">???</li>`).join("");
+  $("overlay-title").textContent = "Grimório";
+  $("overlay-text").innerHTML = `<ul class="grimorio">${rows}</ul>`;
+  $("overlay-btn").textContent = "Fechar";
+  $("overlay").hidden = false;
+  $("overlay-btn").onclick = () => { $("overlay").hidden = true; };
+}
+$("combo").onclick = () => { if (!busy && $("overlay").hidden) showGrimorio(); };
+
 function restart() {
+  if (window.storyRestart && window.storyRestart()) return;   // derrota no tutorial: recomeça ele
+  if (NUM_DICE < 4) setDiceCount(4);
+  storyFight = null;
+  MAX_ROLLS = 2;
   over = false;
   level = 0;
   reserve = 0;
@@ -494,4 +559,5 @@ function restart() {
 }
 
 createDice();
-restart();
+// Primeira vez: tutorial (src/story.js). Já jogou: direto ao combate.
+if (!(window.startGame && window.startGame())) restart();

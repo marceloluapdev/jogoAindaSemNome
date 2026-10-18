@@ -11,6 +11,7 @@ const FLOOR_Y = 86;         // onde começa o chão
 const PAL = {
   ink: "#120d1a", night: "#1e1630", dusk: "#2e2347", violet: "#463565",
   amber: "#f2b84b", amberD: "#c97f2a", red: "#d0455a", wood: "#7a4a1c", woodL: "#a86a33",
+  bone: "#f3e7c9", boneD: "#c9b48f", green: "#4fa35a", steel: "#6f8fc7", redD: "#8c2236",
 };
 
 const stage = $("stage");
@@ -65,14 +66,56 @@ function torch(frame, x, y) {
     [...row].forEach((ch, i) => { if (TORCH_COLORS[ch]) px(TORCH_COLORS[ch], x + i, y + j); }));
 }
 
+// ---------- Taverna (cenário do começo; provisório, feito em código) ----------
+function drawTavern(f) {
+  // parede de tábuas
+  px(PAL.wood, 0, 0, SW, FLOOR_Y);
+  for (let x = 0; x < SW; x += 12) { px(PAL.night, x, 0, 1, FLOOR_Y); px(PAL.woodL, x + 1, 0, 1, FLOOR_Y); }
+  // viga do teto
+  px(PAL.night, 0, 0, SW, 6); px(PAL.dusk, 0, 6, SW, 3); px(PAL.ink, 0, 9, SW, 1);
+  // prateleira com garrafas (direita)
+  px(PAL.ink, 94, 33, 44, 1); px(PAL.woodL, 94, 31, 44, 2);
+  [[97, PAL.green], [103, PAL.red], [109, PAL.amberD], [115, PAL.steel], [121, PAL.green], [127, PAL.redD], [133, PAL.amberD]]
+    .forEach(([x, c], i) => {
+      const h = 6 + (i % 3);
+      px(PAL.ink, x - 1, 31 - h - 1, 5, h + 1);
+      px(c, x, 31 - h, 3, h); px(c, x + 1, 31 - h - 2, 1, 2); px(PAL.bone, x, 31 - h + 1, 1, 2);
+    });
+  // prateleira com canecas (esquerda)
+  px(PAL.ink, 6, 39, 36, 1); px(PAL.woodL, 6, 37, 36, 2);
+  for (let x = 9; x < 40; x += 8) { px(PAL.ink, x - 1, 30, 7, 7); px(PAL.boneD, x, 31, 4, 6); px(PAL.bone, x, 31, 1, 6); px(PAL.boneD, x + 4, 32, 1, 3); }
+  // balcão ao fundo (direita)
+  px(PAL.ink, 92, 63, 52, FLOOR_Y - 63); px(PAL.wood, 93, 65, 51, FLOOR_Y - 65);
+  px(PAL.woodL, 92, 63, 52, 2);
+  for (let x = 100; x < SW; x += 14) px(PAL.night, x, 67, 1, FLOOR_Y - 67);
+  // lamparina pendurada no meio
+  px(PAL.ink, 72, 10, 1, 6);
+  glow(72, 21, f ? 22 : 20);
+  px(PAL.ink, 69, 16, 7, 9); px(PAL.amberD, 70, 17, 5, 7); px(PAL.amber, 71, 18, 3, 5); px(PAL.bone, 72, 19, 1, 2);
+  // chão de tábuas
+  px(PAL.woodL, 0, FLOOR_Y, SW, SH - FLOOR_Y);
+  for (let y = FLOOR_Y + 4, k = 0; y < SH; y += 5, k++) {
+    px(PAL.wood, 0, y, SW, 1);
+    for (let x = (k % 2) * 9; x < SW; x += 18) px(PAL.wood, x, y - 4, 1, 4);
+  }
+  px(PAL.ink, 0, FLOOR_Y, SW, 1);
+}
+
+// Cenário atual: "masmorra" ou "taverna" (a história troca)
+let backdrop = "masmorra";
+function setBackdrop(name) { backdrop = name; lastFrame = -1; }
+
 // Sombra no chão sob o inimigo
 let enemyShadow = null;
 
 function drawScene(t) {
-  drawWall();
-  glow(11, 38, 14); glow(133, 38, 14);
   const f = Math.floor(t / 160) % 2;
-  torch(f, 10, 34); torch(1 - f, 132, 34);
+  if (backdrop === "taverna") drawTavern(f);
+  else {
+    drawWall();
+    glow(11, 38, 14); glow(133, 38, 14);
+    torch(f, 10, 34); torch(1 - f, 132, 34);
+  }
   if (enemyShadow && !enemyWrap.classList.contains("gone")) {
     const { x, y, w } = enemyShadow;
     bgx.globalAlpha = 0.45;
