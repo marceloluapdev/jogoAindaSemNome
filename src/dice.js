@@ -154,8 +154,8 @@ function topValue(M) {
 }
 
 // Rotação que deixa o dado assentado reto, com a face de cima virada para cima
-function settleTarget(M) {
-  const v = topValue(M);
+function settleTarget(M, forced) {
+  const v = forced || topValue(M);
   const w = apply(M, FACES[v].n);
   // 1) inclina até a face ficar exatamente para cima
   let ax = w[1], ay = -w[0]; // w × z
@@ -380,6 +380,7 @@ function throwDice(moving, onDone) {
       b.vx *= damp;
       b.vy *= damp;
       b.va *= Math.exp(-2.5 * dt);
+      if (b.state === "moving") steer(b, dt, (now - start) / 1000);
       const speed = Math.hypot(b.vx, b.vy);
 
       if (b.state === "moving") {
@@ -391,14 +392,21 @@ function throwDice(moving, onDone) {
         b.M = orthonormalize(mul(rotZ(b.va * dt), b.M));
 
         // Devagar o bastante: começa a assentar
-        if (speed < 45) {
+        let tgt = speed < 45 ? settleTarget(b.M) : null;
+        const late = (now - start) / 1000 > 1.5;
+        if (tgt && b.want && tgt.value !== b.want) {
+          // valor escolhido e ainda na face errada: segue rolando (steer acelera de novo)...
+          // ...a não ser que esteja demorando: aí tomba suavemente para a face certa ao assentar
+          tgt = late ? { ...settleTarget(b.M, b.want), slow: true } : null;
+        }
+        if (tgt) {
           b.state = "settling";
-          b.settle = { from: b.M, ...settleTarget(b.M), t: 0 };
+          b.settle = { from: b.M, ...tgt, t: 0 };
         }
       } else if (b.state === "settling") {
         // Assenta suavemente na face de cima
         const s = b.settle;
-        s.t = Math.min(1, s.t + dt / 0.22);
+        s.t = Math.min(1, s.t + dt / (s.slow ? 0.18 + 0.2 * s.tilt : 0.22));
         const e = 1 - Math.pow(1 - s.t, 3);
         b.M = mul(rotZ(s.yaw * e), mul(rotAxis(...s.axis, s.tilt * e), s.from));
         if (speed > 120) b.state = "moving"; // levou uma pancada, volta a rolar
@@ -492,6 +500,37 @@ function throwDice(moving, onDone) {
   requestAnimationFrame(step);
 }
 
+// Valor escolhido (história/admin): enquanto a face certa não estiver em cima, o dado
+// não perde velocidade — continua rolando até "escolher" o número, e só então assenta.
+// Se a face desejada estiver no eixo da rolagem (nunca subiria), a trajetória vai curvando.
+const STEER_MIN_SPEED = 115;
+function steer(b, dt, elapsed) {
+  if (!b.want || elapsed > 1.5) return;        // demorando: para de acelerar e deixa assentar (tomba para a face certa)
+  let speed = Math.hypot(b.vx, b.vy);
+  if (speed < 1) { const a = rand(0, Math.PI * 2); b.vx = Math.cos(a); b.vy = Math.sin(a); speed = 1; }
+  const w = apply(b.M, FACES[b.want].n);
+  const theta = Math.acos(Math.max(-1, Math.min(1, w[2])));   // quanto falta para a face ficar em cima
+  // a face está subindo? (rolar na direção d faz subir a face que aponta para -d)
+  const coming = w[0] * b.vx + w[1] * b.vy < 0;
+  if (coming && theta < 1.9) {
+    // freia na medida: com o atrito, ainda roda ~(v-45)/(1.8R); para bem na face certa
+    const v = 1.8 * R * theta + 40;
+    if (speed > v) { b.vx *= v / speed; b.vy *= v / speed; }
+    return;
+  }
+  if (theta < 0.35) return;                      // praticamente em cima: deixa assentar
+  // curva a trajetória aos poucos para o lado que faz a face desejada subir (direção -w)
+  const h = Math.hypot(w[0], w[1]);
+  if (h > 0.15 && speed < 420) {
+    const target = Math.atan2(-w[1], -w[0]);
+    let diff = target - Math.atan2(b.vy, b.vx);
+    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+    const t = Math.max(-1, Math.min(1, diff)) * 5 * dt, c = Math.cos(t), si = Math.sin(t);
+    [b.vx, b.vy] = [b.vx * c - b.vy * si, b.vx * si + b.vy * c];
+  }
+  if (speed < STEER_MIN_SPEED) { b.vx *= STEER_MIN_SPEED / speed; b.vy *= STEER_MIN_SPEED / speed; }
+}
+
 function rand(min, max) {
   return min + Math.random() * (max - min);
 }
@@ -536,7 +575,7 @@ function adminForce(moving) {
   if (!want) return;
   moving.forEach(b => {
     const v = want[b.idx];
-    if (!v) return;
+    if (!v || b.value === v) return;   // a física já acertou (capotou para o lado certo)
     b.value = v;
     b.M = mul(rotZ(rand(-0.3, 0.3)), orientFor(v));
     place(b);
@@ -549,6 +588,8 @@ function rollDice(onDone) {
   const moving = attackDice().filter(b => !held[b.idx]);
   // Rolar de novo um dado que já tinha valor = gastar esse dado
   moving.forEach(b => { if (dice[b.idx] !== null) spent[b.idx] = true; });
+  const want = window.STORY_ROLLS || window.ADMIN_ROLLS;
+  moving.forEach(b => { b.want = want ? want[b.idx] || null : null; });
   (TEST() ? testThrow : throwDice)(moving, () => {
     adminForce(moving);
     moving.forEach(b => (dice[b.idx] = b.value));
