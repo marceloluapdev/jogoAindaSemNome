@@ -377,6 +377,18 @@ def caso_par_da_escudo(j):
     igual(j.estado()["vida"], 40 - 4, "vida (10 - escudo 6)")
 
 
+def caso_escudo_nao_repete_texto(j):
+    """Escudo do Par: '+6 escudo' ao criar e 'Escudo bloqueia 6' no golpe (não o mesmo texto 2 vezes)."""
+    j.inimigo(vida=999, intencao=10)
+    j.js("window.FLOATS = []; const _f = floatText; floatText = (a, t, c) => { FLOATS.push(t); _f(a, t, c); }; 0")
+    j.rolar(6, 6, 1, 5)
+    j.selecionar(0, 1)
+    j.atacar()
+    j.aguentar()
+    textos = [t for t in j.js("FLOATS") if "scudo" in t]
+    igual(textos, ["+6 escudo", "Escudo bloqueia 6"], "textos do escudo")
+
+
 def caso_dois_pares_cura(j):
     """Dois pares: drena e cura ⌈soma/3⌉."""
     j.inimigo(vida=999, intencao=0)
@@ -423,6 +435,18 @@ def caso_par_da_escudo(j):
     j.atacar()
     j.aguentar()                      # não usa a reserva: só o escudo bloqueia
     igual(j.estado()["vida"], 40 - 4, "vida (10 - escudo 6)")
+
+
+def caso_escudo_nao_repete_texto(j):
+    """Escudo do Par: '+6 escudo' ao criar e 'Escudo bloqueia 6' no golpe (não o mesmo texto 2 vezes)."""
+    j.inimigo(vida=999, intencao=10)
+    j.js("window.FLOATS = []; const _f = floatText; floatText = (a, t, c) => { FLOATS.push(t); _f(a, t, c); }; 0")
+    j.rolar(6, 6, 1, 5)
+    j.selecionar(0, 1)
+    j.atacar()
+    j.aguentar()
+    textos = [t for t in j.js("FLOATS") if "scudo" in t]
+    igual(textos, ["+6 escudo", "Escudo bloqueia 6"], "textos do escudo")
 
 
 def caso_dois_pares_cura(j):

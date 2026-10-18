@@ -127,7 +127,10 @@ function render() {
   const status = (enemy.burn ? `<span class="mini" title="queimando">${iconSVG("fogo")}</span>` : "") +
                  (enemy.cursed ? `<span class="mini" title="amaldiçoado">${iconSVG("maldicao")}</span>` : "");
   $("enemy-intent").innerHTML = enemy.hp > 0
-    ? status + (enemy.stunned ? " Atordoado" : ` Vai atacar: ${N(enemy.intent)}`) : "";
+    ? status + (enemy.stunned ? " Atordoado" : ` Vai atacar: ${N(enemy.intent)}`) +
+      // escudo ativo (Par): quanto do próximo golpe já está bloqueado
+      (shield && !enemy.stunned ? ` <span class="shield-on">−${N(shield)}<span class="mini">${iconSVG("escudo")}</span></span>` : "")
+    : "";
 
   $("player-hp-text").textContent = `${Math.max(0, player.hp)} / ${player.maxHp}`;
   $("player-hp-fill").style.width = `${(100 * Math.max(0, player.hp)) / player.maxHp}%`;
@@ -262,7 +265,7 @@ async function applyEffects(effects) {
   for (const e of effects) {
     if (e.type === "escudo") {
       shield += e.amount;
-      floatText($("player-hp"), `Escudo ${e.amount}`, "block");
+      floatText($("player-hp"), `+${e.amount} escudo`, "block");
       log(`Um escudo de ${e.amount} se forma à sua frente.`);
     } else if (e.type === "cura") {
       const heal = Math.min(e.amount, player.maxHp - player.hp);
@@ -355,10 +358,10 @@ async function enemyTurn() {
 
   // Defesa: com reserva, você escolhe se defende agora ou guarda
   let block = 0;
+  const shielded = shield;          // escudo do Par entra no bloqueio deste golpe
   if (shield > 0) {
     block += shield;
     shield = 0;
-    floatText($("player-hp"), `Escudo ${block}`, "block");
   }
   if (reserve > 0 && block < enemy.intent) {
     log(`${enemy.name} vai atacar (${enemy.intent}). Defender?`);
@@ -381,6 +384,8 @@ async function enemyTurn() {
       await wait(500);
     }
   }
+  // Só o escudo (sem rolar defesa): mostra uma vez, na hora do golpe
+  if (shielded && block === shielded) floatText($("player-hp"), `Escudo bloqueia ${Math.min(block, enemy.intent)}`, "block");
   const hit = Math.max(0, enemy.intent - block);
 
   // Ataque do inimigo
