@@ -137,6 +137,24 @@ function enemyGone(gone) {
   lastFrame = -1;
 }
 
+// Atordoado: estrelinhas âmbar girando em cima da cabeça do inimigo
+let stunEl = null;
+function setStunned(on) {
+  if (stunEl) { stunEl.remove(); stunEl = null; }
+  if (!on) return;
+  stunEl = document.createElement("div");
+  stunEl.className = "stun-stars";
+  stunEl.style.left = `${parseFloat(enemyWrap.style.left) + enemyCanvas.width / 2}px`;
+  stunEl.style.top = `${parseFloat(enemyWrap.style.top) + 3}px`;
+  for (let i = 0; i < 3; i++) {
+    const star = document.createElement("span");
+    star.innerHTML = `<svg viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" fill="#f2b84b"/><rect x="2" y="2" width="1" height="1" fill="#f3e7c9"/></svg>`;
+    star.style.animationDelay = `${-i * 400}ms`;
+    stunEl.appendChild(star);
+  }
+  stage.appendChild(stunEl);
+}
+
 // ---------- Escala do palco ----------
 
 // Amplia o palco para caber na área da cena, arredondando para o pixel físico

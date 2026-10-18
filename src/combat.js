@@ -202,6 +202,7 @@ function newEnemy() {
   enemy.hp = enemy.maxHp;
   setEnemySprite(enemy);
   enemyGone(false);
+  setStunned(false);
   newIntent();
 }
 
@@ -278,6 +279,7 @@ async function applyEffects(effects) {
     } else if (e.type === "raio") {
       if (chance(e.amount)) {
         enemy.stunned = true;
+        setStunned(true);
         log(`${enemy.name} ficou atordoado!`);
       } else {
         log(`O raio passa raspando: ${enemy.name} resiste.`);
@@ -295,6 +297,7 @@ async function applyEffects(effects) {
 // Vitória: tela de vitória e próximo inimigo
 async function victory() {
   enemyGone(true);
+  setStunned(false);
   log(`${enemy.name} foi derrotado!`);
   await wait(900);
   showOverlay("Vitória!", `${enemy.name} caiu. Você recupera um pouco de vida.`, "Próximo inimigo", () => {
@@ -353,6 +356,7 @@ async function enemyTurn() {
     sprite.animate([{ transform: "rotate(-6deg)" }, { transform: "rotate(6deg)" }, { transform: "rotate(0)" }],
       { duration: 500 });
     await wait(800);
+    setStunned(false);
     return afterEnemyAttack();
   }
 

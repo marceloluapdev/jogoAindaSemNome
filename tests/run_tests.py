@@ -414,6 +414,8 @@ def caso_sequencia_atordoa(j):
     j.rolar(3, 4, 5, 6)
     j.atacar()
     igual(j.estado()["vida"], 40, "vida intacta")
+    igual(j.js("_estrelas"), True, "estrelinhas apareceram")
+    igual(j.page.locator(".stun-stars").count(), 0, "estrelinhas somem depois do turno perdido")
 
 
 def caso_quadra_amaldicoa(j):
@@ -474,8 +476,11 @@ def caso_sequencia_atordoa(j):
     j.js("window.TEST_CHANCE = true")
     j.rolar(3, 4, 5, 6)
     assert "35%" in j.page.inner_text("#combo"), j.page.inner_text("#combo")
+    j.js("window._estrelas = false; const _s = setStunned; setStunned = on => { if (on) _estrelas = true; _s(on); }; 0")
     j.atacar()
     igual(j.estado()["vida"], 40, "vida intacta")
+    igual(j.js("_estrelas"), True, "estrelinhas apareceram")
+    igual(j.page.locator(".stun-stars").count(), 0, "estrelinhas somem depois do turno perdido")
 
 
 def caso_sequencia_pode_falhar(j):

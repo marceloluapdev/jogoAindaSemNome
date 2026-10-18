@@ -58,7 +58,7 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   **Par** escudo ⌈soma/2⌉ no próximo golpe · **Dois/Três pares** drena, cura ⌈soma/3⌉ ·
   **Trinca/Duas trincas** queima: inimigo perde "soma" depois do ataque dele ·
   **Sequência de 4+ / Duas sequências** raio: **chance** de atordoar (4: 35% · 5 e duas: 50% · 6: 70%;
-  mostrada na prévia), inimigo perde o ataque. Futuro: magias/itens que aumentam a chance (`stunBonus`) ·
+  mostrada na prévia), inimigo perde o ataque; enquanto atordoado, **estrelinhas âmbar** giram sobre a cabeça dele. Futuro: magias/itens que aumentam a chance (`stunBonus`) ·
   **Quadra/Quinteto/Sexteto** maldição: inimigo ataca com metade da força pelo resto da luta ·
   **Casa cheia** escudo + queima · **Sequência curta** sem efeito (sai fácil demais para atordoar).
   Cada efeito tem sua magia (`SPELLS` em scene.js): rajada verde comum · azul + placa de escudo na sua frente ·
