@@ -40,9 +40,16 @@
    as peças do jogo dos deuses ficam esquecidas na grama. Ninguém mais joga — e nada mais tem graça.
 
 ## Desfechos (ideias)
-- **A aposta maior** (ideia forte, possível nome do jogo): ele tem sorte no jogo e azar no amor, mas no fim
-  **aposta tudo no amor, na amizade e no viver** — a única aposta que a maldição não controla.
-  Conversa com o tema: escolher o acaso (com a dor que ele traz) em vez do mundo perfeito e sem jogo.
+- **A aposta maior** (ideia forte, possível nome do jogo): ele tem sorte no jogo e azar no amor. No fim, depois de
+  entender tudo, ele faz a "aposta maior" — que é um **paradoxo**: não é uma aposta na Mesa, é **deixar de apostar**.
+  Ele escolhe a amada, os amigos e o viver, mesmo podendo perdê-los; o que importa não é apostar, é o que ele prefere.
+
+## Cuidado de tom: o jogo não glamouriza apostar
+- **Acaso da vida ≠ jogo de azar.** O acaso (a incerteza de viver, amar, perder) é o que dá graça e dor à vida.
+  O **jogo de azar** é a maldição: a compulsão que o fez perder tudo (como Kali possuindo Nala).
+- Os dados são poder **e** prisão. Ganhar nos dados nunca resolve o que importa.
+- O "mundo perfeito e sem jogo" é a tentação errada do outro lado: tirar o acaso da vida tira também a graça.
+  A resposta final não é "jogar é bom", e sim **escolher as pessoas e o viver, aceitando o risco**.
 
 ## Referência do protagonista: Nala e Damayanti (Mahabharata)
 - Nala, rei amado; **Damayanti o escolhe no lugar dos deuses** que também a queriam.
