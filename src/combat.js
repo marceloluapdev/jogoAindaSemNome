@@ -227,7 +227,7 @@ $("roll").onclick = () => {
   if (dice[0] !== null && held.every(h => h)) return;   // nada para rolar
   rollsLeft--;
   render();
-  rollDice(render);
+  rollDice(() => { render(); if (window.storyHook) window.storyHook("rolou"); });
 };
 
 $("attack").onclick = async () => {
@@ -298,6 +298,7 @@ async function applyEffects(effects) {
     }
     render();
     await wait(600);
+    if (window.storyHook) await window.storyHook("efeito:" + e.type);
   }
 }
 

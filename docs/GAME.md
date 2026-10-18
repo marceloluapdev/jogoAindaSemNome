@@ -94,8 +94,11 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
      combinação. Sid ganha. Bêbado: "Sorte no jogo, azar no amor, hein?"
   2. **Luta 1**: os dados no chapéu brilham, um **lodo** sobe do porão. Dona: "Sid! De novo não!" (mistério).
      3 dados, 1 rolagem; dica: pensamento do Sid sobre escolher os dados (selecionar e atacar).
-  3. **Luta 2**: 2 rolagens. Quando o lodo mostra a intenção, a dona grita: "Os dados que você não jogou, usa pra se
-     proteger!" (reserva). Defender/Concentrar aparecem pela 1ª vez; o jogador decide.
+  - **Luta 1**: uma **seta** pisca em cima dos dados até o jogador tocar em um.
+  3. **Luta 2**: 2 rolagens; a 1ª rolagem sai um **Par** (5-5-2): a dona sugere atacar com os dois cincos e diz que
+     o dado que sobra fica guardado para proteger (reserva). Ao sair o escudo do Par, Sid comenta.
+     Na 1ª vez que a defesa aparece (luta 1 ou 2), a dona explica **Defender** (soma bloqueia) e **Concentrar**
+     (leva o golpe, guarda os dados e junta carga). O jogador decide.
   4. **O 4º dado**: a dona entrega ("Era de alguém que também tinha sorte demais."; "Agora você me deve uma.").
      Ao se aproximar, algo dá errado (azar no amor, cômico). Depois: jogo livre.
   - Carga da Maldição e Aposta Final: ensinadas quando a carga encher pela 1ª vez (no jogo livre).

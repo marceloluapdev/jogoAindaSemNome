@@ -437,3 +437,10 @@ main.peace .enemy-head, main.peace .enemy-bar, main.peace #damage { visibility: 
 .grimorio { list-style: none; padding: 0; margin: 0 0 16px; text-align: left; }
 .grimorio li { padding: 3px 0; color: var(--bone); }
 .grimorio li.unknown { color: var(--violet); }
+
+/* Seta do tutorial apontando os dados (pisca e pula 1 pixel) */
+.hint-arrow { position: fixed; z-index: 35; width: 27px; height: 27px; pointer-events: none;
+  animation: hint-bob 0.7s steps(2) infinite; }
+.hint-arrow[hidden] { display: none; }
+.hint-arrow svg { display: block; width: 100%; height: 100%; }
+@keyframes hint-bob { 50% { transform: translateY(4px); } }
