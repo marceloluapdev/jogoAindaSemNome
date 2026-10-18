@@ -66,7 +66,7 @@
 - Todos o chamam de **Sid**. O nome completo só aparece mais tarde, num momento de revelação, com uma breve
   explicação dele mesmo, em tom de ironia: **o destino pregou uma peça com o nome dele**.
 - Grafia a decidir: **Arta Sid** (mais fácil em português) ou **Artha Sid** (mais fiel ao sânscrito).
-- Rascunho da fala **(ideia)**:
+- Fala da revelação (aprovada):
   > — Sid é como me chamam. O nome inteiro é Arta Sid.
   > Na língua antiga, *artha* é o objetivo... e também a riqueza. Meu nome é o de alguém que alcançou o que buscava —
   > só que escrito de trás pra frente. O que daria em azar.
@@ -74,6 +74,9 @@
   > *(joga um dado para o alto e pega sem olhar)*
   > O destino gosta de piada. Pelo visto, começou comigo antes mesmo de eu nascer.
   > E o pior é que eu ainda rio.
+
+## Personalidade
+- **Humor seco** diante da tragédia: leva a desgraça na piada, sem drama ("e o pior é que eu ainda rio").
 
 ## Passado do protagonista (ideia forte)
 - Era um **príncipe** (ecos de Sidarta Gautama e de Nala) que saiu do palácio buscando **uma resposta para o sofrimento**.
