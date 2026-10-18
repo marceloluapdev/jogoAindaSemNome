@@ -57,6 +57,14 @@
 - Nala vaga **disfarçado e deformado** (mordido por uma serpente, irreconhecível), trabalha como cocheiro,
   aprende **o segredo dos dados** e reconquista tudo — inclusive Damayanti, que o procura e o reconhece por um teste.
 
+## Nome do protagonista: **Arta Sid**
+- Inversão de **Sidarta** (Siddhārtha = *siddha*, "alcançado" + *artha*, "objetivo"): o nome ao contrário,
+  como a vida dele — o objetivo não alcançado.
+- **Artha**, em sânscrito, também é **riqueza/prosperidade** (um dos 4 objetivos da vida no hinduísmo:
+  dharma, artha, kama = amor/desejo, moksha = libertação). Ele ficou preso no *artha* (ganhar, a sorte)
+  em vez da libertação — e no fim escolhe o *kama* (o amor) e as pessoas.
+- Apelido possível: **Sid**.
+
 ## Passado do protagonista (ideia forte)
 - Era um **príncipe** (ecos de Sidarta Gautama e de Nala) que saiu do palácio buscando **uma resposta para o sofrimento**.
 - Sob a árvore — onde Buda enfrentou **Mara**, o tentador — encontrou a **entidade do acaso** (a que joga na Mesa dos anjos).
@@ -83,10 +91,10 @@
 Belas Maldições (Deus jogando "pôquer num quarto escuro") · Inscryption (mistério em camadas).
 
 ## Personagens
-- **Apostador Amaldiçoado** (protagonista): ver GAME.md "Personagem". Mundo do personagem: em construção.
+- **Arta Sid, o Apostador Amaldiçoado** (protagonista): ver GAME.md "Personagem". Mundo do personagem: em construção.
 - **Dona da taverna**: o apostador a defende no tutorial; ela dá o 4º dado.
 
 ## Em aberto
 - Nome do jogo: candidato forte ligado à "aposta maior" (ver GAME.md "Em aberto").
-- Nome do protagonista; o que ele quer; se lembra da amada; se ela o procura.
+- O que ele quer; se lembra da amada; se ela o procura.
 - Tom (comédia sombria? sério com humor?).
