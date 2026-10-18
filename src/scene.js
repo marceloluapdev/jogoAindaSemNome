@@ -137,7 +137,22 @@ function enemyGone(gone) {
   lastFrame = -1;
 }
 
-// Atordoado: estrelinhas âmbar girando em cima da cabeça do inimigo
+// Atordoado: estrelinhas âmbar girando em cima da cabeça do inimigo.
+// Estrela de 5 pontas em pixel art, sólida, com rampa de efeito (contorno escuro → miolo claro).
+const STUN_STAR = [
+  "....o....",
+  "...oao...",
+  "oooabaooo",
+  "oaabbbaao",
+  ".oabbbao.",
+  "..oabao..",
+  ".oaaoaao.",
+  ".oao.oao.",
+  ".oo...oo.",
+];
+const STUN_STAR_COLORS = { o: "#c97f2a", a: "#f2b84b", b: "#f3e7c9" };
+const STUN_STAR_SVG = `<svg viewBox="0 0 9 9" shape-rendering="crispEdges">${STUN_STAR.map((r, y) =>
+  [...r].map((ch, x) => STUN_STAR_COLORS[ch] ? `<rect x="${x}" y="${y}" width="1" height="1" fill="${STUN_STAR_COLORS[ch]}"/>` : "").join("")).join("")}</svg>`;
 let stunEl = null;
 function setStunned(on) {
   if (stunEl) { stunEl.remove(); stunEl = null; }
@@ -145,10 +160,10 @@ function setStunned(on) {
   stunEl = document.createElement("div");
   stunEl.className = "stun-stars";
   stunEl.style.left = `${parseFloat(enemyWrap.style.left) + enemyCanvas.width / 2}px`;
-  stunEl.style.top = `${parseFloat(enemyWrap.style.top) + 3}px`;
+  stunEl.style.top = `${parseFloat(enemyWrap.style.top) + 1}px`;
   for (let i = 0; i < 3; i++) {
     const star = document.createElement("span");
-    star.innerHTML = `<svg viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" fill="#f2b84b"/><rect x="2" y="2" width="1" height="1" fill="#f3e7c9"/></svg>`;
+    star.innerHTML = STUN_STAR_SVG;
     star.style.animationDelay = `${-i * 400}ms`;
     stunEl.appendChild(star);
   }

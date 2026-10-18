@@ -222,22 +222,22 @@ main {
   transform-origin: 50% 100%;
   pointer-events: none;
 }
-/* Atordoado: 3 estrelinhas dando voltas (elipse achatada, em degraus de pixel) */
+/* Atordoado: 3 estrelas dando voltas (elipse achatada, em degraus de pixel, sem transparência) */
 .stun-stars { position: absolute; width: 0; height: 0; pointer-events: none; }
 .stun-stars span {
-  position: absolute; left: -2px; top: -2px; width: 5px; height: 5px;
+  position: absolute; left: -4px; top: -4px; width: 9px; height: 9px;
   animation: stun-orbit 1.2s steps(1) infinite;
 }
 .stun-stars svg { display: block; width: 100%; height: 100%; }
 @keyframes stun-orbit {
   0%     { transform: translate(0px, 3px); }
-  12.5%  { transform: translate(7px, 2px); }
-  25%    { transform: translate(10px, 0px); }
-  37.5%  { transform: translate(7px, -2px); opacity: 0.6; }
-  50%    { transform: translate(0px, -3px); opacity: 0.5; }
-  62.5%  { transform: translate(-7px, -2px); opacity: 0.6; }
-  75%    { transform: translate(-10px, 0px); opacity: 1; }
-  87.5%  { transform: translate(-7px, 2px); }
+  12.5%  { transform: translate(9px, 2px); }
+  25%    { transform: translate(13px, 0px); }
+  37.5%  { transform: translate(9px, -2px); }
+  50%    { transform: translate(0px, -3px); }
+  62.5%  { transform: translate(-9px, -2px); }
+  75%    { transform: translate(-13px, 0px); }
+  87.5%  { transform: translate(-9px, 2px); }
   100%   { transform: translate(0px, 3px); }
 }
 .spell-svg { position: absolute; left: 0; top: 0; pointer-events: none; }
