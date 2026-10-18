@@ -39,6 +39,11 @@
 3. **O fim e o recomeço**: depois do fim do mundo, o mundo renasce perfeito e em ordem; nas cinzas,
    as peças do jogo dos deuses ficam esquecidas na grama. Ninguém mais joga — e nada mais tem graça.
 
+## Desfechos (ideias)
+- **A aposta maior** (ideia forte, possível nome do jogo): ele tem sorte no jogo e azar no amor, mas no fim
+  **aposta tudo no amor, na amizade e no viver** — a única aposta que a maldição não controla.
+  Conversa com o tema: escolher o acaso (com a dor que ele traz) em vez do mundo perfeito e sem jogo.
+
 ## Referência do protagonista: Nala e Damayanti (Mahabharata)
 - Nala, rei amado; **Damayanti o escolhe no lugar dos deuses** que também a queriam.
 - O demônio Kali, com ciúme, **possui Nala**, que perde o reino nos dados para o próprio irmão e se separa dela.
@@ -54,5 +59,6 @@ Belas Maldições (Deus jogando "pôquer num quarto escuro") · Inscryption (mis
 - **Dona da taverna**: o apostador a defende no tutorial; ela dá o 4º dado.
 
 ## Em aberto
+- Nome do jogo: candidato forte ligado à "aposta maior" (ver GAME.md "Em aberto").
 - Mundo e passado do protagonista; nome; o que ele quer.
 - Tom (comédia sombria? sério com humor?).

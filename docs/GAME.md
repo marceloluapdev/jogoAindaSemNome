@@ -165,7 +165,8 @@ Objetivo: **econômico, consistente e seguro**. Opções:
   ficarem lentos/repetitivos (limite da reserva ajuda).
 
 ## Em aberto
-- Nome do jogo
+- Nome do jogo — candidatos: **A Aposta Maior** (favorito: liga ao desfecho, ver HISTORIA.md) ·
+  A Maior Aposta · Mas os Anjos Jogam · Sorte no Jogo · A Mesa dos Anjos · Era do Um
 - Tipos de dados (d6, d8, dados especiais?)
 - Limite de rolagens: 3 ou 4?
 - Sistema de ingredientes/magias
