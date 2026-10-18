@@ -57,8 +57,29 @@
 - Nala vaga **disfarçado e deformado** (mordido por uma serpente, irreconhecível), trabalha como cocheiro,
   aprende **o segredo dos dados** e reconquista tudo — inclusive Damayanti, que o procura e o reconhece por um teste.
 
+## Passado do protagonista (ideia forte)
+- Era um **príncipe** (ecos de Sidarta Gautama e de Nala) que saiu do palácio buscando **uma resposta para o sofrimento**.
+- Sob a árvore — onde Buda enfrentou **Mara**, o tentador — encontrou a **entidade do acaso** (a que joga na Mesa dos anjos).
+  Em vez da iluminação, veio o **vício nos dados**. (Referência real: no "Sidarta" de Hermann Hesse, o personagem
+  se vicia em dados como mercador, durante o amor com Kamala, antes de seguir o caminho.)
+- Ela o possuiu, mas ele **resistiu e a prendeu dentro de si**: os **dados pendurados** são o **selo da prisão**.
+  Ele não é só amaldiçoado — **é o carcereiro**.
+- Consequências: os inimigos são cobradores/criaturas que querem **libertar ou tomar** a entidade;
+  a **Carga da Maldição** é a entidade vazando; a **Aposta Final** é soltá-la por um instante.
+- **Como se revela**: o tutorial **não explica** o passado dele. Tudo vem aos poucos, por **diálogos, flashbacks**,
+  livros e inimigos ao longo do jogo.
+
+## Filosofia (misturar com as religiões)
+- **Heráclito**: "O tempo é uma criança brincando, movendo peças; o reino é de uma criança."
+- **Nietzsche**: a terra como "mesa dos deuses" tremendo com lances de dados; **amor fati** (amar o próprio destino).
+- **Mallarmé**: "Um lance de dados jamais abolirá o acaso" (resposta ao mundo perfeito e sem jogo).
+- **Pascal**: a **aposta** de Pascal — contraponto à "aposta maior".
+- **Estoicos (Epiteto)**: o que depende de nós e o que não depende — o dado não depende dele; quem amar, sim.
+- **Budismo**: sofrimento vem do apego; o final faz o contrário (ele **escolhe se apegar** às pessoas, aceitando a dor) —
+  tensão entre as duas visões que pode aparecer em diálogos.
+
 ## Obras de referência (tom e ideias)
-Piratas do Caribe 2 (dados do mentiroso pela alma) · O Sétimo Selo · Fausto / pacto na encruzilhada ·
+"Sidarta" de Hermann Hesse (o vício nos dados) · Piratas do Caribe 2 (dados do mentiroso pela alma) · O Sétimo Selo · Fausto / pacto na encruzilhada ·
 Belas Maldições (Deus jogando "pôquer num quarto escuro") · Inscryption (mistério em camadas).
 
 ## Personagens
@@ -67,5 +88,5 @@ Belas Maldições (Deus jogando "pôquer num quarto escuro") · Inscryption (mis
 
 ## Em aberto
 - Nome do jogo: candidato forte ligado à "aposta maior" (ver GAME.md "Em aberto").
-- Mundo e passado do protagonista; nome; o que ele quer.
+- Nome do protagonista; o que ele quer; se lembra da amada; se ela o procura.
 - Tom (comédia sombria? sério com humor?).
