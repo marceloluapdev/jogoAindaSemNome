@@ -82,6 +82,11 @@
 - Primeiro sinal na cena 4: quando a dona se aproxima para entregar o dado, algo dá errado (cômico: um copo quebra,
   ela tropeça, a luz apaga...). Sid, seco: "É... acontece."
 
+- **Perder aproxima do amor** (ideia forte): sorte no jogo, azar no amor — então **cada derrota na Mesa afrouxa a
+  maldição no amor**. A cada vez que a Mesa reembaralha e Sid volta à taverna, a **dona** muda um pouco:
+  começa **bem grossa** com ele e vai dando **indícios** (uma fala mais suave, guarda um prato pra ele, pergunta
+  onde ele foi...). Conversa com o final: a "aposta maior" é deixar de apostar e escolher o amor.
+
 ## Personalidade
 - **Humor seco** diante da tragédia: leva a desgraça na piada, sem drama ("e o pior é que eu ainda rio").
 

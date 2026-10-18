@@ -70,8 +70,10 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 
 ## Dados e rolagens
 - Começo: **4 dados** e **2 rolagens** por jogada.
-- Dados e rolagens extras são recompensas (magias, ingredientes, escolhas da história).
-- Limite: **6 dados** na bandeja; rolagens até **3 ou 4** no total (a decidir).
+- Dados extras vêm **pela história** (raros e marcantes, como o 4º dado da dona). Rolagens extras: história/itens.
+- Limite: **7 dados**. O **7º é secreto**: só se ganha seguindo um caminho específico da história, com **pistas**
+  espalhadas (ideia: 7 = os 7 céus / 7 Arcontes do gnosticismo). Rolagens até **3 ou 4** no total (a decidir).
+  (Código hoje: MAX_DICE = 6 → subir para 7 e conferir a bandeja em 2 fileiras.)
 - Combinações (mult.) → efeito:
   Sexteto ×15 · Quinteto ×10 · Sequência completa (6) ×8 · Duas trincas ×7 · Quadra ×6 ·
   Sequência grande (5) ×5 · Casa cheia ×4 · Duas sequências ×4 · Sequência (4) ×3 · Trinca ×3 ·
@@ -79,6 +81,25 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   Sequências contam pelo **tamanho** (3, 4, 5, 6 seguidos), não pelo nº de dados.
   Quinteto, casa cheia e sequência grande só com 5+ dados; sexteto, sequência completa e as
   **mãos duplas** (Duas sequências, Três pares, Duas trincas) só com 6.
+
+## Progressão (decidido): roguelite com morte narrativa
+- **Roguelite**: morrer zera o poder da partida, mas a história segue (referência: Hades). Na lore: **a Mesa
+  reembaralha** e a maldição devolve Sid à **taverna**, que é a base entre partidas.
+- **De onde vem cada força** (para não virar acúmulo descontrolado):
+  - **XP / nível** (na partida): escolher **1 entre 3** melhorias da build (ex.: "Trinca queima por 2 turnos",
+    "+10% atordoar"). Frequente e pequeno.
+  - **História / mapa** (na partida): coisas raras e grandes — dados extras, +1 rolagem, magias únicas.
+  - **Entre partidas** (o que fica): **opções, não força bruta** — grimório, lore/flashbacks, novas recompensas no
+    sorteio, personagens iniciais, coisas compradas/feitas na taverna (ver abaixo).
+- **Troca com custo** (decidido, gostou): os poderes mais fortes vêm com uma maldição/custo.
+- **Freios**: limites fixos (7 dados, 3–4 rolagens); **espaços limitados** para amuletos/equipamentos (ex.: ~5,
+  pendurados no Sid) — às vezes larga um para pegar outro; inimigos crescem com a profundidade da partida.
+- **Equipamentos** (a desenhar): espaços limitados no Sid (ex.: chapéu, casaco, amuleto) e/ou **dados especiais**
+  (dado de osso, de vidro, viciado...) que mudam como cada dado funciona.
+- **Taverna como base (ideia)**: ao voltar depois de perder, Sid pode **comprar** coisas e **usar partes de
+  monstros** (trazidas das partidas) para fazer/liberar itens. Libera opções para as próximas partidas.
+- **Perder aproxima do amor** (ideia forte, ver HISTORIA.md "Azar no amor"): cada derrota afrouxa um pouco
+  a maldição no amor — a dona começa grossa e, a cada volta, vai dando indícios de que sente algo.
 
 ## História emergente
 - Lore, mitologia, personagens e tom: **`docs/HISTORIA.md`**.
