@@ -111,6 +111,16 @@ def caso_rolagens_acabam(j):
     igual(j.page.is_disabled("#roll"), True, "Rolar sem rolagens")
 
 
+def caso_todos_selecionados_nao_rola(j):
+    """Com os 4 dados selecionados, Rolar fica desativado (não gasta rolagem à toa)."""
+    j.rolar(1, 2, 3, 4)
+    j.selecionar(0, 1, 2, 3)
+    igual(j.page.is_disabled("#roll"), True, "Rolar com todos selecionados")
+    igual(j.estado()["rolagens"], 1, "rolagens intactas")
+    j.selecionar(3)
+    igual(j.page.is_disabled("#roll"), False, "Rolar volta ao desselecionar um")
+
+
 def caso_selecionados_ficam_na_rerrolagem(j):
     """Dados selecionados não são rolados de novo."""
     j.rolar(6, 6, 2, 3)

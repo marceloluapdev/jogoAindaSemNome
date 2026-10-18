@@ -173,7 +173,9 @@ function render() {
   $("ultimate").hidden = charge < CHARGE_MAX;
   $("ultimate").disabled = rolling || busy || over;
 
-  $("roll").disabled = rolling || busy || over || rollsLeft === 0;
+  // Todos selecionados (depois da 1ª rolagem): não há o que rolar — não deixa gastar a rolagem à toa
+  const allHeld = rolled && held.every(h => h);
+  $("roll").disabled = rolling || busy || over || rollsLeft === 0 || allHeld;
   $("attack").disabled = rolling || busy || over || !rolled || lost > 0;
 }
 
@@ -221,7 +223,8 @@ function startPlayerTurn() {
 }
 
 $("roll").onclick = () => {
-  if (!canHoldDice() || rolling) return;
+  if (!canHoldDice() || rolling || rollsLeft === 0) return;
+  if (dice[0] !== null && held.every(h => h)) return;   // nada para rolar
   rollsLeft--;
   render();
   rollDice(render);
