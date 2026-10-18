@@ -26,6 +26,9 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - Turno do jogador: rola, **seleciona** dados (toque) e rola de novo; os selecionados ficam.
   Ao **Atacar**, só os selecionados atacam (nenhum selecionado = todos).
   Dano = soma dos selecionados × multiplicador da combinação deles.
+  Vale só a **melhor** combinação (não acumulam), e **todos** os dados que atacam entram na soma, mesmo os
+  que não fazem parte dela (ex.: 3-1-2-3 = Sequência curta, (3+1+2+3)×2). Decidido manter assim: para guardar
+  o dado extra na defesa, basta não selecioná-lo.
 - O inimigo mostra a **intenção** (quanto vai atacar) e ataca de volta depois do seu ataque.
 - **Reserva de defesa**: os dados **não selecionados e que não foram rolados de novo** vão para a reserva,
   que acumula entre turnos até o nº de dados que você tem (hoje 4). Rerrolar um dado o **gasta**
