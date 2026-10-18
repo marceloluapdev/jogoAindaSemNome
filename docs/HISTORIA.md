@@ -29,6 +29,16 @@
   cada face virou uma força (por isso as combinações viram magia). Os anjos/Arcontes mantêm uma **Mesa** onde apostam
   destinos; almas são fichas. O mundo está na **Era do Um** (a pior).
 
+## O mito (texto em construção)
+> Trechos da "história mitológica" do mundo, escritos como lenda, conforme forem concluídos.
+> Servem de base para falas, livros e inscrições no jogo (nunca mostrados de uma vez).
+
+1. **A frase**: *"Deus não joga dados. Mas seus anjos jogam."*
+2. **A aposta**: houve uma aposta entre o Altíssimo e o Adversário sobre um homem — se, tirando-lhe tudo,
+   ele amaldiçoaria a sorte. (ideia: esse homem pode ser o protagonista, ficha de uma aposta maior.)
+3. **O fim e o recomeço**: depois do fim do mundo, o mundo renasce perfeito e em ordem; nas cinzas,
+   as peças do jogo dos deuses ficam esquecidas na grama. Ninguém mais joga — e nada mais tem graça.
+
 ## Referência do protagonista: Nala e Damayanti (Mahabharata)
 - Nala, rei amado; **Damayanti o escolhe no lugar dos deuses** que também a queriam.
 - O demônio Kali, com ciúme, **possui Nala**, que perde o reino nos dados para o próprio irmão e se separa dela.
