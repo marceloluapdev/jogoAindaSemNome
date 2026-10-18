@@ -86,23 +86,22 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
 - As escolhas **mudam o personagem** (atributos, magias, maldições, aliados).
 - Objetivo: histórias **emergentes**, diferentes a cada partida (referência: Dwarf Fortress).
 
-## Tutorial integrado à história (rascunho)
-- Começa com **3 dados** (menos coisa para entender); a história dá o **4º dado** depois do tutorial.
-- Cada mecânica é apresentada por um momento da história, em lutas curtas e fáceis:
-  1. **Prólogo (livro-jogo)**: a taverna, a aposta perdida, a maldição prende 3 dados à alma do apostador.
-  2. **Luta 1** (na taverna): rolar, selecionar e atacar (1 rolagem, inimigo fraco).
-  3. **Luta 2**: rolar de novo, dados "gastos" e a reserva de defesa; Defender x Concentrar.
-  4. **Evento**: quem dá o **4º dado** é a **dona da taverna** onde ele estava jogando — ele a defendeu do inimigo
-     das lutas do tutorial (o ataque acontece na própria taverna), e ela retribui com um dado.
-     (Ideias descartadas por ora: arrancado do lodo derrotado; ganho numa nova aposta; oferecido pela maldição.)
-  5. Carga da Maldição e Aposta Final podem ser ensinadas quando a carga encher pela primeira vez (no jogo livre).
-- Depois disso, segue o jogo normal (livre).
-
-## História: fases planejadas
-- **Fase 1**: só retrato (rosto) + texto + escolhas (estilo visual novel simples).
-- **Fase 2 (depois)**: exploração em mapinhas estilo **EarthBound** (andar, falar com personagens).
-- Por isso as cenas/diálogos devem ser **dados separados da apresentação**: a mesma cena serve
-  para a caixa de texto da fase 1 e para o diálogo de um personagem no mapa da fase 2.
+## Tutorial integrado à história (decidido)
+- **Nada de "tutorialzão"**: a história mostra e o jogador descobre jogando. Dicas só em falas curtas (pensamento do
+  Sid, grito da dona). Começa com **3 dados**; ~3–4 min. Detalhes de história e falas: HISTORIA.md.
+  0. **Abertura** (tela preta): *"Deus não joga dados. Os anjos jogam por ele."*
+  1. **Taverna**: Sid joga dados com um bêbado ("quem fizer a maior combinação leva") — 1ª rolagem, 3 dados, vê uma
+     combinação. Sid ganha. Bêbado: "Sorte no jogo, azar no amor, hein?"
+  2. **Luta 1**: os dados no chapéu brilham, um **lodo** sobe do porão. Dona: "Sid! De novo não!" (mistério).
+     3 dados, 1 rolagem; dica: pensamento do Sid sobre escolher os dados (selecionar e atacar).
+  3. **Luta 2**: 2 rolagens. Quando o lodo mostra a intenção, a dona grita: "Os dados que você não jogou, usa pra se
+     proteger!" (reserva). Defender/Concentrar aparecem pela 1ª vez; o jogador decide.
+  4. **O 4º dado**: a dona entrega ("Era de alguém que também tinha sorte demais."; "Agora você me deve uma.").
+     Ao se aproximar, algo dá errado (azar no amor, cômico). Depois: jogo livre.
+  - Carga da Maldição e Aposta Final: ensinadas quando a carga encher pela 1ª vez (no jogo livre).
+- **Grimório de combinações**: cada combinação **nova** aparece rápido na tela ("Nova combinação: Trinca ×3 🔥") e
+  fica registrada; as não descobertas aparecem como "???" — incentiva testar sem explicar tudo.
+- **Retratos**: Sid e a dona (PixelLab, 2–3 expressões). Até lá, retratos provisórios.
 
 ## Livro-jogo: visual (a decidir)
 Objetivo: **econômico, consistente e seguro**. Opções:

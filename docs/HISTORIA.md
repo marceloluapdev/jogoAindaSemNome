@@ -33,7 +33,8 @@
 > Trechos da "história mitológica" do mundo, escritos como lenda, conforme forem concluídos.
 > Servem de base para falas, livros e inscrições no jogo (nunca mostrados de uma vez).
 
-1. **A frase**: *"Deus não joga dados. Mas seus anjos jogam."*
+1. **A frase** (abre o jogo, tela preta): *"Deus não joga dados. Os anjos jogam por ele."*
+   Duplo sentido proposital: jogam **no lugar de Deus**, e jogam **com o destino dele** (Sid) — só se percebe depois.
 2. **A aposta**: houve uma aposta entre o Altíssimo e o Adversário sobre um homem — se, tirando-lhe tudo,
    ele amaldiçoaria a sorte. (ideia: esse homem pode ser o protagonista, ficha de uma aposta maior.)
 3. **O fim e o recomeço**: depois do fim do mundo, o mundo renasce perfeito e em ordem; nas cinzas,
@@ -74,6 +75,12 @@
   > *(joga um dado para o alto e pega sem olhar)*
   > O destino gosta de piada. Pelo visto, começou comigo antes mesmo de eu nascer.
   > E o pior é que eu ainda rio.
+
+## Azar no amor
+- Faz parte da maldição **desde sempre** (veio com a entidade). O tutorial não "dá" o azar no amor: só **mostra** pela 1ª vez.
+- Prenúncio na cena 1: o bêbado, ao perder, brinca *"Sorte no jogo, azar no amor, hein?"* — Sid não responde.
+- Primeiro sinal na cena 4: quando a dona se aproxima para entregar o dado, algo dá errado (cômico: um copo quebra,
+  ela tropeça, a luz apaga...). Sid, seco: "É... acontece."
 
 ## Personalidade
 - **Humor seco** diante da tragédia: leva a desgraça na piada, sem drama ("e o pior é que eu ainda rio").
