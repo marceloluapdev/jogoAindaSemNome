@@ -598,8 +598,17 @@ function rollDice(onDone) {
   });
 }
 
+// Tira da mesa os dados de ataque ainda não rolados ("?") — ex.: turno da Aposta Final.
+// Voltam no próximo turno (resetDice).
+function hideUnrolledDice() {
+  attackDice().forEach(b => {
+    if (dice[b.idx] === null) { b.active = false; b.el.hidden = true; }
+  });
+}
+
 // Joga n dados de defesa; chama onDone(valores) quando pararem.
 function rollDefense(n, onDone) {
+  hideUnrolledDice();   // não rola a defesa no meio de dados "?" parados
   const list = bodies.filter(b => b.kind === "defense").slice(0, n);
   if (!list.length) return onDone([]);
   rolling = true;

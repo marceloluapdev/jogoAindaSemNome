@@ -251,6 +251,18 @@ def caso_aposta_final(j):
     igual(j.js("charge"), 0, "carga")
 
 
+def caso_aposta_final_tira_dados_nao_rolados(j):
+    """Aposta Final sem rolar: os dados "?" saem da mesa (a defesa não rola no meio deles) e voltam no turno seguinte."""
+    j.inimigo(vida=999, intencao=10)
+    j.js("charge = 5; reserve = 2; render()")
+    j.js("window.TEST_ROLLS.push(1, 1, 1, 1, 1)")
+    j.page.click("#ultimate")
+    j.page.wait_for_function("!document.getElementById('defense-buttons').hidden || !busy")
+    igual(j.page.locator(".die.attack:not([hidden])").count(), 0, "dados ? escondidos")
+    j.defender(3, 3)
+    igual(j.page.locator(".die.attack:not([hidden])").count(), 4, "voltam no próximo turno")
+
+
 def caso_reserva_tem_limite(j):
     """A reserva acumula entre turnos até o número de dados (4)."""
     j.inimigo(vida=999, intencao=1)

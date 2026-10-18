@@ -332,6 +332,7 @@ $("ultimate").onclick = async () => {
   if (busy || rolling || over || charge < CHARGE_MAX) return;
   busy = true;
   charge = 0;
+  hideUnrolledDice();   // a Aposta Final substitui o turno: os dados "?" saem da mesa
   render();
   log("Aposta Final! A maldição desaba sobre o inimigo...");
   const values = Array.from({ length: ULTIMATE_DICE }, () =>
