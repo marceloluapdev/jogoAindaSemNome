@@ -30,4 +30,5 @@
   - Carga da Maldição enche por **dois caminhos**: excesso da reserva **e** +1 a cada Concentrar
   - carga cheia libera a Aposta Final
 - [ ] Teste `caso_tela_nao_pula` às vezes falha por 1px (já falhava antes; investigar)
+- [ ] Menu de administrador para teste (no celular): escolher os dados da próxima rolagem, forçar efeitos (atordoar, queimar...), encher carga/reserva, trocar inimigo
 - [ ] Escolher um nome para o jogo
