@@ -1,12 +1,20 @@
 // Menu de administrador para testar no celular.
-// Só aparece abrindo o jogo com ?admin no endereço (ex.: .../index.html?admin).
+// Aparece abrindo o jogo com ?admin no endereço (fica ligado neste aparelho; ?admin=off desliga).
 //
 // - Escolher os valores da próxima rolagem de ataque (ou um atalho: Par, Trinca...)
 // - Forçar a chance de atordoar (sempre / nunca)
 // - Encher carga/reserva, mexer na vida, trocar de inimigo, aplicar estados
 
 (function () {
-  if (!/[?&]admin\b/.test(location.search)) return;
+  // Liga com ?admin (e fica ligado neste aparelho); desliga com ?admin=off
+  const q = location.search;
+  try {
+    if (/[?&]admin=off\b/.test(q)) localStorage.removeItem("jasn.admin");
+    else if (/[?&]admin\b/.test(q)) localStorage.setItem("jasn.admin", "1");
+  } catch (e) {}
+  let on = /[?&]admin\b/.test(q) && !/[?&]admin=off\b/.test(q);
+  try { on = on || (!window.TEST_MODE && localStorage.getItem("jasn.admin") === "1"); } catch (e) {}
+  if (!on) return;
 
   // Valores escolhidos para a próxima rolagem (null = aleatório). dice.js consome window.ADMIN_ROLLS.
   let pick = Array(NUM_DICE).fill(null);
