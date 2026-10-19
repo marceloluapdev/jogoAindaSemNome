@@ -34,10 +34,13 @@
   - [ ] Dona: **expressões do retrato** (brava, neutra, sorrisinho tímido). Dica: criar o retrato como personagem
         de **1 direção** (de frente), para os states saírem mais baratos
   - [ ] **Sid no mapa**: low top-down, 64 px, corpo inteiro (usar o Sid atual como referência) + caminhada
+  - [ ] **Cartomante, padre e guarda** no mapa (4 direções; hoje provisórios em código)
+  - [ ] **Tiles da cidade** (calçamento, grama, caminho) e, se der, casas/objetos
   - [ ] **Bartô**: mapa (64 px, corpo inteiro) + retrato com expressões (bêbado, sóbrio, assustado)
   - Regra: personagens da cidade todos no **mesmo tamanho (64 px)**; pés com folga embaixo (Reframe Canvas)
 - [ ] Nome da dona
-- [ ] Cidade: entrar na taverna, mais pessoas com pedaços da lore, tiles do PixelLab, caminhada animada do Sid/dona
+- [x] Cidade maior (640×760, zoom 1 no celular): praça com fonte, taverna, casa do Bartô, mercado + tenda da cartomante, capela + padre, portão + guarda, beco do portal; caminho com desvio (A*)
+- [ ] Cidade: entrar na taverna, tiles do PixelLab, caminhada animada do Sid/dona, cartomante/padre/guarda do PixelLab
 - [ ] Layout: bandeja que entra/sai só na hora da ação (sobrepondo botões) + espaço para até 7 dados
 - [ ] Cenário da taverna no PixelLab? (hoje em código, 144×106)
 - [ ] Escolher um nome para o jogo

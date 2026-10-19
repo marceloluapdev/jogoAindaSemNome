@@ -622,7 +622,7 @@ def _falar(j):
 def caso_cidade_portal_e_volta(j):
     """Cidade: encostar no portal leva a 3 lutas; vencendo a última, volta à praça."""
     _cidade(j)
-    j.js("cityWalkTo(62, 270)")
+    j.js("cityTeleport(CITY_PORTAL.x - 30, CITY_PORTAL.y); cityWalkTo(CITY_PORTAL.x, CITY_PORTAL.y)")
     j.page.wait_for_selector("#talk", state="visible")
     _falar(j)
     j.page.wait_for_function("cityState().run && !cityState().visible")
@@ -642,7 +642,7 @@ def caso_cidade_portal_e_volta(j):
 def caso_derrota_no_portal_aproxima_a_dona(j):
     """Perder no portal: a Mesa reembaralha (volta à praça) e a dona fica menos grossa."""
     _cidade(j)
-    j.js("cityWalkTo(62, 270)")
+    j.js("cityTeleport(CITY_PORTAL.x - 30, CITY_PORTAL.y); cityWalkTo(CITY_PORTAL.x, CITY_PORTAL.y)")
     j.page.wait_for_selector("#talk", state="visible")
     _falar(j)
     j.page.wait_for_function("cityState().run")
