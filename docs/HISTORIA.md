@@ -45,6 +45,9 @@
   entender tudo, ele faz a "aposta maior" — que é um **paradoxo**: não é uma aposta na Mesa, é **deixar de apostar**.
   Ele escolhe a amada, os amigos e o viver, mesmo podendo perdê-los; o que importa não é apostar, é o que ele prefere.
 
+- **Finais**: há um final "verdadeiro" (o mais feliz, pelas escolhas no caminho — a aposta maior) e outros;
+  em um deles o Homúnculo se sacrifica (ver Personagens).
+
 ## Cuidado de tom: o jogo não glamouriza apostar
 - **Acaso da vida ≠ jogo de azar.** O acaso (a incerteza de viver, amar, perder) é o que dá graça e dor à vida.
   O **jogo de azar** é a maldição: a compulsão que o fez perder tudo (como Kali possuindo Nala).
@@ -117,7 +120,14 @@ Belas Maldições (Deus jogando "pôquer num quarto escuro") · Inscryption (mis
 
 ## Personagens
 - **Arta Sid, o Apostador Amaldiçoado** (protagonista): ver GAME.md "Personagem". Mundo do personagem: em construção.
-- **Dona da taverna**: o apostador a defende no tutorial; ela dá o 4º dado.
+- **Dona da taverna**: o apostador a defende no tutorial; ela dá o 4º dado. Começa grossa e vai mudando (ver "Azar no amor").
+- **Bartô**: o bêbado do tutorial. Era **alquimista** antes de perder tudo nos dados — espelho do Sid, outra vítima do jogo.
+  Mais adiante no jogo, sóbrio, **libera a alquimia** na taverna (partes de monstros → poções/itens).
+- **Homúnculo** (ideia forte): criatura feita de **"sorte engarrafada"**. Aparece pelo mundo, depois entra na **equipe**
+  e mais tarde pode ser **personagem jogável** com mecânica própria: **cartas de tarô** e combinações de tarô (como os
+  dados, provavelmente mais elaborado — construir com calma).
+  - Num dos finais (o **não-verdadeiro**, quando o jogador não fez as escolhas do final mais feliz), o Homúnculo
+    **se sacrifica**: a sorte engarrafada vira uma **outra ultimate**, a magia que derrota o chefe final.
 
 ## Em aberto
 - Nome do jogo: candidato forte ligado à "aposta maior" (ver GAME.md "Em aberto").

@@ -18,7 +18,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   Chapéu largo, casaco puído, **dados pendurados** no chapéu/cabelo/roupa como amuletos (visíveis de costas).
   Ideia: cada dado novo que você ganha aparece pendurado nele.
 - Futuro: **mais de um personagem inicial**. Candidato: **Homúnculo** (criatura com frasco brilhando nas costas;
-  a cor do líquido e partes do corpo mudam com poções e escolhas). Outras ideias: Aprendiz de Alquimista, Vidente Vendado.
+  a cor do líquido e partes do corpo mudam com poções e escolhas) — mecânica própria com **cartas de tarô** e
+  combinações de tarô (ver HISTORIA.md). Outras ideias: Aprendiz de Alquimista, Vidente Vendado.
 
 ## Combate
 - Em turnos, **primeira pessoa**: inimigo de frente no topo, ações do jogador embaixo
@@ -96,8 +97,8 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   pendurados no Sid) — às vezes larga um para pegar outro; inimigos crescem com a profundidade da partida.
 - **Equipamentos** (a desenhar): espaços limitados no Sid (ex.: chapéu, casaco, amuleto) e/ou **dados especiais**
   (dado de osso, de vidro, viciado...) que mudam como cada dado funciona.
-- **Alquimia (próxima a desenhar)**: alguém **na taverna** combina ingredientes (partes de monstros trazidas das
-  partidas) em poções/itens. Quem é: a decidir (ver HISTORIA.md).
+- **Alquimia (próxima a desenhar)**: o **Bartô** (era alquimista) combina ingredientes (partes de monstros trazidas
+  das partidas) em poções/itens, na taverna. É **liberada mais adiante** no jogo, não no começo.
 - **Dados especiais = habilidades adquiridas**, na taverna ou subindo de nível (não itens soltos).
 - **Taverna como base (ideia)**: ao voltar depois de perder, Sid pode **comprar** coisas e **usar partes de
   monstros** (trazidas das partidas) para fazer/liberar itens. Libera opções para as próximas partidas.
