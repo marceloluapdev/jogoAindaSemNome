@@ -346,7 +346,7 @@ button:disabled { opacity: 0.35; }
 
 /* Vitória / derrota */
 .overlay {
-  position: fixed; inset: 0;
+  position: fixed; inset: 0; z-index: 48;
   display: flex; align-items: center; justify-content: center;
   background: rgba(18, 13, 26, 0.8);
   padding: 16px;
@@ -444,3 +444,11 @@ main.peace .enemy-head, main.peace .enemy-bar, main.peace #damage { visibility: 
 .hint-arrow[hidden] { display: none; }
 .hint-arrow svg { display: block; width: 100%; height: 100%; }
 @keyframes hint-bob { 50% { transform: translateY(4px); } }
+
+/* ---------- Cidade (src/city.js) ---------- */
+#city { position: fixed; inset: 0; z-index: 20; background: var(--ink);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; }
+#city[hidden] { display: none; }
+#city canvas { image-rendering: pixelated; touch-action: manipulation; }
+.city-hint { position: absolute; top: 8px; left: 0; right: 0; text-align: center; margin: 0;
+  color: var(--lilac); font-size: 0.8rem; pointer-events: none; }

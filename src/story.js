@@ -287,14 +287,15 @@ async function runTutorial() {
     { say: "dona", text: "Era de alguém que também tinha sorte demais." },
     { run: async () => { setDiceCount(4); render(); floatText($("player-hp"), "+1 dado", "charge"); await sleepS(900); } },
     { say: "dona", text: "Agora você me deve uma." },
-    { narra: "O rastro do lodo desce pelo porão. Sid ajeita o chapéu e vai atrás." },
+    { narra: "Lá fora, na praça, um redemoinho verde começou a girar. Sid ajeita o chapéu." },
   ]);
 
   tutorialRunning = false;
   try { localStorage.setItem(TUTORIAL_KEY, "feito"); } catch (e) {}
   peace(false);
   setBackdrop("masmorra");
-  restart();
+  // depois do tutorial: a cidade (se houver); senão, direto às lutas
+  if (!(window.enterCity && window.enterCity())) restart();
 }
 
 function tutorialDone() {

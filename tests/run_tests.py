@@ -604,6 +604,61 @@ def caso_grimorio_registra_combinacao(j):
     assert "Trinca" in texto and "???" in texto, texto
 
 
+def _cidade(j):
+    pg = j.page
+    pg.add_init_script("window.TEST_CITY = true; try { localStorage.clear(); localStorage.setItem('jasn.tutorial', 'feito') } catch (e) {}")
+    pg.reload()
+    pg.wait_for_function("window.cityState && cityState().visible")
+
+
+def _falar(j):
+    for _ in range(20):
+        if not j.page.is_visible("#talk"):
+            return
+        j.js("document.getElementById('talk').click()")
+        j.page.wait_for_timeout(20)
+
+
+def caso_cidade_portal_e_volta(j):
+    """Cidade: encostar no portal leva a 3 lutas; vencendo a última, volta à praça."""
+    _cidade(j)
+    j.js("cityWalkTo(62, 270)")
+    j.page.wait_for_selector("#talk", state="visible")
+    _falar(j)
+    j.page.wait_for_function("cityState().run && !cityState().visible")
+    for luta in range(3):
+        j.inimigo(vida=1, intencao=1)
+        j.rolar(6, 6, 6, 6)
+        j.atacar()
+        if j.esperando_defesa():
+            j.aguentar()
+        titulo = j.tela_final()
+        igual(titulo, "Portal fechado!" if luta == 2 else "Vitória!", f"tela da luta {luta + 1}")
+        j.page.click("#overlay-btn")
+    _falar(j)
+    igual(j.js("cityState().visible && !cityState().run"), True, "de volta à cidade")
+
+
+def caso_derrota_no_portal_aproxima_a_dona(j):
+    """Perder no portal: a Mesa reembaralha (volta à praça) e a dona fica menos grossa."""
+    _cidade(j)
+    j.js("cityWalkTo(62, 270)")
+    j.page.wait_for_selector("#talk", state="visible")
+    _falar(j)
+    j.page.wait_for_function("cityState().run")
+    j.js("player.hp = 1")
+    j.inimigo(vida=999, intencao=50)
+    j.rolar(1, 3, 5, 6)
+    j.atacar()
+    igual(j.tela_final(), "Derrota", "tela")
+    j.page.click("#overlay-btn")
+    _falar(j)
+    igual(j.js("localStorage.getItem('jasn.derrotas')"), "1", "derrotas")
+    j.js("donaScene(); 0")
+    j.page.wait_for_selector("#talk", state="visible")
+    assert "Voltou inteiro" in j.page.inner_text("#talk"), j.page.inner_text("#talk")
+
+
 def caso_cena_pixel_carrega(j):
     """A cena em pixel art carrega o sprite do inimigo (48×48) e o personagem (64×64)."""
     j.page.wait_for_function("document.getElementById('enemy-sprite').width === 48")

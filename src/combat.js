@@ -316,6 +316,11 @@ async function victory() {
   }
   log(`${enemy.name} foi derrotado!`);
   await wait(900);
+  // Ida ao portal (cidade): depois da última luta, volta para a praça
+  if (window.RUN && level + 1 >= window.RUN.fights) {
+    showOverlay("Portal fechado!", `Você venceu as ${window.RUN.fights} lutas do portal.`, "Voltar à cidade", () => window.endRun(true));
+    return;
+  }
   showOverlay("Vitória!", `${enemy.name} caiu. Você recupera um pouco de vida.`, "Próximo inimigo", () => {
     level++;
     const heal = Math.round(player.maxHp * 0.3);
@@ -436,7 +441,8 @@ async function enemyTurn() {
   if (player.hp <= 0) {
     over = true;
     render();
-    showOverlay("Derrota", `Você chegou ao inimigo ${level + 1}.`, "Recomeçar", restart);
+    if (window.RUN) showOverlay("Derrota", "A Mesa reembaralha...", "Continuar", () => window.endRun(false));
+    else showOverlay("Derrota", `Você chegou ao inimigo ${level + 1}.`, "Recomeçar", restart);
     return;
   }
   await afterEnemyAttack();
@@ -562,4 +568,5 @@ function restart() {
 
 createDice();
 // Primeira vez: tutorial (src/story.js). Já jogou: direto ao combate.
-if (!(window.startGame && window.startGame())) restart();
+// Já fez o tutorial: começa na cidade (src/city.js); nos testes, direto no combate.
+if (!(window.startGame && window.startGame())) { if (!(window.enterCity && window.enterCity())) restart(); }

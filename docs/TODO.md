@@ -14,6 +14,7 @@
 - [x] Carga da Maldição + Aposta Final (pose flutuando do PixelLab girando nas 8 direções, dados caindo)
 - [x] Tutorial (`src/story.js`): abertura, taverna (jogo com Bartô), 2 lutas, 4º dado da dona; caixa de diálogo com retrato
 - [x] Grimório de combinações (toque na combinação; novas aparecem como aviso)
+- [x] Cidade (protótipo, `src/city.js`): praça 3/4, tocar para andar, dona (arte nova) e Bartô (provisório) conversam, portal do azar → 3 lutas → volta; derrota = "a Mesa reembaralha" e a dona fica menos grossa a cada derrota
 - [x] Menu de administrador (`?admin` no endereço, `src/admin.js`): forçar dados, chance de atordoar, estados
 - [x] Efeitos por combinação (escudo, cura, queima, atordoa, maldição) + sequências de 3 a 6 e mãos duplas de 6 dados
 
@@ -27,6 +28,16 @@
 - [ ] Decidir o visual do livro-jogo (ver opções no GAME.md) e fazer a primeira cena com 2–3 escolhas
 - [ ] Atributos do personagem afetados pelas escolhas
 - [ ] Teste `caso_tela_nao_pula` às vezes falha por 1px (já falhava antes; investigar)
-- [ ] Retratos do Sid, da dona e do Bartô no PixelLab (hoje provisórios) e nome da dona
+- [ ] **Arte pendente no PixelLab** (créditos grátis acabaram; um state de 8 direções custa ~10 gerações):
+  - [x] Dona no mapa: corpo inteiro, 8 direções, 64 px (`assets/npc/dona/`)
+  - [ ] Dona: **caminhada** (Template motion → Skeleton v3 → Walking) — hoje a caminhada é feita no código
+  - [ ] Dona: **expressões do retrato** (brava, neutra, sorrisinho tímido). Dica: criar o retrato como personagem
+        de **1 direção** (de frente), para os states saírem mais baratos
+  - [ ] **Sid no mapa**: low top-down, 64 px, corpo inteiro (usar o Sid atual como referência) + caminhada
+  - [ ] **Bartô**: mapa (64 px, corpo inteiro) + retrato com expressões (bêbado, sóbrio, assustado)
+  - Regra: personagens da cidade todos no **mesmo tamanho (64 px)**; pés com folga embaixo (Reframe Canvas)
+- [ ] Nome da dona
+- [ ] Cidade: entrar na taverna, mais pessoas com pedaços da lore, tiles do PixelLab, caminhada animada do Sid/dona
+- [ ] Layout: bandeja que entra/sai só na hora da ação (sobrepondo botões) + espaço para até 7 dados
 - [ ] Cenário da taverna no PixelLab? (hoje em código, 144×106)
 - [ ] Escolher um nome para o jogo

@@ -13,7 +13,7 @@ personagens, ideias guardadas). Antes de propor ou discutir qualquer coisa de de
 próximos passos, leia o GAME.md e o TODO.md — não presuma que algo ainda não foi pensado.
 
 Convenções: código em `src/` (`dice.js` = dados/física/combinações, `scene.js` = cena em pixel art,
-`combat.js` = combate e turnos, `story.js` = diálogos e tutorial, `admin.js` = menu de teste), entrada em `index.html`. Arte em `assets/` (PNGs do PixelLab;
+`combat.js` = combate e turnos, `story.js` = diálogos e tutorial, `city.js` = cidade/portal, `admin.js` = menu de teste), entrada em `index.html`. Arte em `assets/` (PNGs do PixelLab;
 originais guardados com sufixo `_original`), scripts de edição de arte em `tools/`. Textos do jogo em português.
 Visual: pixel art, paleta fixa em `:root` no `src/style.css` — use só essas cores (ver "Estética" no GAME.md).
 
