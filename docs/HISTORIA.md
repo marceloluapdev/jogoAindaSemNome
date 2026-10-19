@@ -4,6 +4,8 @@
 > Marque o que ainda é ideia com **(ideia)**; o resto é decidido.
 
 ## Como a lore aparece no jogo
+- A mitologia fica **espalhada entre várias pessoas**: cada personagem sabe **um pedaço** (a velha do porão, um
+  padre, uma cartomante, um bêbado...). O jogador monta o quadro conversando e explorando.
 - A mitologia **não é apresentada no começo**. O jogo começa pelo personagem (taverna, tutorial);
   a lore é **descoberta aos poucos** na jornada (falas, livros, inimigos, lugares).
 - A base pode ser conhecida por nós, mas no jogo fica **meio misteriosa**: citada, nunca explicada por inteiro.
