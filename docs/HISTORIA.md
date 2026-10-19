@@ -42,6 +42,17 @@
 3. **O fim e o recomeço**: depois do fim do mundo, o mundo renasce perfeito e em ordem; nas cinzas,
    as peças do jogo dos deuses ficam esquecidas na grama. Ninguém mais joga — e nada mais tem graça.
 
+## Os portais
+- **O que são de verdade**: **rasgos onde a Mesa dos anjos encosta no mundo** — **acaso puro**, sorte e azar ainda
+  misturados (o tema: o acaso dá graça e faz sofrer). Dentro, cada luta é um lance de dados deles.
+- **O que cada um acha** (lore espalhada, cada um com sua visão):
+  - o povo da cidade: **"portal do azar"** (viu gente entrar e voltar arruinada — é o nome usado no jogo);
+  - o **Bartô**, viciado: **"sorte vazando do mundo"** (o apostador sempre acha que a próxima é a boa);
+  - mais adiante, alguém com a visão religiosa: castigo ou tentação.
+- **Segredo (revelado bem depois)**: os portais **começaram a aparecer depois que Sid chegou** — a **entidade presa
+  nele** atrai a Mesa (ou a Mesa a procura). Por isso o verde do portal é o **mesmo verde da maldição** dos dados dele,
+  e por isso a dona grita "Sid! De novo não!" no tutorial.
+
 ## Desfechos (ideias)
 - **A aposta maior** (ideia forte, possível nome do jogo): ele tem sorte no jogo e azar no amor. No fim, depois de
   entender tudo, ele faz a "aposta maior" — que é um **paradoxo**: não é uma aposta na Mesa, é **deixar de apostar**.
