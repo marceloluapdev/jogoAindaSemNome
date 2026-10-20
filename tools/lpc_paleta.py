@@ -42,6 +42,8 @@ PECAS = {
     "signs.png": ("tiles/signs.png", [(None, TUDO, 0.9)]),
     "soldier.png": ("sprites/people/soldier.png", [(None, TUDO, 0.95)]),
 }
+# Monstros: um quadro de frente (3 colunas × 4 linhas; linha 2 = olhando para baixo), recortado justo
+MONSTROS = ["slime", "bat", "ghost", "eyeball", "snake", "small_worm", "big_worm", "bee", "man_eater_flower", "pumpking"]
 
 OUT = pathlib.Path(__file__).resolve().parent.parent / "assets" / "temp" / "lpc"
 
@@ -107,6 +109,18 @@ def main(base):
         orig = OUT / (pathlib.Path(src).stem + "_original.png")
         if not orig.exists():
             shutil.copyfile(base / src, orig)
+    (OUT / "monstros").mkdir(exist_ok=True)
+    for m in MONSTROS:
+        src = base / "sprites" / "monsters" / f"{m}.png"
+        im = converte(src, [(None, TUDO, 1.0)])
+        fw, fh = im.width // 3, im.height // 4
+        fr = im.crop((0, fh * 2, fw, fh * 3))
+        fr = fr.crop(fr.getbbox())
+        fr.save(OUT / "monstros" / f"{m}.png")
+        print(m, fr.size)
+        orig = OUT / "monstros" / f"{m}_original.png"
+        if not orig.exists():
+            shutil.copyfile(src, orig)
     shutil.copyfile(base / "CREDITS.TXT", OUT / "CREDITS.TXT")
     print(f"ok: {OUT}")
 

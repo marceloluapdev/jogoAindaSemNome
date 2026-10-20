@@ -49,5 +49,7 @@
 - [ ] Escolher um nome para o jogo
 - [x] Arte provisória CC0 na cidade: grama, terra e objetos pequenos do Kenney *Tiny Town*, na paleta (ver `docs/ASSETS.md`)
 - [x] Arte provisória LPC na cidade: casas (kit montado em código), árvores, barris, placas, guarda
-- [ ] Arte provisória: inimigos do LPC (slime, morcego, fantasma...), interior da taverna, NPCs vestidos (cartomante, padre, Bartô)
+- [x] Inimigos provisórios do LPC em 3 faixas (pequenos, médios, grandes), sorteados por luta
+- [ ] Animar os monstros do LPC (3 quadros); balancear vida/ataque de cada um
+- [ ] Arte provisória: interior da taverna, NPCs vestidos (cartomante, padre, Bartô)
 - [ ] Tela de créditos no jogo (arte de terceiros, ver `docs/ASSETS.md`)

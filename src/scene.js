@@ -168,7 +168,7 @@ async function setEnemySprite(def) {
   }
   // centralizado, com o "pé" (última linha desenhada) apoiado no chão
   const x = Math.round((SW - img.width) / 2);
-  const y = FLOOR_Y - 4 - def.foot;
+  const y = FLOOR_Y - 4 - (def.foot ?? img.height - 1);
   enemyWrap.style.left = x + "px";
   enemyWrap.style.top = y + "px";
   enemyShadow = { x: x + Math.round(img.width * 0.25), y: FLOOR_Y - 5, w: Math.round(img.width * 0.5) };

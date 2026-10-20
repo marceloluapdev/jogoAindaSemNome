@@ -46,6 +46,12 @@
     "Inimigo 1 de vida": () => { enemy.hp = 1; },
     "Inimigo 999": () => { enemy.hp = enemy.maxHp = 999; },
     "Próximo inimigo": () => { level++; newEnemy(); startPlayerTurn(); },
+    "Ver outro monstro": () => {          // passa por todos os inimigos, um a um, sem mudar a luta
+      const all = ENEMY_TIERS.flat();
+      const i = (all.findIndex(e => e.name === enemy.name) + 1) % all.length;
+      Object.assign(enemy, { name: all[i].name, sprite: all[i].sprite, foot: all[i].foot, tint: all[i].tint });
+      setEnemySprite(enemy);
+    },
     "+1 rolagem": () => { rollsLeft++; },
     "Atordoar já": () => { enemy.stunned = true; setStunned(true); },
     "Queimar já": () => { enemy.burn = 10; },

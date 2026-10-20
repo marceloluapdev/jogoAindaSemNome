@@ -30,12 +30,14 @@ quando a licença pedir e para saber **o que trocar depois** por arte própria.
 | `assets/temp/kenney-tiny-town/tiles.png` | [Kenney — Tiny Town](https://kenney.nl/assets/tiny-town) | Kenney | CC0 | Cidade: grama, terra, cercas, arbustos, cogumelos, brotos, colmeia, placa | Tiles da cidade do PixelLab |
 | `assets/temp/lpc/house*.png`, `treetop.png`, `trunk.png`, `barrel.png`, `signs.png` | [LPC Base Assets](https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles) | Lanea Zimmerman (Sharm) | CC-BY-SA 3.0 / GPL 3.0; também OGA-BY 3.0 | Cidade: casas (montadas com o kit), árvores, barris, placas da taverna e do Bartô | Casas/árvores do PixelLab ou desenho próprio |
 | `assets/temp/lpc/soldier.png` | idem | Manuel Riecke (MrBeast) | CC-BY-SA 3.0 / GPL 3.0 | Cidade: guarda do portão | Guarda do PixelLab |
+| `assets/temp/lpc/monstros/*.png` | idem | Charles Sanchez (CharlesGabriel) | CC-BY-SA 3.0 / GPL 3.0 | Lutas: morcego, cobra, larva, vespa, assombração, olho, minhocão, flor devoradora, rei abóbora (1 quadro de frente) | Inimigos do PixelLab |
 
 Notas do LPC:
 - Cores convertidas por `tools/lpc_paleta.py` (originais com sufixo `_original`, créditos em `CREDITS.TXT`).
   Folhas e a pedra da capela usam "degraus" (a ordem de claro/escuro do original vira a rampa da paleta).
-- Ainda não usados, mas no ZIP: monstros (slime, morcego, fantasma, olho, cobra, minhoca, abelha, planta
-  carnívora, abóbora), móveis/interiores (taverna por dentro), castelo, água, pontes, baús.
+- Monstros: só 1 quadro (de frente); o ZIP tem 3 quadros por direção, dá para animar depois. O slime do LPC
+  não é usado (temos o lodo do PixelLab).
+- Ainda não usados, mas no ZIP: móveis/interiores (taverna por dentro), castelo, água, pontes, baús.
 
 Notas do Tiny Town:
 - Cores convertidas por `tools/kenney_paleta.py` (original em `tiles_original.png`, licença em `License.txt`).

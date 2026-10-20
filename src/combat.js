@@ -13,19 +13,33 @@
 
 const PLAYER_MAX_HP = 40;
 
-// Inimigos. sprite: PNG do PixelLab; foot: última linha desenhada do sprite
-// (para apoiar no chão); tint: troca a cor para criar variações sem arte nova.
+// Inimigos. sprite: PNG (PixelLab ou provisório do LPC, ver docs/ASSETS.md); foot: última linha
+// desenhada do sprite (para apoiar no chão; sem foot = última linha da imagem);
+// tint: troca a cor para criar variações sem arte nova.
+// Três faixas: pequenos (1ª luta de cada ida ao portal), médios (2ª) e grandes (3ª).
+// Cada luta sorteia um da faixa; no modo de teste vem sempre o primeiro.
 const SLIME = "assets/enemies/slime.png";
-const ENEMIES = [
-  { name: "Lodo Errante",  hp: 50,  atk: [4, 7],  sprite: SLIME, foot: 38, tint: null },
-  { name: "Lodo Venenoso", hp: 90,  atk: [6, 10], sprite: SLIME, foot: 38, tint: "#9a5cd0" },
-  { name: "Lodo de Brasa", hp: 140, atk: [8, 13], sprite: SLIME, foot: 38, tint: "#e0603a" },
+const MON = name => `assets/temp/lpc/monstros/${name}.png`;
+const ENEMY_TIERS = [
+  [ { name: "Lodo Errante",  hp: 50, atk: [4, 7], sprite: SLIME, foot: 38, tint: null },
+    { name: "Morcego",       hp: 42, atk: [5, 8], sprite: MON("bat") },
+    { name: "Cobra",         hp: 48, atk: [4, 8], sprite: MON("snake") },
+    { name: "Larva",         hp: 55, atk: [3, 6], sprite: MON("small_worm") },
+    { name: "Vespa",         hp: 40, atk: [5, 9], sprite: MON("bee") } ],
+  [ { name: "Lodo Venenoso", hp: 90, atk: [6, 10], sprite: SLIME, foot: 38, tint: "#9a5cd0" },
+    { name: "Assombração",   hp: 80, atk: [7, 11], sprite: MON("ghost") },
+    { name: "Olho Vigia",    hp: 85, atk: [6, 10], sprite: MON("eyeball") },
+    { name: "Minhocão",      hp: 100, atk: [5, 9], sprite: MON("big_worm") } ],
+  [ { name: "Lodo de Brasa", hp: 140, atk: [8, 13], sprite: SLIME, foot: 38, tint: "#e0603a" },
+    { name: "Flor Devoradora", hp: 150, atk: [7, 12], sprite: MON("man_eater_flower") },
+    { name: "Rei Abóbora",   hp: 135, atk: [9, 14], sprite: MON("pumpking") } ],
 ];
 
-// Depois da lista, os inimigos repetem cada vez mais fortes
+// Faixa = luta da vez (0, 1, 2); depois da 3ª, repetem cada vez mais fortes
 function enemyFor(level) {
-  const base = ENEMIES[level % ENEMIES.length];
-  const loop = Math.floor(level / ENEMIES.length);
+  const tier = ENEMY_TIERS[level % ENEMY_TIERS.length];
+  const base = window.TEST_MODE ? tier[0] : tier[randInt(0, tier.length - 1)];
+  const loop = Math.floor(level / ENEMY_TIERS.length);
   const k = Math.pow(1.6, loop);
   return {
     name: loop ? `${base.name} ${"+".repeat(loop)}` : base.name,

@@ -55,6 +55,9 @@ os resultados com **alquimia e magias** para atingir pontuações cada vez maior
   envolvendo-o, e uma **aurora boreal** verde se formando sobre o inimigo — que continua enquanto os dados caem.
 - Futuro: escolher **quantos** dados de defesa usar (como habilidade a ganhar).
 - Vida do jogador: 40. Vencer cura 30% e traz o próximo inimigo (mais forte). Vida zerada = derrota.
+- **Inimigos em 3 faixas** (`ENEMY_TIERS` em combat.js): a 1ª luta de cada ida ao portal sorteia um pequeno
+  (lodo, morcego, cobra, larva, vespa), a 2ª um médio (lodo venenoso, assombração, olho vigia, minhocão) e a 3ª um
+  grande (lodo de brasa, flor devoradora, rei abóbora). Depois da 3ª, repetem mais fortes. Arte provisória do LPC.
 - **Efeitos por combinação** (além do dano; valores pela soma dos dados que atacam), mostrados na prévia:
   **Par** escudo ⌈soma/2⌉ no próximo golpe · **Dois/Três pares** drena, cura ⌈soma/3⌉ ·
   **Trinca/Duas trincas** queima: inimigo perde "soma" depois do ataque dele ·

@@ -676,6 +676,21 @@ def caso_variacao_de_cor_do_inimigo(j):
     j.page.wait_for_function("document.getElementById('enemy-sprite').width === 48")
 
 
+def caso_inimigos_por_faixa(j):
+    """Cada luta sorteia um inimigo da faixa certa (pequenos, médios, grandes) e todos os sprites carregam."""
+    nomes = j.js("""(() => { window.TEST_MODE = false;
+        const r = [0, 1, 2, 3].map(l => Array.from({length: 30}, () => enemyFor(l).name));
+        window.TEST_MODE = true; return r; })()""")
+    faixas = j.js("ENEMY_TIERS.map(t => t.map(e => e.name))")
+    for luta in range(3):
+        assert set(nomes[luta]) <= set(faixas[luta]), (luta, nomes[luta])
+        assert len(set(nomes[luta])) > 1, f"luta {luta + 1} sempre igual"
+    assert all(n.endswith("+") for n in nomes[3]), nomes[3]
+    falhou = j.js("""Promise.all(ENEMY_TIERS.flat().map(e => loadImage(e.sprite)))
+        .then(imgs => ENEMY_TIERS.flat().filter((e, i) => !imgs[i]).map(e => e.name))""")
+    igual(falhou, [], "sprites que não carregaram")
+
+
 def caso_fisica_sem_dados_encavalados(j):
     """Física de verdade (10 rodadas): ao final, nenhum dado fica encavalado em outro — inclusive defesa x selecionados."""
     j.js("window.TEST_MODE = false")
