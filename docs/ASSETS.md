@@ -22,4 +22,10 @@ quando a licença pedir e para saber **o que trocar depois** por arte própria.
 ## Em uso
 | Arquivo / pasta | Origem (link) | Autor | Licença | Uso no jogo | Trocar por |
 |---|---|---|---|---|---|
-| — | — | — | — | — | — |
+| `assets/temp/kenney-tiny-town/tiles.png` | [Kenney — Tiny Town](https://kenney.nl/assets/tiny-town) | Kenney | CC0 | Cidade: grama, terra, cercas, arbustos, cogumelos, brotos, colmeia, placa | Tiles da cidade do PixelLab |
+
+Notas do Tiny Town:
+- Cores convertidas por `tools/kenney_paleta.py` (original em `tiles_original.png`, licença em `License.txt`).
+- **Escala**: o pacote é feito para bonecos de 16 px; os nossos têm ~50 px. Por isso casas, árvores, castelo e
+  poço do pacote **não** são usados (ficariam do tamanho de um joelho). Só chão e objetos pequenos.
+  Para casas/árvores provisórias, procurar pacotes com bonecos de ~48–64 px (tiles de 32 px).

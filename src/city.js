@@ -2,7 +2,8 @@
 //
 // Áreas: praça central (fonte), taverna e casa do Bartô ao norte, rua do mercado com a tenda da
 // cartomante a oeste, capela a leste, portão (fechado) ao sul e o portal do azar num beco.
-// Tudo desenhado em código (provisório, na paleta do jogo) até chegarem os tiles do PixelLab.
+// Desenhado em código (provisório, na paleta do jogo) + chão e objetos pequenos do Kenney "Tiny Town"
+// (CC0, provisório, ver docs/ASSETS.md) até chegarem os tiles do PixelLab.
 //
 // - Portal do azar: RUN_FIGHTS lutas (o combate de sempre); vencendo ou perdendo, volta à cidade.
 // - Perder: "a Mesa reembaralha". Cada derrota afrouxa a maldição no amor: a dona fica menos grossa.
@@ -244,7 +245,8 @@ const COBBLE = [
   [270, 500, 100, 200],   // rua para o portão
   [380, 600, 190, 60],    // beco do portal
 ];
-const DIRT = [[290, 700, 60, 60]];
+// Terra (múltiplos de 16, por causa dos tiles): saída do portão e chão da tenda da cartomante
+const DIRT = [[288, 688, 64, 80], [56, 528, 80, 64]];
 
 // Construções: x, base (y do chão), modelo
 const BUILDINGS = [
@@ -276,6 +278,13 @@ const PROPS = [
   { x: 320, y: 744, k: "gate" },
   // beco
   { x: 400, y: 652, k: "barrel" }, { x: 590, y: 640, k: "crate" },
+  // tiles do Kenney: cercas do cemitério e da horta, arbustos, cogumelos, brotos, colmeia, placa do beco
+  { x: 496, y: 482, k: "fence", n: 7 }, { x: 524, y: 596, k: "fence", n: 5 },
+  { x: 380, y: 670, k: "kt", t: 83 },
+  { x: 540, y: 584, k: "kt", t: 17 }, { x: 562, y: 586, k: "kt", t: 17 }, { x: 584, y: 583, k: "kt", t: 17 },
+  { x: 168, y: 246, k: "kt", t: 94 },
+  ...[[144, 600], [600, 330], [470, 576], [36, 160], [250, 600], [140, 720]].map(([x, y]) => ({ x, y, k: "kt", t: 5 })),
+  ...[[160, 612], [596, 486], [26, 640], [456, 588]].map(([x, y]) => ({ x, y, k: "kt", t: 29 })),
   // árvores na borda
   ...[[20, 40], [90, 60], [170, 30], [470, 40], [560, 60], [620, 120], [20, 200], [620, 230], [610, 470], [20, 620],
       [150, 640], [200, 700], [450, 720], [620, 700], [240, 560], [430, 540], [610, 560], [40, 720]].map(([x, y]) => ({ x, y, k: "tree" })),
@@ -293,15 +302,41 @@ Object.assign(SPEAKERS, {
   cartomante: { name: "Cartomante" }, padre: { name: "Padre" }, guarda: { name: "Guarda" },
 });
 
+// ---------- Tiles provisórios (Kenney "Tiny Town", CC0, já na paleta — ver docs/ASSETS.md) ----------
+// Folha 12×11 de tiles de 16 px. Grama, terra e objetos pequenos; casas e árvores do pacote
+// ficam de fora (feitos para bonecos de 16 px — os nossos têm ~50 px).
+const KT = cityImage("assets/temp/kenney-tiny-town/tiles.png");
+const KT_SIZE = 16, KT_COLS = 12;
+const tileReady = () => KT.complete && KT.naturalWidth > 0;
+function tile(g, i, x, y) {
+  g.drawImage(KT, (i % KT_COLS) * KT_SIZE, Math.floor(i / KT_COLS) * KT_SIZE, KT_SIZE, KT_SIZE, Math.round(x), Math.round(y), KT_SIZE, KT_SIZE);
+}
+const KT_DIRT = [[12, 13, 14], [24, 25, 26], [36, 37, 38]];    // terra com borda de grama (3×3)
+
 // ---------- Chão pré-desenhado ----------
-const ground = makeCanvas(CW, CH, p => {
+// Sem os tiles (ainda carregando ou faltando): grama e terra em código, como antes.
+let ground = makeGround();
+KT.addEventListener("load", () => { ground = makeGround(); });
+function makeGround() { return makeCanvas(CW, CH, (p, g) => {
   const r = seeded(3);
-  p(C.greenD, 0, 0, CW, CH);
-  for (let i = 0; i < 1400; i++) {                              // tufos de grama
-    const x = r() * CW, y = r() * CH;
-    p(r() < 0.5 ? C.green : C.dusk, x, y, 1, 2); if (r() < 0.3) p(C.leaf, x + 1, y, 1, 1);
+  if (tileReady()) {
+    for (let ty = 0; ty < CH; ty += KT_SIZE) for (let tx = 0; tx < CW; tx += KT_SIZE) {
+      const v = r();
+      tile(g, v < 0.015 ? 2 : v < 0.4 ? 1 : 0, tx, ty);
+    }
+    DIRT.forEach(([x, y, w, h]) => {
+      const nx = w / KT_SIZE, ny = h / KT_SIZE;
+      for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++)
+        tile(g, KT_DIRT[j === 0 ? 0 : j === ny - 1 ? 2 : 1][i === 0 ? 0 : i === nx - 1 ? 2 : 1], x + i * KT_SIZE, y + j * KT_SIZE);
+    });
+  } else {
+    p(C.greenD, 0, 0, CW, CH);
+    for (let i = 0; i < 1400; i++) {                              // tufos de grama
+      const x = r() * CW, y = r() * CH;
+      p(r() < 0.5 ? C.green : C.dusk, x, y, 1, 2); if (r() < 0.3) p(C.leaf, x + 1, y, 1, 1);
+    }
+    DIRT.forEach(([x, y, w, h]) => { p(C.wood, x, y, w, h); for (let i = 0; i < 80; i++) p(C.woodL, x + r() * w, y + r() * h, 2, 1); });
   }
-  DIRT.forEach(([x, y, w, h]) => { p(C.wood, x, y, w, h); for (let i = 0; i < 80; i++) p(C.woodL, x + r() * w, y + r() * h, 2, 1); });
   COBBLE.forEach(([x0, y0, w, h]) => {
     p(C.ink, x0 - 1, y0 - 1, w + 2, h + 2);
     p(C.night, x0, y0, w, h);
@@ -320,7 +355,7 @@ const ground = makeCanvas(CW, CH, p => {
     const d = (x * x) / (40 * 40) + (y * y) / (26 * 26);
     if (d <= 1) p(d > 0.86 ? C.ink : d > 0.62 ? (y < 0 ? C.boneD : C.wood) : d > 0.52 ? C.ink : (y < -6 ? C.steelL : C.steel), fx + x, fy - 8 + y);
   }
-});
+}); }
 
 // ---------- Desenho por quadro ----------
 function sprite(img, x, y, w, h, flip, bob = 0) {
@@ -392,6 +427,11 @@ function drawCity(t) {
 function drawProp(o, t) {
   if (o.k === "fountain") return drawFountainTop(t);
   if (o.k === "stall") { o.c = o.c || PROP.stall(o.a, o.b); return cx.drawImage(o.c, o.x - 24, o.y - 38); }
+  if (o.k === "kt") { if (tileReady()) tile(cx, o.t, o.x - 8, o.y - 15); return; }
+  if (o.k === "fence") {                       // cerca reta: ponta esquerda, meio, ponta direita
+    if (tileReady()) for (let i = 0; i < o.n; i++) tile(cx, i === 0 ? 80 : i === o.n - 1 ? 82 : 81, o.x + i * KT_SIZE, o.y - 15);
+    return;
+  }
   const c = PROP[o.k];
   cx.drawImage(c, Math.round(o.x - c.width / 2), Math.round(o.y - c.height + 2));
 }
@@ -416,6 +456,8 @@ function buildGrid() {
     else if (o.k === "tent") block(o.x - 30, o.y - 30, 60, 30);
     else if (o.k === "gate") block(o.x - 48, o.y - 30, 96, 30);
     else if (o.k === "bench") block(o.x - 16, o.y - 6, 32, 6);
+    else if (o.k === "fence") block(o.x, o.y - 6, o.n * 16 - 1, 5);
+    else if (o.k === "kt") { if (o.t !== 17) block(o.x - 6, o.y - 5, 12, 5); }
     else block(o.x - 8, o.y - 6, 16, 6);
   });
   npcs.forEach(n => block(n.x - 7, n.y - 5, 14, 6));
