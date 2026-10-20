@@ -48,4 +48,6 @@
 - [ ] (Futuro, sem prioridade) Testar pipeline 3D → pixel art com 1 personagem (ver NOTAS.md)
 - [ ] Escolher um nome para o jogo
 - [x] Arte provisória CC0 na cidade: grama, terra e objetos pequenos do Kenney *Tiny Town*, na paleta (ver `docs/ASSETS.md`)
-- [ ] Arte provisória CC0: inimigos genéricos; casas/árvores num pacote na nossa escala (bonecos ~50 px)
+- [x] Arte provisória LPC na cidade: casas (kit montado em código), árvores, barris, placas, guarda
+- [ ] Arte provisória: inimigos do LPC (slime, morcego, fantasma...), interior da taverna, NPCs vestidos (cartomante, padre, Bartô)
+- [ ] Tela de créditos no jogo (arte de terceiros, ver `docs/ASSETS.md`)

@@ -2,8 +2,8 @@
 //
 // Áreas: praça central (fonte), taverna e casa do Bartô ao norte, rua do mercado com a tenda da
 // cartomante a oeste, capela a leste, portão (fechado) ao sul e o portal do azar num beco.
-// Desenhado em código (provisório, na paleta do jogo) + chão e objetos pequenos do Kenney "Tiny Town"
-// (CC0, provisório, ver docs/ASSETS.md) até chegarem os tiles do PixelLab.
+// Provisório até chegar a arte do PixelLab (ver docs/ASSETS.md): casas, árvores, barris e guarda do LPC;
+// chão e objetos pequenos do Kenney "Tiny Town"; o resto em código. Tudo na paleta do jogo.
 //
 // - Portal do azar: RUN_FIGHTS lutas (o combate de sempre); vencendo ou perdendo, volta à cidade.
 // - Perder: "a Mesa reembaralha". Cada derrota afrouxa a maldição no amor: a dona fica menos grossa.
@@ -94,7 +94,7 @@ const PEOPLE = {
 
 // ---------- Construções (pré-desenhadas) ----------
 // Vista 3/4: telhado em cima, parede da frente embaixo. base = linha do chão (onde a parede encosta).
-function makeBuilding(o) {
+function makeBuilding(o, doorX) {
   const W = o.w, RH = o.roofH, WH = o.wallH, H = RH + WH + 4;
   const canvas = makeCanvas(W + 8, H, (p, g) => {
     const x0 = 4, wy = RH;     // parede começa embaixo do telhado
@@ -152,12 +152,12 @@ function makeBuilding(o) {
     if (o.chimney !== undefined) { const c = rx + o.chimney; p(C.ink, c - 1, 0, 12, RH - 6); p(C.boneD, c, 1, 10, RH - 8); p(C.wood, c, 1, 10, 2); }
     if (o.cross) { const c = x0 + W / 2 - 3; p(C.ink, c - 1, 0, 8, 2); p(C.amber, c + 2, 2, 2, 12); p(C.amber, c, 5, 6, 2); }
   });
-  return { canvas, w: W + 8, h: H, ox: 4, wallTop: RH };
+  return { canvas, w: W + 8, h: H, ox: 4, wallTop: RH, doorX: doorX ?? 4 + (o.door || 0) + (o.doorW || 16) / 2 };
 }
 
 const B = {
   taverna: makeBuilding({ w: 176, wallH: 64, roofH: 44, wall: "wood", roof: C.red, roofD: C.redD, roofL: "#e0738a".replace("e0738a", "d0455a"),
-    windows: [14, 40, 124, 150], door: 80, doorW: 18, sign: { x: 58, w: 62, text: "TAVERNA" }, chimney: 20, flowers: true }),
+    windows: [14, 40, 124, 150], door: 80, doorW: 18, sign: { x: 58, w: 62, text: "TAVERNA" }, chimney: 20, flowers: true }, 4 + 80 + 9),
   bartô: makeBuilding({ w: 92, wallH: 52, roofH: 34, wall: "plaster", roof: C.violet, roofD: C.dusk, roofL: C.lilac,
     windows: [12, 66], door: 40, chimney: 70 }),
   capela: makeBuilding({ w: 96, wallH: 70, roofH: 40, wall: "stone", roof: C.dusk, roofD: C.night, roofL: C.violet,
@@ -227,6 +227,70 @@ const PROP = {
   }),
   grave: makeCanvas(14, 18, p => { p("rgba(18,13,26,0.45)", 1, 15, 12, 3); p(C.ink, 2, 0, 10, 16); p(C.boneD, 3, 1, 8, 14); p(C.wood, 6, 4, 2, 6); p(C.wood, 4, 6, 6, 2); }),
 };
+// ---------- Arte provisória do LPC (OpenGameArt, na paleta — ver docs/ASSETS.md) ----------
+// Casas montadas com o kit house.png (parede de tijolo, porta, janela, chaminé, telhado),
+// árvores = copa + tronco, barris e o guarda (soldier.png). Até carregar, fica o desenho em código.
+const LPC = {};
+["house", "house_pedra", "treetop", "trunk", "barrel", "signs", "soldier"].forEach(k => { LPC[k] = cityImage(`assets/temp/lpc/${k}.png`); });
+const ART = {};                       // peças montadas quando as imagens chegam
+function crop(img, sx, sy, w, h) { return makeCanvas(w, h, (p, g) => g.drawImage(img, sx, sy, w, h, 0, 0, w, h)); }
+
+// Casa: largura 32 + 32·cols, parede 16 + 32·rows + 32 (topo, meio repetido, alicerce)
+function makeHouse(o) {
+  const kit = LPC[o.kit || "house"];
+  const W = 32 + 32 * o.cols, WH = 16 + 32 * o.rows + 32, RH = o.roofH, H = RH + WH + 4;
+  const d = (g, sx, sy, w, h, dx, dy) => g.drawImage(kit, sx, sy, w, h, Math.round(dx), Math.round(dy), w, h);
+  const canvas = makeCanvas(W + 8, H, (p, g) => {
+    const x0 = 4, wy = RH;
+    p("rgba(18,13,26,0.5)", x0 + 2, H - 4, W, 4);                         // sombra no chão
+    // parede (9 partes): colunas 16 | 32... | 16 ; linhas 16 | 32... | 32
+    const rows = [[0, 16, 1], [32, 32, o.rows], [64, 32, 1]];
+    let y = wy;
+    rows.forEach(([sy, sh, n]) => { for (let r = 0; r < n; r++, y += sh) {
+      d(g, 0, sy, 16, sh, x0, y);
+      for (let c = 0; c < o.cols; c++) d(g, 32, sy, 32, sh, x0 + 16 + c * 32, y);
+      d(g, 80, sy, 16, sh, x0 + W - 16, y);
+    } });
+    (o.windows || []).forEach(wx => d(g, 224, 0, 32, 32, x0 + wx, wy + 14));
+    if (o.door !== undefined) d(g, o.doorKind ? 160 : 96, 0, 32, 48, x0 + o.door, wy + WH - 48);
+    if (o.sign) g.drawImage(LPC.signs, o.sign.i * 32, 0, 32, 32, x0 + o.sign.x, wy - 2, 32, 32);   // placa pendurada no beiral
+    // telhado: painel de telhas com moldura de 4 px, miolo repetido
+    const rx = x0 - 4, rw = W + 8, B4 = 4;
+    d(g, 96, 128, B4, B4, rx, 0); d(g, 192 - B4, 128, B4, B4, rx + rw - B4, 0);
+    d(g, 96, 188, B4, B4, rx, RH - B4); d(g, 192 - B4, 188, B4, B4, rx + rw - B4, RH - B4);
+    for (let x = rx + B4; x < rx + rw - B4; x += 32) {
+      const w = Math.min(32, rx + rw - B4 - x);
+      d(g, 128, 128, w, B4, x, 0); d(g, 128, 188, w, B4, x, RH - B4);
+      for (let yy = B4; yy < RH - B4; yy += 16) d(g, 128, 132, w, Math.min(16, RH - B4 - yy), x, yy);
+    }
+    for (let yy = B4; yy < RH - B4; yy += 16) { const h = Math.min(16, RH - B4 - yy); d(g, 96, 132, B4, h, rx, yy); d(g, 192 - B4, 132, B4, h, rx + rw - B4, yy); }
+    if (o.chimney !== undefined) d(g, 192, 8, 32, 48, rx + o.chimney, -14);
+    if (o.cross) { const c = x0 + W / 2 - 3; p(C.ink, c - 1, 0, 8, 2); p(C.amber, c + 2, 2, 2, 12); p(C.amber, c, 5, 6, 2); }
+  });
+  return { canvas, w: W + 8, h: H, ox: 4, wallTop: RH, doorX: 4 + (o.door || 0) + 16 };
+}
+// Árvore: copa por cima do tronco; o tronco começa 40 px acima do pé da copa
+function makeTree(cx0, cy0, ch, trunkX) {
+  const bottom = ch, trunkY = bottom - 40;
+  return { canvas: makeCanvas(96, trunkY + 74, (p, g) => {
+    g.drawImage(LPC.trunk, trunkX, 0, 96, 74, 0, trunkY, 96, 74);
+    g.drawImage(LPC.treetop, cx0, cy0, 96, ch, 0, 0, 96, ch);
+  }), base: trunkY + 62 };
+}
+function buildLPC() {
+  if (!Object.values(LPC).every(i => i.complete && i.naturalWidth)) return;
+  ART.trees = [makeTree(0, 0, 80, 0), makeTree(96, 0, 96, 96), makeTree(0, 96, 96, 0), makeTree(96, 96, 112, 96)];
+  ART.barrel = crop(LPC.barrel, 0, 10, 32, 38);
+  ART.guarda = crop(LPC.soldier, 0, 128, 64, 64);
+  Object.assign(B.taverna, makeHouse({ cols: 5, rows: 1, roofH: 52, windows: [16, 48, 128, 160], door: 80, sign: { i: 0, x: 80 }, chimney: 24 }));
+  Object.assign(B.bartô, makeHouse({ cols: 2, rows: 1, roofH: 40, windows: [8], door: 56, doorKind: 1, sign: { i: 2, x: 56 }, chimney: 70 }));
+  Object.assign(B.capela, makeHouse({ kit: "house_pedra", cols: 2, rows: 2, roofH: 44, windows: [8, 56], door: 32, cross: true }));
+  Object.assign(B.casaO, makeHouse({ cols: 2, rows: 1, roofH: 36, windows: [8, 56], door: 32, doorKind: 1 }));
+  Object.assign(B.casaL, makeHouse({ cols: 2, rows: 1, roofH: 36, windows: [8, 56], door: 32, chimney: 10 }));
+  if (cityRunning) buildGrid();
+}
+Object.values(LPC).forEach(i => i.addEventListener("load", buildLPC));
+
 const GLOW = makeCanvas(48, 48, p => {
   for (let y = -24; y < 24; y++) for (let x = -24; x < 24; x++) {
     const d = Math.hypot(x, y) / 24; if (d > 1) continue;
@@ -250,7 +314,7 @@ const DIRT = [[288, 688, 64, 80], [56, 528, 80, 64]];
 
 // Construções: x, base (y do chão), modelo
 const BUILDINGS = [
-  { x: 214, base: 262, b: B.taverna, door: { x: 214 + 4 + 80 + 9 } },
+  { x: 214, base: 262, b: B.taverna, door: { get x() { return 214 + B.taverna.doorX; } } },
   { x: 420, base: 250, b: B.bartô },
   { x: 504, base: 300, b: B.capela },
   { x: 28, base: 232, b: B.casaO },
@@ -287,7 +351,7 @@ const PROPS = [
   ...[[160, 612], [596, 486], [26, 640], [456, 588]].map(([x, y]) => ({ x, y, k: "kt", t: 29 })),
   // árvores na borda
   ...[[20, 40], [90, 60], [170, 30], [470, 40], [560, 60], [620, 120], [20, 200], [620, 230], [610, 470], [20, 620],
-      [150, 640], [200, 700], [450, 720], [620, 700], [240, 560], [430, 540], [610, 560], [40, 720]].map(([x, y]) => ({ x, y, k: "tree" })),
+      [150, 640], [200, 700], [450, 720], [620, 700], [240, 560], [430, 540], [40, 720]].map(([x, y], i) => ({ x, y, k: "tree", v: (i * 7) % 4 })),
 ];
 
 // Pessoas (lore espalhada: cada uma sabe um pedaço)
@@ -296,7 +360,7 @@ const npcs = [
   { id: "bebado", x: 466, y: 276, img: () => PEOPLE.bebado, w: 30, h: 54, talk: () => lines("bebado", BARTO_LINES) },
   { id: "cartomante", x: 128, y: 572, img: () => PEOPLE.cartomante, w: 30, h: 54, talk: () => lines("cartomante", CARTO_LINES) },
   { id: "padre", x: 552, y: 330, img: () => PEOPLE.padre, w: 30, h: 54, talk: () => lines("padre", PADRE_LINES) },
-  { id: "guarda", x: 360, y: 716, img: () => PEOPLE.guarda, w: 30, h: 54, talk: () => lines("guarda", GUARDA_LINES) },
+  { id: "guarda", x: 360, y: 716, img: () => ART.guarda || PEOPLE.guarda, w: 30, h: 54, talk: () => lines("guarda", GUARDA_LINES) },
 ];
 Object.assign(SPEAKERS, {
   cartomante: { name: "Cartomante" }, padre: { name: "Padre" }, guarda: { name: "Guarda" },
@@ -407,7 +471,7 @@ function drawCity(t) {
   const things = [];
   BUILDINGS.forEach(o => things.push({ y: o.base, draw: () => cx.drawImage(o.b.canvas, o.x, o.base - o.b.h + 4) }));
   PROPS.forEach(o => things.push({ y: o.y, draw: () => drawProp(o, t) }));
-  npcs.forEach(n => things.push({ y: n.y, draw: () => sprite(n.img(), n.x, n.y + 1, n.w, n.h, false, Math.floor(t / 650 + n.x) % 2) }));
+  npcs.forEach(n => things.push({ y: n.y, draw: () => { const im = n.img(); sprite(im, n.x, n.y + 1, im.width || n.w, im.height || n.h, false, Math.floor(t / 650 + n.x) % 2); } }));
   things.push({ y: sid.y, draw: () => {
     const walking = sid.path.length > 0;
     const bob = walking ? Math.floor(t / 120) % 2 : Math.floor(t / 650) % 2;
@@ -432,7 +496,11 @@ function drawProp(o, t) {
     if (tileReady()) for (let i = 0; i < o.n; i++) tile(cx, i === 0 ? 80 : i === o.n - 1 ? 82 : 81, o.x + i * KT_SIZE, o.y - 15);
     return;
   }
-  const c = PROP[o.k];
+  if (o.k === "tree" && ART.trees) {
+    const t = ART.trees[o.v ?? 0];
+    return cx.drawImage(t.canvas, Math.round(o.x - 48), Math.round(o.y - t.base));
+  }
+  const c = o.k === "barrel" && ART.barrel ? ART.barrel : PROP[o.k];
   cx.drawImage(c, Math.round(o.x - c.width / 2), Math.round(o.y - c.height + 2));
 }
 
