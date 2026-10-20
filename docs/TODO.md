@@ -47,3 +47,4 @@
 - [ ] Cidade: kit de peças em código (tiles 16 px com transições, árvores/flores com variações, mapa como grade)
 - [ ] (Futuro, sem prioridade) Testar pipeline 3D → pixel art com 1 personagem (ver NOTAS.md)
 - [ ] Escolher um nome para o jogo
+- [ ] Arte provisória CC0 (ver `docs/ASSETS.md`): tiles da cidade (Kenney *Tiny Town*?) e inimigos genéricos, ajustados à paleta

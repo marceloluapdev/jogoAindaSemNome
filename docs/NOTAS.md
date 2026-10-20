@@ -27,6 +27,9 @@ GAME.md, história no HISTORIA.md, tarefas no TODO.md.
   renderizados por script no Blender em 8 direções, pixelados na paleta. Só se precisarmos de muitas animações
   complexas. Claude não modela um personagem 3D bonito do zero.
 - Ludo.ai descartado (gera "estilo pixel", não pixel real).
+- **Arte gratuita provisória** (decidido): enquanto o PixelLab está parado, usar arte de terceiros **CC0/CC-BY**
+  (Kenney, OpenGameArt) para tiles, objetos e inimigos genéricos, e trocar depois por arte própria. Registro, regras
+  e o que trocar: `docs/ASSETS.md`. CraftPix grátis descartado (proíbe redistribuir os arquivos; repo é público).
 
 ## PixelLab: aprendizados
 - Plano grátis: ~40 gerações rápidas e depois ~5 lentas/dia (segundo review de terceiros — conferir no site).
