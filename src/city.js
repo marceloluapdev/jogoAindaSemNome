@@ -49,7 +49,11 @@ const IMG = {
   dona_south: cityImage("assets/npc/dona/south.png"),
   sid_front: cityImage("assets/hero/apostador_frente.png"),
   sid_back: cityImage("assets/hero/apostador_costas.png"),
+  // Sid da cidade: folha de caminhada do gerador LPC (9 quadros × 4 linhas de 64 px:
+  // costas, esquerda, frente, direita; quadro 0 = parado). No combate segue o do PixelLab.
+  sid_walk: cityImage("assets/temp/lpc/npc/sid_walk.png"),
 };
+const SID_ROW = { up: 0, left: 1, down: 2, right: 3 };
 
 // Pessoas provisórias (até chegarem as do PixelLab), no mesmo tamanho de pixel
 function makePerson(o) {
@@ -328,7 +332,7 @@ window.CITY_PORTAL = PORTAL;
 const rnd = seeded(7);
 const PROPS = [
   // praça
-  { x: 320, y: 404, k: "fountain" },
+  { x: 320, y: 427, k: "fountain" },
   ...[[230, 300], [410, 300], [230, 470], [410, 470]].map(([x, y]) => ({ x, y, k: "lamp" })),
   { x: 262, y: 452, k: "bench" }, { x: 378, y: 452, k: "bench" },
   { x: 180, y: 310, k: "flowers" }, { x: 460, y: 310, k: "flowers" }, { x: 180, y: 486, k: "flowers" }, { x: 460, y: 486, k: "flowers" },
@@ -415,12 +419,6 @@ function makeGround() { return makeCanvas(CW, CH, (p, g) => {
         p(r() < 0.4 ? C.violet : c, sx, y + 1, ex - sx, 1);
       }
   });
-  // fonte: base de pedra e água (o brilho anima por cima)
-  const fx = 320, fy = 404;
-  for (let y = -26; y <= 26; y++) for (let x = -40; x <= 40; x++) {
-    const d = (x * x) / (40 * 40) + (y * y) / (26 * 26);
-    if (d <= 1) p(d > 0.86 ? C.ink : d > 0.62 ? (y < 0 ? C.boneD : C.wood) : d > 0.52 ? C.ink : (y < -6 ? C.steelL : C.steel), fx + x, fy - 8 + y);
-  }
 }); }
 
 // ---------- Desenho por quadro ----------
@@ -433,13 +431,72 @@ function sprite(img, x, y, w, h, flip, bob = 0) {
 }
 function glow(x, y, a) { cx.globalAlpha = a; cx.drawImage(GLOW, Math.round(x - 24), Math.round(y - 24)); cx.globalAlpha = 1; }
 
-function drawFountainTop(t) {
-  const fx = 320, fy = 404, f = Math.floor(t / 220) % 3;
-  cx.fillStyle = C.ink; cx.fillRect(fx - 4, fy - 40, 8, 26);
-  cx.fillStyle = C.boneD; cx.fillRect(fx - 3, fy - 39, 6, 25);
-  cx.fillStyle = C.steelL;
-  cx.fillRect(fx - 1, fy - 50 + f, 2, 12);
-  [[-10, 2], [8, 0], [-4, 6], [14, 4], [-16, -2]].forEach(([dx, dy], i) => { if ((i + f) % 3) cx.fillRect(fx + dx, fy - 8 + dy, 2, 1); });
+// ---------- Fonte da praça ----------
+// Vista 3/4: bacia de pedra (aro com blocos + parede da frente), água, coluna com duas taças.
+// A parte parada é pré-desenhada; jatos, quedas e ondinhas animam por cima.
+const FONT = { x: 320, y: 398, rx: 42, ry: 20, wall: 9 };       // centro da bacia no chão
+const ell = (x, y, rx, ry) => (x * x) / (rx * rx) + (y * y) / (ry * ry);
+function stoneRing(p, cx0, cy0, rx, ry, wall, inner) {
+  // parede da frente (meia elipse de baixo, descendo "wall" px)
+  for (let x = -rx; x <= rx; x++) {
+    const yb = Math.round(ry * Math.sqrt(Math.max(0, 1 - (x * x) / (rx * rx))));
+    for (let k = 0; k <= wall; k++) {
+      const edge = k === wall || Math.abs(x) >= rx - 1;
+      const seam = (x + 60 + (k > wall / 2 ? 5 : 0)) % 10 === 0 || k === Math.round(wall / 2);
+      p(edge ? C.ink : seam ? C.wood : x < -rx * 0.55 ? C.bone : C.boneD, cx0 + x, cy0 + yb + k);
+    }
+  }
+  // aro de cima (anel), blocos marcados pelo ângulo
+  for (let y = -ry - 1; y <= ry + 1; y++) for (let x = -rx - 1; x <= rx + 1; x++) {
+    const d = ell(x, y, rx, ry), di = ell(x, y, rx - inner, ry - inner * ry / rx);
+    if (d > 1 || di < 1) continue;
+    const outer = ell(x, y, rx - 1, ry - 1) > 1, inn = ell(x, y, rx - inner + 1, ry - (inner - 1) * ry / rx) < 1;
+    const ang = Math.atan2(y * rx / ry, x), seam = Math.abs(((ang / (Math.PI * 2)) * 18 + 18) % 1) < 0.07;
+    p(outer || inn ? C.ink : seam ? C.wood : y < 0 ? C.bone : C.boneD, cx0 + x, cy0 + y);
+  }
+}
+const FOUNTAIN = makeCanvas(100, 84, p => {
+  const cx0 = 50, cy0 = 44, { rx, ry, wall } = FONT;
+  p("rgba(18,13,26,0.45)", cx0 - rx + 2, cy0 + ry + wall - 1, rx * 2, 4);               // sombra
+  // água da bacia grande (sombra do aro em cima)
+  for (let y = -ry; y <= ry; y++) for (let x = -rx; x <= rx; x++) {
+    if (ell(x, y, rx - 5, ry - 3) > 1) continue;
+    const top = ell(x, y + 3, rx - 5, ry - 3) > 1;
+    p(top ? C.night : C.steel, cx0 + x, cy0 + y);
+  }
+  stoneRing(p, cx0, cy0, rx, ry, wall, 5);
+  // coluna
+  p(C.ink, cx0 - 4, cy0 - 30, 8, 30); p(C.boneD, cx0 - 3, cy0 - 30, 6, 30); p(C.bone, cx0 - 3, cy0 - 30, 2, 30);
+  p(C.wood, cx0 - 3, cy0 - 18, 6, 1); p(C.wood, cx0 - 3, cy0 - 8, 6, 1);
+  // taça de baixo (no meio da coluna) e de cima
+  [[cy0 - 14, 13, 4, 3], [cy0 - 31, 8, 3, 2]].forEach(([ty, trx, tr, tw]) => {
+    for (let y = -tr; y <= tr; y++) for (let x = -trx; x <= trx; x++)
+      if (ell(x, y, trx - 2, tr - 1) <= 1) p(ell(x, y + 1, trx - 2, tr - 1) > 1 ? C.night : C.steel, cx0 + x, ty + y);
+    stoneRing(p, cx0, ty, trx, tr, tw, 2);
+  });
+  // ponta
+  p(C.ink, cx0 - 2, cy0 - 39, 4, 5); p(C.bone, cx0 - 1, cy0 - 38, 2, 3);
+});
+// Animação: jato no topo, cortinas caindo das taças, gotas e ondinhas na bacia
+function drawFountain(t) {
+  const { x, y, rx, ry } = FONT, f = Math.floor(t / 140);
+  cx.drawImage(FOUNTAIN, x - 50, y - 44);
+  const W = (c, a, b, w = 1, h = 1) => { cx.fillStyle = c; cx.fillRect(Math.round(x + a), Math.round(y + b), w, h); };
+  // jato de cima
+  for (let k = 0; k < 6; k++) if ((k + f) % 3) W(C.steelL, -1 + (k % 2), -44 - k, 1, 1);
+  W(C.bone, 0, -46 - (f % 2), 1, 1);
+  // cortinas: da taça de cima para a de baixo e da de baixo para a bacia (arcos para fora)
+  [[8, -31, 13, -14], [13, -14, 26, -4]].forEach(([x0, y0, x1, y1]) => {
+    for (const s of [-1, 1]) for (let i = 0; i <= 8; i++) {
+      const u = i / 8, xx = s * (x0 + (x1 - x0) * Math.sqrt(u)), yy = y0 + (y1 - y0) * u * u;
+      if ((i + f) % 4 !== 0) W(i % 3 ? C.steelL : C.bone, xx, yy);
+    }
+  });
+  // ondinhas onde a água cai e brilhos na bacia
+  [[-26, -2], [26, -2], [-14, 6], [16, 8], [-30, 4], [4, 10]].forEach(([a, b], i) => {
+    const ph = (f + i * 2) % 6;
+    if (ph < 4) { W(C.steelL, a - ph, b, 1 + ph, 1); W(C.steelL, a + ph + 1, b, 1, 1); }
+  });
 }
 
 function drawPortal(t) {
@@ -476,6 +533,12 @@ function drawCity(t) {
   npcs.forEach(n => things.push({ y: n.y, draw: () => { const im = n.img(); sprite(im, n.x, n.y + 1, im.width || n.w, im.height || n.h, false, Math.floor(t / 650 + n.x) % 2); } }));
   things.push({ y: sid.y, draw: () => {
     const walking = sid.path.length > 0;
+    const sheet = IMG.sid_walk;
+    if (sheet.complete && sheet.naturalWidth) {
+      const frame = walking ? 1 + Math.floor(t / 90) % 8 : 0;
+      cx.drawImage(sheet, frame * 64, SID_ROW[sid.dir] * 64, 64, 64, Math.round(sid.x - 32), Math.round(sid.y - 60), 64, 64);
+      return;
+    }
     const bob = walking ? Math.floor(t / 120) % 2 : Math.floor(t / 650) % 2;
     sprite(sid.dir === "up" ? IMG.sid_back : IMG.sid_front, sid.x, sid.y + 2, 64, 64, sid.dir === "left", -bob);
   } });
@@ -491,7 +554,7 @@ function drawCity(t) {
   cityCanvas.dataset.cam = `${camX},${camY}`;
 }
 function drawProp(o, t) {
-  if (o.k === "fountain") return drawFountainTop(t);
+  if (o.k === "fountain") return drawFountain(t);
   if (o.k === "stall") { o.c = o.c || PROP.stall(o.a, o.b); return cx.drawImage(o.c, o.x - 24, o.y - 38); }
   if (o.k === "kt") { if (tileReady()) tile(cx, o.t, o.x - 8, o.y - 15); return; }
   if (o.k === "fence") {                       // cerca reta: ponta esquerda, meio, ponta direita
@@ -519,7 +582,7 @@ function buildGrid() {
   block(0, 0, CW, 16); block(0, 0, 6, CH); block(CW - 6, 0, 6, CH); block(0, CH - 6, CW, 6);
   BUILDINGS.forEach(o => block(o.x + 2, o.base - o.b.h + o.b.wallTop + 8, o.b.w - 4, o.b.h - o.b.wallTop - 10));
   PROPS.forEach(o => {
-    if (o.k === "fountain") block(o.x - 40, o.y - 30, 80, 44);
+    if (o.k === "fountain") block(FONT.x - FONT.rx, FONT.y - FONT.ry - 4, FONT.rx * 2, FONT.ry * 2 + FONT.wall + 4);
     else if (o.k === "tree") block(o.x - 5, o.y - 6, 10, 6);
     else if (o.k === "lamp") block(o.x - 3, o.y - 4, 6, 4);
     else if (o.k === "stall") block(o.x - 24, o.y - 16, 48, 16);

@@ -52,5 +52,8 @@
 - [x] Inimigos provisórios do LPC em 3 faixas (pequenos, médios, grandes), sorteados por luta
 - [ ] Animar os monstros do LPC (3 quadros); balancear vida/ataque de cada um
 - [x] NPCs provisórios do gerador LPC: Bartô, cartomante e padre (`tools/lpc_npc.py`)
+- [x] Sid na cidade com caminhada animada (gerador LPC); no combate segue o do PixelLab
+- [x] Fonte da praça refeita (bacia de pedra, duas taças, água animada)
+- [ ] PixelLab (quando assinar): novas magias/poses do Sid, expressões, inimigos próprios
 - [ ] Arte provisória: interior da taverna; mais monstros do OpenGameArt (diabrete, aranha, goblin, golem, lobisomem, ratos, ectoplasma)
 - [ ] Tela de créditos no jogo (arte de terceiros, ver `docs/ASSETS.md`)

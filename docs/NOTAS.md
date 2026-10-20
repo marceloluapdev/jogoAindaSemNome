@@ -25,6 +25,10 @@ GAME.md, história no HISTORIA.md, tarefas no TODO.md.
 
 Créditos e licenças de toda arte de terceiros: `docs/ASSETS.md`.
 
+**Mix de arte (decidido, por enquanto):** cidade com arte LPC (inclusive o Sid andando nas 4 direções) e Kenney;
+combate, retratos e Aposta Final com o Sid do PixelLab. Coisas mais elaboradas (novas magias, poses, expressões,
+inimigos próprios) ficam para o PixelLab quando precisar.
+
 ## Arte: decisões
 - **Manter pixel art.** Arte "pintada" estilo Hades foi descartada: impossível manter consistência por código/IA,
   pesada no celular e é onde o Claude menos consegue ajustar sozinho.
