@@ -43,4 +43,7 @@
 - [ ] Cidade: entrar na taverna, tiles do PixelLab, caminhada animada do Sid/dona, cartomante/padre/guarda do PixelLab
 - [ ] Layout: bandeja que entra/sai só na hora da ação (sobrepondo botões) + espaço para até 7 dados
 - [ ] Cenário da taverna no PixelLab? (hoje em código, 144×106)
+- [ ] Assinar o PixelLab (1 mês) e conectar ao Claude no PC (ver NOTAS.md) para produzir a arte pendente
+- [ ] Cidade: kit de peças em código (tiles 16 px com transições, árvores/flores com variações, mapa como grade)
+- [ ] (Futuro, sem prioridade) Testar pipeline 3D → pixel art com 1 personagem (ver NOTAS.md)
 - [ ] Escolher um nome para o jogo

@@ -7,6 +7,7 @@ Leia só quando precisar:
 - `docs/GAME.md` — conceito, mecânicas e regras do jogo
 - `docs/TODO.md` — próximos passos e o que já foi feito
 - `docs/HISTORIA.md` — lore, mitologia, personagens e tom (bíblia da história)
+- `docs/NOTAS.md` — combinados de processo, ferramentas (PixelLab), decisões de arte e economia de tokens
 
 Muita coisa já está decidida só no GAME.md (tutorial integrado à história, livro-jogo, layout futuro,
 personagens, ideias guardadas). Antes de propor ou discutir qualquer coisa de design, história ou
