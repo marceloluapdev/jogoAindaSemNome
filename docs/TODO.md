@@ -51,5 +51,6 @@
 - [x] Arte provisória LPC na cidade: casas (kit montado em código), árvores, barris, placas, guarda
 - [x] Inimigos provisórios do LPC em 3 faixas (pequenos, médios, grandes), sorteados por luta
 - [ ] Animar os monstros do LPC (3 quadros); balancear vida/ataque de cada um
-- [ ] Arte provisória: interior da taverna, NPCs vestidos (cartomante, padre, Bartô)
+- [x] NPCs provisórios do gerador LPC: Bartô, cartomante e padre (`tools/lpc_npc.py`)
+- [ ] Arte provisória: interior da taverna; mais monstros do OpenGameArt (diabrete, aranha, goblin, golem, lobisomem, ratos, ectoplasma)
 - [ ] Tela de créditos no jogo (arte de terceiros, ver `docs/ASSETS.md`)

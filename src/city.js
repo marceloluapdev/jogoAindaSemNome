@@ -229,9 +229,10 @@ const PROP = {
 };
 // ---------- Arte provisória do LPC (OpenGameArt, na paleta — ver docs/ASSETS.md) ----------
 // Casas montadas com o kit house.png (parede de tijolo, porta, janela, chaminé, telhado),
-// árvores = copa + tronco, barris e o guarda (soldier.png). Até carregar, fica o desenho em código.
+// árvores = copa + tronco, barris, o guarda (soldier.png) e Bartô, cartomante e padre
+// (montados com peças do gerador de personagens LPC, tools/lpc_npc.py). Até carregar, fica o desenho em código.
 const LPC = {};
-["house", "house_pedra", "treetop", "trunk", "barrel", "signs", "soldier"].forEach(k => { LPC[k] = cityImage(`assets/temp/lpc/${k}.png`); });
+["house", "house_pedra", "treetop", "trunk", "barrel", "signs", "soldier", "npc/barto", "npc/cartomante", "npc/padre"].forEach(k => { LPC[k] = cityImage(`assets/temp/lpc/${k}.png`); });
 const ART = {};                       // peças montadas quando as imagens chegam
 function crop(img, sx, sy, w, h) { return makeCanvas(w, h, (p, g) => g.drawImage(img, sx, sy, w, h, 0, 0, w, h)); }
 
@@ -282,6 +283,7 @@ function buildLPC() {
   ART.trees = [makeTree(0, 0, 80, 0), makeTree(96, 0, 96, 96), makeTree(0, 96, 96, 0), makeTree(96, 96, 112, 96)];
   ART.barrel = crop(LPC.barrel, 0, 10, 32, 38);
   ART.guarda = crop(LPC.soldier, 0, 128, 64, 64);
+  ART.bebado = LPC["npc/barto"]; ART.cartomante = LPC["npc/cartomante"]; ART.padre = LPC["npc/padre"];
   Object.assign(B.taverna, makeHouse({ cols: 5, rows: 1, roofH: 52, windows: [16, 48, 128, 160], door: 80, sign: { i: 0, x: 80 }, chimney: 24 }));
   Object.assign(B.bartô, makeHouse({ cols: 2, rows: 1, roofH: 40, windows: [8], door: 56, doorKind: 1, sign: { i: 2, x: 56 }, chimney: 70 }));
   Object.assign(B.capela, makeHouse({ kit: "house_pedra", cols: 2, rows: 2, roofH: 44, windows: [8, 56], door: 32, cross: true }));
@@ -357,9 +359,9 @@ const PROPS = [
 // Pessoas (lore espalhada: cada uma sabe um pedaço)
 const npcs = [
   { id: "dona", x: 312, y: 286, img: () => IMG.dona_south, w: 64, h: 64, talk: () => donaScene() },
-  { id: "bebado", x: 466, y: 276, img: () => PEOPLE.bebado, w: 30, h: 54, talk: () => lines("bebado", BARTO_LINES) },
-  { id: "cartomante", x: 128, y: 572, img: () => PEOPLE.cartomante, w: 30, h: 54, talk: () => lines("cartomante", CARTO_LINES) },
-  { id: "padre", x: 552, y: 330, img: () => PEOPLE.padre, w: 30, h: 54, talk: () => lines("padre", PADRE_LINES) },
+  { id: "bebado", x: 466, y: 276, img: () => ART.bebado || PEOPLE.bebado, w: 30, h: 54, talk: () => lines("bebado", BARTO_LINES) },
+  { id: "cartomante", x: 128, y: 572, img: () => ART.cartomante || PEOPLE.cartomante, w: 30, h: 54, talk: () => lines("cartomante", CARTO_LINES) },
+  { id: "padre", x: 552, y: 330, img: () => ART.padre || PEOPLE.padre, w: 30, h: 54, talk: () => lines("padre", PADRE_LINES) },
   { id: "guarda", x: 360, y: 716, img: () => ART.guarda || PEOPLE.guarda, w: 30, h: 54, talk: () => lines("guarda", GUARDA_LINES) },
 ];
 Object.assign(SPEAKERS, {
