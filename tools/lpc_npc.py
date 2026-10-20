@@ -47,6 +47,17 @@ NPCS = {
         ("torso/clothes/robe/female/walk/black.png", ["ink", "night", "dusk", "violet"]),
         ("hair/balding/adult/walk.png", CINZA),
     ],
+    # Sid na cidade (provisório; no combate e nos retratos continua o do PixelLab)
+    "sid": [
+        ("body/bodies/male/walk.png", PELE),
+        ("head/heads/human/male/walk.png", PELE),
+        ("feet/boots/basic/male/walk.png", ["ink", "night", "felt", "wood"]),
+        ("legs/pants/male/walk.png", ["ink", "night", "dusk", "violet"]),
+        ("torso/clothes/longsleeve/longsleeve/male/walk.png", ["ink", "night", "greenD", "green"]),
+        ("torso/jacket/frock/male/walk/brown.png", ["ink", "night", "dusk", "violet", "lilac"]),
+        ("hair/long_messy/adult/walk.png", ["ink", "night", "greenD", "green"]),
+        ("hat/pirate/cavalier/adult/walk.png", ["ink", "night", "felt", "wood", "woodL"]),
+    ],
     "barto": [
         ("body/bodies/male/walk.png", PELE),
         ("head/heads/human/male_plump/walk.png", PELE),
@@ -78,6 +89,31 @@ def recolore(im, rampa):
             if a:
                 px[x, y] = (*mapa[(r, g, b)], a)
     return im
+
+
+def dados_no_chapeu(folha):
+    """Dadinhos (3×3, osso com contorno) pendurados na aba do chapéu do Sid, em todos os quadros.
+    A aba é achada pela linha mais larga do chapéu em cada quadro; os dados ficam nas pontas."""
+    px = folha.load()
+    chapeu = RGB["wood"], RGB["woodL"], RGB["felt"]
+    for fy in range(0, folha.height, 64):
+        for fx in range(0, folha.width, 64):
+            melhor = None
+            for y in range(fy + 8, fy + 30):
+                xs = [x for x in range(fx, fx + 64) if px[x, y][3] and px[x, y][:3] in chapeu]
+                if xs and (melhor is None or xs[-1] - xs[0] > melhor[2] - melhor[1]):
+                    melhor = (y, xs[0], xs[-1])
+            if not melhor:
+                continue
+            y, x0, x1 = melhor
+            for dx, dy in ((x0 + 1, y + 3), (x1 - 3, y + 2)):
+                for yy in range(dy - 1, dy + 4):
+                    for xx in range(dx - 1, dx + 4):
+                        if fx <= xx < fx + 64:
+                            inner = dx <= xx < dx + 3 and dy <= yy < dy + 3
+                            px[xx, yy] = (*RGB["bone" if inner else "ink"], 255)
+                px[dx + 1, dy + 1] = (*RGB["ink"], 255)       # o pontinho do dado
+                px[dx + 1, dy - 2] = (*RGB["ink"], 255)       # cordinha
 
 
 def creditos(base, usados):
@@ -118,6 +154,8 @@ def main(base):
             folha = im if folha is None else Image.alpha_composite(folha, im)
             if arq not in usados:
                 usados.append(arq)
+        if nome == "sid":
+            dados_no_chapeu(folha)
         folha.save(OUT / f"{nome}_walk.png")
         folha.crop((0, 128, 64, 192)).save(OUT / f"{nome}.png")      # linha 2 = de frente, quadro parado
         print("ok", nome)

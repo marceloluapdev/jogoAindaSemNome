@@ -13,6 +13,18 @@ GAME.md, história no HISTORIA.md, tarefas no TODO.md.
 - Teste manual: `?admin` no endereço liga o menu ADM (fica ligado no aparelho; `?admin=off` desliga).
 - Teste `caso_tela_nao_pula` às vezes falha por 1 px (já falhava antes; não é regressão).
 
+## Ferramentas em uso
+| Ferramenta | Para quê | Como usamos |
+|---|---|---|
+| **PixelLab** (pixellab.ai) | Sid, dona, lodo, retratos (arte própria, a "cara" do jogo) | Marcel gera no site e manda os PNGs; plano: assinar 1 mês e ligar ao Claude no PC (ver abaixo) |
+| **Kenney** (kenney.nl) | Chão e objetos pequenos da cidade (CC0) | Marcel baixa o ZIP e manda; `tools/kenney_paleta.py` converte para a paleta |
+| **LPC Base Assets** (OpenGameArt) | Casas, árvores, barris, placas, guarda, monstros das lutas | Marcel baixa o ZIP e manda; `tools/lpc_paleta.py` converte |
+| **Gerador de personagens LPC** (GitHub) | NPCs da cidade (Bartô, cartomante, padre) e um Sid alternativo | Claude baixa as peças direto do GitHub (clone esparso) e monta com `tools/lpc_npc.py` — não precisa abrir o site |
+| **OpenGameArt** (opengameart.org) | Mais monstros/arte LPC e CC0 | Claude acha e confere a licença; Marcel baixa e manda (o ambiente do Claude não baixa desse site) |
+| **Playwright** | Testes automáticos e prints das telas | `python3 tests/run_tests.py` |
+
+Créditos e licenças de toda arte de terceiros: `docs/ASSETS.md`.
+
 ## Arte: decisões
 - **Manter pixel art.** Arte "pintada" estilo Hades foi descartada: impossível manter consistência por código/IA,
   pesada no celular e é onde o Claude menos consegue ajustar sozinho.
