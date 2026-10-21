@@ -12,7 +12,7 @@
 
 const TUTORIAL_KEY = "jasn.tutorial";
 
-// ---------- Personagens e retratos (provisórios até chegarem os do PixelLab) ----------
+// ---------- Personagens e retratos ----------
 
 const SPEAKERS = {
   sid:    { name: "Sid" },
@@ -22,11 +22,22 @@ const SPEAKERS = {
 
 const PW = 40, PH = 36;   // retrato em pixels lógicos (ampliado 2× na tela)
 
-// Sid: recorte da cabeça do sprite de frente do PixelLab
-const sidImg = new Image();
-sidImg.src = "assets/hero/apostador_frente.png";
+// Retratos: recorte do sprite de frente de cada um. [imagem, x, y, zoom]
+// zoom 1 = recorte PW×PH; zoom 2 = recorte da metade (só a cabeça) ampliado 2× inteiro — para
+// sprites pequenos (dona e LPC) o rosto encher o quadro como o do Sid. Provisório até os retratos
+// do PixelLab (ver TODO). Sid e dona: PixelLab; os outros: LPC (ver docs/ASSETS.md).
+const PORTRAITS = {
+  sid:        ["assets/hero/apostador_frente.png", 12, 2, 1],
+  dona:       ["assets/npc/dona/retrato.png", 14, 9, 2],
+  bebado:     ["assets/temp/lpc/npc/barto.png", 22, 22, 2],
+  cartomante: ["assets/temp/lpc/npc/cartomante.png", 22, 20, 2],
+  padre:      ["assets/temp/lpc/npc/padre.png", 22, 22, 2],
+  guarda:     ["assets/temp/lpc/soldier.png", 22, 150, 2],
+};
+const portraitImg = {};
+Object.entries(PORTRAITS).forEach(([who, [src]]) => { portraitImg[who] = new Image(); portraitImg[who].src = src; });
 
-// Retrato provisório desenhado em código (rosto simples na paleta)
+// Retrato desenhado em código (só se a imagem não carregar)
 function drawPlaceholderFace(ctx, spec) {
   const p = (c, x, y, w = 1, h = 1) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
   const ink = "#120d1a", skin = "#c9b48f", skinD = "#a86a33";
@@ -57,14 +68,22 @@ const PORTRAIT_FACES = {
 
 function drawPortrait(canvas, who) {
   const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, PW, PH);
-  ctx.fillStyle = "#2e2347"; ctx.fillRect(0, 0, PW, PH);
-  if (who === "sid") {
-    const draw = () => { ctx.drawImage(sidImg, 12, 2, PW, PH, 0, 0, PW, PH); };
-    if (sidImg.complete) draw(); else sidImg.onload = draw;
-  } else if (PORTRAIT_FACES[who]) {
-    drawPlaceholderFace(ctx, PORTRAIT_FACES[who]);
-  }
+  canvas.dataset.who = who;
+  const paint = () => {
+    if (canvas.dataset.who !== who) return;          // já trocou de quem fala
+    ctx.clearRect(0, 0, PW, PH);
+    ctx.fillStyle = "#2e2347"; ctx.fillRect(0, 0, PW, PH);
+    const img = portraitImg[who], src = PORTRAITS[who];
+    if (img && img.complete && img.naturalWidth) {
+      const z = src[3] || 1;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(img, src[1], src[2], PW / z, PH / z, 0, 0, PW, PH);
+    }
+    else if (PORTRAIT_FACES[who]) drawPlaceholderFace(ctx, PORTRAIT_FACES[who]);
+  };
+  paint();
+  const img = portraitImg[who];
+  if (img && !img.complete) img.addEventListener("load", paint, { once: true });
 }
 
 // ---------- Caixa de diálogo e tela preta ----------

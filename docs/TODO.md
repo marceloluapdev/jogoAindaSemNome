@@ -54,6 +54,7 @@
 - [x] NPCs provisórios do gerador LPC: Bartô, cartomante e padre (`tools/lpc_npc.py`)
 - [x] Sid na cidade com caminhada animada (gerador LPC); no combate segue o do PixelLab
 - [x] Fonte da praça refeita (bacia de pedra, duas taças, água animada)
+- [x] Retratos das falas para todos (recorte do sprite; dona e LPC ampliados 2×) — provisórios até os retratos do PixelLab
 - [ ] PixelLab (quando assinar): novas magias/poses do Sid, expressões, inimigos próprios
 - [ ] Arte provisória: interior da taverna; mais monstros do OpenGameArt (diabrete, aranha, goblin, golem, lobisomem, ratos, ectoplasma)
 - [ ] Tela de créditos no jogo (arte de terceiros, ver `docs/ASSETS.md`)
